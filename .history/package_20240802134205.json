@@ -2,7 +2,7 @@
   "name": "Sk!p Api",
   "version": "1.1.0",
   "scripts": {
-    "build": "webpack --config webpack.js",
+    "build": "netlify-lambda build functions",
     "start": "node server.js"
   },
   "dependencies": {
