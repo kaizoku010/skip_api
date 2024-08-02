@@ -1,9 +1,9 @@
 {
-  "name": "serverless-functions",
-  "version": "1.0.0",
+  "name": "Sk!p Api",
+  "version": "1.1.0",
   "scripts": {
     "build": "netlify-lambda build functions",
-    "start": "netlify-lambda serve functions"
+    "start": "node server"
   },
   "dependencies": {
     "@netlify/functions": "^2.8.1",
