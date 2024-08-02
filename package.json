@@ -16,7 +16,8 @@
     "express-async-handler": "^1.2.0",
     "node-fetch": "^3.3.2",
     "serverless-http": "^3.2.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "webpack-cli": "^5.1.4"
   },
   "devDependencies": {
     "netlify-lambda": "^2.0.16"
