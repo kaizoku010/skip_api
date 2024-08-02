@@ -114,13 +114,13 @@
                 <td>POST</td>
                 <td>/api/chat-requests</td>
                 <td>Add a chat request</td>
-                <td><button onclick="testRoute('POST', '/api/chat-requests', {senderId: 'user1', receiverId: 'user2'})">Test</button></td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/chat-requests', {senderId: 'user1', receiverId: 'user2'})">Test</button></td>
             </tr>
             <tr>
                 <td>PUT</td>
                 <td>/api/users/:userId/bio</td>
                 <td>Update user bio</td>
-                <td><button onclick="testRoute('PUT', '/api/users/12345/bio', {newBio: 'New bio content'})">Test</button></td>
+                <td><button onclick="testRoute('PUT', 'http://localhost:3000/api/users/12345/bio', {newBio: 'New bio content'})">Test</button></td>
             </tr>
         </tbody>
     </table>

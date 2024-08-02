@@ -96,31 +96,31 @@
                 <td>GET</td>
                 <td>/api/comments/:postId</td>
                 <td>Fetch comments for a specific post</td>
-                <td><button onclick="testRoute('GET', '/api/comments/12345')">Test</button></td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/comments/12345')">Test</button></td>
             </tr>
             <tr>
                 <td>POST</td>
                 <td>/api/posts</td>
                 <td>Create a new post</td>
-                <td><button onclick="testRoute('POST', '/api/posts', {eventId: '123', uid: 'user1', userName: 'John Doe', content: 'Test content'})">Test</button></td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/posts', {eventId: '123', uid: 'user1', userName: 'John Doe', content: 'Test content'})">Test</button></td>
             </tr>
             <tr>
                 <td>POST</td>
                 <td>/api/posts/:postId/like</td>
                 <td>Like a post</td>
-                <td><button onclick="testRoute('POST', '/api/posts/12345/like')">Test</button></td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/posts/12345/like')">Test</button></td>
             </tr>
             <tr>
                 <td>POST</td>
                 <td>/api/chat-requests</td>
                 <td>Add a chat request</td>
-                <td><button onclick="testRoute('POST', '/api/chat-requests', {senderId: 'user1', receiverId: 'user2'})">Test</button></td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/chat-requests', {senderId: 'user1', receiverId: 'user2'})">Test</button></td>
             </tr>
             <tr>
                 <td>PUT</td>
                 <td>/api/users/:userId/bio</td>
                 <td>Update user bio</td>
-                <td><button onclick="testRoute('PUT', '/api/users/12345/bio', {newBio: 'New bio content'})">Test</button></td>
+                <td><button onclick="testRoute('PUT', 'http://localhost:3000/api/users/12345/bio', {newBio: 'New bio content'})">Test</button></td>
             </tr>
         </tbody>
     </table>
