@@ -230,24 +230,19 @@ app.put('/api/users/:userId/bio', asyncHandler(async (req, res) => {
   res.json(result.Attributes);
 }));
 
-
-//upload event graphics to s3
-async function uploadToS3(file, contentType, folder) {
+function uploadToS3(file, contentType, folder) {
   const fileName = `${folder}/${uuidv4()}-${file.name}`;
   const params = {
     Bucket: 'moxieeventsbucket',
     Key: fileName,
     Body: file,
     ContentType: contentType,
-    // ACL: 'public-read',
+    ACL: 'public-read',
   };
 
-  const data = await s3.upload(params).promise();
-  return data.Location;
+  return s3.upload(params).promise().then(data => data.Location);
 }
 
-
-///add event
 app.post('/api/add-event', asyncHandler(async (req, res) => {
   const { eventData } = req.body;
   const { eventGraphics } = req.files;
@@ -274,7 +269,7 @@ app.post('/api/add-event', asyncHandler(async (req, res) => {
 
 
 // Endpoint to upload image to S3
-app.post('/upload-user-image', async (req, res) => {
+app.post('/uploaduser-image', async (req, res) => {
   const { image, fileName } = req.body;
 
   const params = {
@@ -291,47 +286,6 @@ app.post('/upload-user-image', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-//signup user
-app.post('/signup', async (req, res) => {
-  const { email, code, attributeList } = req.body;
-
-  const params = {
-    ClientId: '714k6vrn207tf567haia6ljvpg',
-    UserPoolId: 'ap-south-1_YRFnyDxCR',
-    Username: email,
-    Password: code,
-    UserAttributes: attributeList,
-  };
-
-  try {
-    const data = await cognito.signUp(params).promise();
-    res.json({ user: data.UserSub });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-
-
-// Endpoint to add attendee to DynamoDB
-app.post('/add-attendee', async (req, res) => {
-  const { formData } = req.body;
-
-  const params = {
-    TableName: 'attendees',
-    Item: formData,
-  };
-
-  try {
-    await dynamoDB.put(params).promise();
-    res.status(200).send('Success');
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');

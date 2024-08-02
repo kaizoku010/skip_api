@@ -231,7 +231,7 @@ app.put('/api/users/:userId/bio', asyncHandler(async (req, res) => {
 }));
 
 
-//upload event graphics to s3
+//upload event graphics 
 async function uploadToS3(file, contentType, folder) {
   const fileName = `${folder}/${uuidv4()}-${file.name}`;
   const params = {

@@ -230,24 +230,19 @@ app.put('/api/users/:userId/bio', asyncHandler(async (req, res) => {
   res.json(result.Attributes);
 }));
 
-
-//upload event graphics to s3
-async function uploadToS3(file, contentType, folder) {
+function uploadToS3(file, contentType, folder) {
   const fileName = `${folder}/${uuidv4()}-${file.name}`;
   const params = {
     Bucket: 'moxieeventsbucket',
     Key: fileName,
     Body: file,
     ContentType: contentType,
-    // ACL: 'public-read',
+    ACL: 'public-read',
   };
 
-  const data = await s3.upload(params).promise();
-  return data.Location;
+  return s3.upload(params).promise().then(data => data.Location);
 }
 
-
-///add event
 app.post('/api/add-event', asyncHandler(async (req, res) => {
   const { eventData } = req.body;
   const { eventGraphics } = req.files;
@@ -293,13 +288,12 @@ app.post('/upload-user-image', async (req, res) => {
 });
 
 
-//signup user
+
 app.post('/signup', async (req, res) => {
   const { email, code, attributeList } = req.body;
 
   const params = {
-    ClientId: '714k6vrn207tf567haia6ljvpg',
-    UserPoolId: 'ap-south-1_YRFnyDxCR',
+    ClientId: 'your-cognito-client-id',
     Username: email,
     Password: code,
     UserAttributes: attributeList,

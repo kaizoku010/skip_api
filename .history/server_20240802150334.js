@@ -230,8 +230,6 @@ app.put('/api/users/:userId/bio', asyncHandler(async (req, res) => {
   res.json(result.Attributes);
 }));
 
-
-//upload event graphics to s3
 async function uploadToS3(file, contentType, folder) {
   const fileName = `${folder}/${uuidv4()}-${file.name}`;
   const params = {
@@ -239,7 +237,7 @@ async function uploadToS3(file, contentType, folder) {
     Key: fileName,
     Body: file,
     ContentType: contentType,
-    // ACL: 'public-read',
+    ACL: 'public-read',
   };
 
   const data = await s3.upload(params).promise();
