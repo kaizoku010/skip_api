@@ -1,5 +1,5 @@
 {
-  "name": "skip_api",
+  "name": "Sk!p",
   "version": "1.1.0",
   "scripts": {
     "build": "webpack --config webpack.js",
