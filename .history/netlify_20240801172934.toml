@@ -1,0 +1,15 @@
+[build]
+command = "npm run build"         # Build command for your functions
+functions = "functions-build"      # Directory where compiled functions are located
+publish = "functions-build"        # Set this to the same as functions if no static files are present
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/api/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/*"
+to = "/index.html"                
+status = 200

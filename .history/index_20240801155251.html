@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKIP API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Documentation</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Route</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/api/events</td>
+                <td>Fetch all events</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/content</td>
+                <td>Fetch content including attendees, chat requests, and chat rooms</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/posts</td>
+                <td>Fetch all posts</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/user-posts/:userId</td>
+                <td>Fetch posts by a specific user</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/chat/:roomID</td>
+                <td>Fetch chat messages for a specific room</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/event-object/:eventId</td>
+                <td>Fetch event object by event ID</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/comments/:postId</td>
+                <td>Fetch comments for a specific post</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/posts</td>
+                <td>Create a new post</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/posts/:postId/like</td>
+                <td>Like a post</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/chat-requests</td>
+                <td>Add a chat request</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/users/:userId/bio</td>
+                <td>Update user bio</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

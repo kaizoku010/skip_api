@@ -1,0 +1,16 @@
+[build]
+command = "npm run build"  # This should build your React app
+functions = "functions-build"  # Directory for your built functions
+publish = "build"  # Directory for your built React app
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/api/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+force = true

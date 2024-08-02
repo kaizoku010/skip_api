@@ -1,0 +1,16 @@
+[build]
+command = "npm run build" # or the appropriate build command for your static site
+functions = "functions-build"
+publish = "public" # Adjust this if your static files are in a different directory
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/api/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+force = true

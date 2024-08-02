@@ -1,0 +1,4 @@
+output: {
+  path: path.resolve(__dirname, 'functions-build'), // Output directory for functions
+  filename: 'index.js', // Output filename
+},

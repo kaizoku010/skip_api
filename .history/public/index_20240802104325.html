@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SK!P API EndPoints</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .skip-api-header{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="skip-api-header"> 
+        <h1>SK!P API Documentation</h1>
+
+    </div>
+    <h3>API Routes</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Route</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/api/all_events</td>
+                <td>Fetch all events</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/all_events')">Test</button></td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/all_attendees</td>
+                <td>Fetch content including attendees, chat requests, and chat rooms</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/all_attendees')">Test</button></td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/posts</td>
+                <td>Fetch all posts</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/posts')">Test</button></td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/user-posts/:userId</td>
+                <td>Fetch posts by a specific user</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/user-posts/12345')">Test</button></td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/chat/:roomID</td>
+                <td>Fetch chat messages for a specific room</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/chat/12345')">Test</button></td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/event-object/:eventId</td>
+                <td>Fetch event object by event ID</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/event-object/12345')">Test</button></td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/comments/:postId</td>
+                <td>Fetch comments for a specific post</td>
+                <td><button onclick="testRoute('GET', 'http://localhost:3000/api/comments/12345')">Test</button></td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/posts</td>
+                <td>Create a new post</td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/posts', {eventId: '123', uid: 'user1', userName: 'John Doe', content: 'Test content'})">Test</button></td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/posts/:postId/like</td>
+                <td>Like a post</td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/posts/12345/like')">Test</button></td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/chat-requests</td>
+                <td>Add a chat request</td>
+                <td><button onclick="testRoute('POST', 'http://localhost:3000/api/chat-requests', {senderId: 'user1', receiverId: 'user2'})">Test</button></td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/users/:userId/bio</td>
+                <td>Update user bio</td>
+                <td><button onclick="testRoute('PUT', 'http://localhost:3000/api/users/12345/bio', {newBio: 'New bio content'})">Test</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="result" id="result">
+        <h2>Result</h2>
+        <pre id="result-content"></pre>
+    </div>
+
+    <script>
+        async function testRoute(method, url, body = null) {
+            const resultContent = document.getElementById('result-content');
+            resultContent.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify(body) : null
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                resultContent.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultContent.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
