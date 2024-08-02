@@ -23,8 +23,7 @@ module.exports = {
       "buffer": require.resolve("buffer/"),
       "fs": require.resolve("browserify-fs"),
       "http": require.resolve("stream-http"),
-      "crypto": require.resolve("crypto-browserify"),
-      "zlib": require.resolve("browserify-zlib")
+      "crypto": require.resolve("crypto-browserify")
       
     }
   },
