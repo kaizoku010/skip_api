@@ -9,7 +9,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/public/', // Make sure this is correct if using static assets
+    publicPath: '/public/' // Make sure this is correct if using static assets
+
     libraryTarget: 'commonjs2'
   },
   module: {
