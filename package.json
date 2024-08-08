@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "start": "node dist/bundle.js" 
+    "start": "node dist/bundle.js"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.12.1",
@@ -26,6 +26,7 @@
     "webpack-cli": "^5.1.4"
   },
   "devDependencies": {
-    "netlify-lambda": "^2.0.16"
+    "netlify-lambda": "^2.0.16",
+    "webpack-node-externals": "^3.0.0"
   }
 }
