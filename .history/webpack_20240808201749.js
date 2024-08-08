@@ -1,15 +1,13 @@
 const path = require('path');
 const webpack = require('webpack');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   target: 'node', // Ensure Webpack is targeting Node.js environment
   entry: './server.js',
   output: {
-    path: path.resolve(__dirname, 'dist'), // Change output directory to 'dist'
-    filename: 'bundle.js',
-    libraryTarget: 'commonjs2' // Ensure compatibility with Node.js
+    path: path.resolve(__dirname, 'public'),
+    filename: 'bundle.js'
   },
   module: {
     rules: [
@@ -43,5 +41,8 @@ module.exports = {
     }),
     new NodePolyfillPlugin()
   ],
-  externals: [nodeExternals()] // Exclude node_modules from the bundle
+  externals: [
+    // Exclude server-side dependencies
+    nodeExternals()
+  ]
 };
