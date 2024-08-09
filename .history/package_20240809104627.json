@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "scripts": {
     "build": "echo 'Skipping build step as no build is required.'",
+,
     "start": "node server.js"
   },
   "dependencies": {
