@@ -42,12 +42,11 @@ const Attendee = db.collection('attendees');
 const Post = db.collection('posts');
 const ChatRequest = db.collection('chatRequests');
 const ChatRoom = db.collection('chatRooms');
-
 app.use(express.static(path.join(__dirname, 'public'))); // Adjust this path if needed
 
 // Serve the HTML documentation
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './public','index.html'));
+  res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 // Routes

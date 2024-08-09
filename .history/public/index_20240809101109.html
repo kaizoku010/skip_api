@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SK!P API EndPoints</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .skip-api-header {
+            height: 8rem;
+            background-size: cover;
+            background-image: url("https://signup.heroku.com/assets/page-illustration-11400c2a5109317ad7e99571ba2a42bc55522ffa8ea6f9dcdff99737ab6149ac.png");
+        }
+        .example {
+            margin-top: 10px;
+        }
+        .example pre {
+            background: #e8e8e8;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .collapsible {
+            cursor: pointer;
+            padding: 10px;
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .collapsible-content {
+            display: none;
+            margin-top: 10px;
+        }
+        .collapsible-content .example h4 {
+            margin: 0;
+        }
+    </style>
+    <script>
+        function toggleCollapse(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === "none") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="skip-api-header"> 
+        <h1>SK!P API Documentation</h1>
+        <p style="text-align: center;">These are routes/endpoints that connect you to the SK!P server and Firebase/MongoDB for easy operations.</p>
+    </div>
+    <h3>API Routes</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Route</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example routes with descriptions, example code and examples for each route -->
+            <tr>
+                <td>GET</td>
+                <td>/api/events</td>
+                <td>Fetch all events</td>
+                <td><div class="collapsible" onclick="toggleCollapse('events-example')">Show Example</div></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapsible-content" id="events-example">
+                        <div class="example">
+                            <h4>How to Use</h4>
+                            <pre>
+fetch('/api/events', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                            </pre>
+                            <h4>Request</h4>
+                            <pre>
+GET /api/events
+                            </pre>
+                            <h4>Response</h4>
+                            <pre>
+{
+  "events": [
+    {
+      "eventId": "1",
+      "eventName": "Sample Event",
+      "eventDate": "2024-08-08T00:00:00Z",
+      "eventGraphicsURL": "https://example.com/event.jpg"
+    }
+  ]
+}
+                            </pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/attendees</td>
+                <td>Fetch all attendees</td>
+                <td><div class="collapsible" onclick="toggleCollapse('attendees-example')">Show Example</div></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapsible-content" id="attendees-example">
+                        <div class="example">
+                            <h4>How to Use</h4>
+                            <pre>
+fetch('/api/attendees', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                            </pre>
+                            <h4>Request</h4>
+                            <pre>
+GET /api/attendees
+                            </pre>
+                            <h4>Response</h4>
+                            <pre>
+{
+  "attendees": [
+    {
+      "uid": "1",
+      "userName": "John Doe",
+      "bio": "Enthusiastic attendee"
+    }
+  ]
+}
+                            </pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/posts</td>
+                <td>Fetch all posts</td>
+                <td><div class="collapsible" onclick="toggleCollapse('posts-example')">Show Example</div></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapsible-content" id="posts-example">
+                        <div class="example">
+                            <h4>How to Use</h4>
+                            <pre>
+fetch('/api/posts', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                            </pre>
+                            <h4>Request</h4>
+                            <pre>
+GET /api/posts
+                            </pre>
+                            <h4>Response</h4>
+                            <pre>
+{
+  "posts": [
+    {
+      "postId": "1",
+      "eventId": "1",
+      "uid": "user1",
+      "userName": "John Doe",
+      "content": "This is a sample post",
+      "imageURI": "https://example.com/image.jpg",
+      "videoURI": "https://example.com/video.mp4"
+    }
+  ]
+}
+                            </pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/user-posts/:userId</td>
+                <td>Fetch posts created by a specific user</td>
+                <td><div class="collapsible" onclick="toggleCollapse('user-posts-example')">Show Example</div></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapsible-content" id="user-posts-example">
+                        <div class="example">
+                            <h4>How to Use</h4>
+                            <pre>
+fetch('/api/user-posts/12345', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                            </pre>
+                            <h4>Request</h4>
+                            <pre>
+GET /api/user-posts/12345
+                            </pre>
+                            <h4>Response</h4>
+                            <pre>
+{
+  "posts": [
+    {
+      "postId": "1",
+      "eventId": "1",
+      "uid": "12345",
+      "userName": "Jane Smith",
+      "content": "User's post content",
+      "imageURI": "https://example.com/image.jpg",
+      "videoURI": "https://example.com/video.mp4"
+    }
+  ]
+}
+                            </pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/chat/:roomID</td>
+                <td>Fetch chat messages from a specific chat room</td>
+                <td><div class="collapsible" onclick="toggleCollapse('chat-example')">Show Example</div></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapsible-content" id="chat-example">
+                        <div class="example">
+                            <h4>How to Use</h4>
+                            <pre>
+fetch('/api/chat/12345', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                            </pre>
+                            <h4>Request</h4>
+                            <pre>
+GET /api/chat/12345
+                            </pre>
+                            <h4>Response</h4>
+                            <pre>
+{
+  "messages": [
+    {
+      "messageId": "1",
+      "senderId": "user1",
+      "message": "Hello, this is a chat message",
+      "timestamp": "2024-08-08T00:00:00Z"
+    }
+  ]
+}
+                            </pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

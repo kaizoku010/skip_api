@@ -74,6 +74,7 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Example routes with descriptions, example code and examples for each route -->
             <tr>
                 <td>GET</td>
                 <td>/api/events</td>
@@ -119,7 +120,6 @@ GET /api/events
                 </td>
             </tr>
             <tr>
-                
                 <td>GET</td>
                 <td>/api/attendees</td>
                 <td>Fetch all attendees</td>
@@ -290,7 +290,7 @@ GET /api/chat/12345
     {
       "messageId": "1",
       "senderId": "user1",
-      "message": "Hello World",
+      "text": "Hello!",
       "timestamp": "2024-08-08T00:00:00Z"
     }
   ]
@@ -302,26 +302,26 @@ GET /api/chat/12345
             </tr>
             <tr>
                 <td>POST</td>
-                <td>/api/chat</td>
-                <td>Send a new chat message</td>
-                <td><button onclick="testRoute('POST', '/api/chat')">Test</button></td>
+                <td>/api/signup</td>
+                <td>Register a new user</td>
+                <td><button onclick="testRoute('POST', '/api/signup', { userId: 'newuser', userName: 'New User', password: 'password123' })">Test</button></td>
             </tr>
             <tr>
                 <td colspan="4">
-                    <div class="collapsible" onclick="toggleCollapse('send-message-example')">Show Example</div>
-                    <div class="collapsible-content" id="send-message-example">
+                    <div class="collapsible" onclick="toggleCollapse('signup-example')">Show Example</div>
+                    <div class="collapsible-content" id="signup-example">
                         <div class="example">
                             <h4>How to Use</h4>
                             <pre>
-fetch('/api/chat', {
+fetch('/api/signup', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        roomId: "12345",
-        senderId: "user1",
-        message: "Hello World"
+        userId: 'newuser',
+        userName: 'New User',
+        password: 'password123'
     })
 })
 .then(response => response.json())
@@ -330,18 +330,18 @@ fetch('/api/chat', {
                             </pre>
                             <h4>Request</h4>
                             <pre>
-POST /api/chat
+POST /api/signup
 {
-  "roomId": "12345",
-  "senderId": "user1",
-  "message": "Hello World"
+  "userId": "newuser",
+  "userName": "New User",
+  "password": "password123"
 }
                             </pre>
                             <h4>Response</h4>
                             <pre>
 {
-  "success": true,
-  "messageId": "1"
+  "message": "User registered successfully",
+  "userId": "newuser"
 }
                             </pre>
                         </div>
@@ -350,9 +350,9 @@ POST /api/chat
             </tr>
             <tr>
                 <td>POST</td>
-                <td>/api/attendees</td>
+                <td>/api/add-attendee</td>
                 <td>Add a new attendee</td>
-                <td><button onclick="testRoute('POST', '/api/attendees')">Test</button></td>
+                <td><button onclick="testRoute('POST', '/api/add-attendee', { userId: 'user1', userName: 'Attendee', bio: 'Some bio' })">Test</button></td>
             </tr>
             <tr>
                 <td colspan="4">
@@ -361,15 +361,15 @@ POST /api/chat
                         <div class="example">
                             <h4>How to Use</h4>
                             <pre>
-fetch('/api/attendees', {
+fetch('/api/add-attendee', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        uid: "newUserId",
-        userName: "New Attendee",
-        bio: "Bio of new attendee"
+        userId: 'user1',
+        userName: 'Attendee',
+        bio: 'Some bio'
     })
 })
 .then(response => response.json())
@@ -378,18 +378,18 @@ fetch('/api/attendees', {
                             </pre>
                             <h4>Request</h4>
                             <pre>
-POST /api/attendees
+POST /api/add-attendee
 {
-  "uid": "newUserId",
-  "userName": "New Attendee",
-  "bio": "Bio of new attendee"
+  "userId": "user1",
+  "userName": "Attendee",
+  "bio": "Some bio"
 }
                             </pre>
                             <h4>Response</h4>
                             <pre>
 {
-  "success": true,
-  "message": "Attendee added"
+  "message": "Attendee added successfully",
+  "userId": "user1"
 }
                             </pre>
                         </div>
@@ -398,30 +398,22 @@ POST /api/attendees
             </tr>
             <tr>
                 <td>POST</td>
-                <td>/api/posts</td>
-                <td>Create a new post</td>
-                <td><button onclick="testRoute('POST', '/api/posts')">Test</button></td>
+                <td>/api/posts/:postId/like</td>
+                <td>Like a specific post</td>
+                <td><button onclick="testRoute('POST', '/api/posts/12345/like')">Test</button></td>
             </tr>
             <tr>
                 <td colspan="4">
-                    <div class="collapsible" onclick="toggleCollapse('create-post-example')">Show Example</div>
-                    <div class="collapsible-content" id="create-post-example">
+                    <div class="collapsible" onclick="toggleCollapse('like-post-example')">Show Example</div>
+                    <div class="collapsible-content" id="like-post-example">
                         <div class="example">
                             <h4>How to Use</h4>
                             <pre>
-fetch('/api/posts', {
+fetch('/api/posts/12345/like', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        eventId: "1",
-        uid: "user1",
-        userName: "John Doe",
-        content: "New post content",
-        imageURI: "https://example.com/image.jpg",
-        videoURI: "https://example.com/video.mp4"
-    })
+    }
 })
 .then(response => response.json())
 .then(data => console.log(data))
@@ -429,22 +421,12 @@ fetch('/api/posts', {
                             </pre>
                             <h4>Request</h4>
                             <pre>
-POST /api/posts
-{
-  "eventId": "1",
-  "uid": "user1",
-  "userName": "John Doe",
-  "content": "New post content",
-  "imageURI": "https://example.com/image.jpg",
-  "videoURI": "https://example.com/video.mp4"
-}
+POST /api/posts/12345/like
                             </pre>
                             <h4>Response</h4>
                             <pre>
 {
-  "success": true,
-  "message": "Post created",
-  "postId": "1"
+  "message": "Post liked successfully"
 }
                             </pre>
                         </div>
@@ -453,29 +435,26 @@ POST /api/posts
             </tr>
             <tr>
                 <td>POST</td>
-                <td>/api/track-location</td>
-                <td>Track user location</td>
-                <td><button onclick="testRoute('POST', '/api/track-location')">Test</button></td>
+                <td>/api/chat-requests</td>
+                <td>Create a new chat request</td>
+                <td><button onclick="testRoute('POST', '/api/chat-requests', { receiverId: 'receiver123', senderId: 'sender123', status: 'pending' })">Test</button></td>
             </tr>
             <tr>
                 <td colspan="4">
-                    <div class="collapsible" onclick="toggleCollapse('track-location-example')">Show Example</div>
-                    <div class="collapsible-content" id="track-location-example">
+                    <div class="collapsible" onclick="toggleCollapse('chat-requests-example')">Show Example</div>
+                    <div class="collapsible-content" id="chat-requests-example">
                         <div class="example">
                             <h4>How to Use</h4>
                             <pre>
-fetch('/api/track-location', {
+fetch('/api/chat-requests', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        uid: "user1",
-        truckId: "truck1",
-        location: {
-            lat: 40.7128,
-            lng: -74.0060
-        }
+        receiverId: 'receiver123',
+        senderId: 'sender123',
+        status: 'pending'
     })
 })
 .then(response => response.json())
@@ -484,21 +463,69 @@ fetch('/api/track-location', {
                             </pre>
                             <h4>Request</h4>
                             <pre>
-POST /api/track-location
+POST /api/chat-requests
 {
-  "uid": "user1",
-  "truckId": "truck1",
-  "location": {
-    "lat": 40.7128,
-    "lng": -74.0060
-  }
+  "receiverId": "receiver123",
+  "senderId": "sender123",
+  "status": "pending"
 }
                             </pre>
                             <h4>Response</h4>
                             <pre>
 {
-  "success": true,
-  "message": "Location tracked"
+  "message": "Chat request created successfully"
+}
+                            </pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/events</td>
+                <td>Add a new event</td>
+                <td><button onclick="testRoute('POST', '/api/events', { eventId: 'event123', userId: 'user123', eventName: 'New Event', date: '2024-08-08T00:00:00Z', graphicsURL: 'https://example.com/event.jpg' })">Test</button></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapsible" onclick="toggleCollapse('add-event-example')">Show Example</div>
+                    <div class="collapsible-content" id="add-event-example">
+                        <div class="example">
+                            <h4>How to Use</h4>
+                            <pre>
+fetch('/api/events', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        eventId: 'event123',
+        userId: 'user123',
+        eventName: 'New Event',
+        date: '2024-08-08T00:00:00Z',
+        graphicsURL: 'https://example.com/event.jpg'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                            </pre>
+                            <h4>Request</h4>
+                            <pre>
+POST /api/events
+{
+  "eventId": "event123",
+  "userId": "user123",
+  "eventName": "New Event",
+  "date": "2024-08-08T00:00:00Z",
+  "graphicsURL": "https://example.com/event.jpg"
+}
+                            </pre>
+                            <h4>Response</h4>
+                            <pre>
+{
+  "message": "Event added successfully",
+  "eventId": "event123"
 }
                             </pre>
                         </div>
@@ -507,25 +534,24 @@ POST /api/track-location
             </tr>
             <tr>
                 <td>PUT</td>
-                <td>/api/attendees/:uid</td>
-                <td>Update attendee information</td>
-                <td><button onclick="testRoute('PUT', '/api/attendees/12345')">Test</button></td>
+                <td>/api/users/:userId/bio</td>
+                <td>Update the bio of a specific user</td>
+                <td><button onclick="testRoute('PUT', '/api/users/12345/bio', { bio: 'Updated bio' })">Test</button></td>
             </tr>
             <tr>
                 <td colspan="4">
-                    <div class="collapsible" onclick="toggleCollapse('update-attendee-example')">Show Example</div>
-                    <div class="collapsible-content" id="update-attendee-example">
+                    <div class="collapsible" onclick="toggleCollapse('update-bio-example')">Show Example</div>
+                    <div class="collapsible-content" id="update-bio-example">
                         <div class="example">
                             <h4>How to Use</h4>
                             <pre>
-fetch('/api/attendees/12345', {
+fetch('/api/users/12345/bio', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        userName: "Updated Name",
-        bio: "Updated bio"
+        bio: 'Updated bio'
     })
 })
 .then(response => response.json())
@@ -534,61 +560,15 @@ fetch('/api/attendees/12345', {
                             </pre>
                             <h4>Request</h4>
                             <pre>
-PUT /api/attendees/12345
+PUT /api/users/12345/bio
 {
-  "userName": "Updated Name",
   "bio": "Updated bio"
 }
                             </pre>
                             <h4>Response</h4>
                             <pre>
 {
-  "success": true,
-  "message": "Attendee updated"
-}
-                            </pre>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>PUT</td>
-                <td>/api/posts/:postId</td>
-                <td>Update a specific post</td>
-                <td><button onclick="testRoute('PUT', '/api/posts/1')">Test</button></td>
-            </tr>
-            <tr>
-                <td colspan="4">
-                    <div class="collapsible" onclick="toggleCollapse('update-post-example')">Show Example</div>
-                    <div class="collapsible-content" id="update-post-example">
-                        <div class="example">
-                            <h4>How to Use</h4>
-                            <pre>
-fetch('/api/posts/1', {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        content: "Updated post content"
-    })
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));
-                            </pre>
-                            <h4>Request</h4>
-                            <pre>
-PUT /api/posts/1
-{
-  "content": "Updated post content"
-}
-                            </pre>
-                            <h4>Response</h4>
-                            <pre>
-{
-  "success": true,
-  "message": "Post updated"
+  "message": "Bio updated successfully"
 }
                             </pre>
                         </div>
@@ -599,7 +579,7 @@ PUT /api/posts/1
                 <td>DELETE</td>
                 <td>/api/posts/:postId</td>
                 <td>Delete a specific post</td>
-                <td><button onclick="testRoute('DELETE', '/api/posts/1')">Test</button></td>
+                <td><button onclick="testRoute('DELETE', '/api/posts/12345')">Test</button></td>
             </tr>
             <tr>
                 <td colspan="4">
@@ -608,8 +588,11 @@ PUT /api/posts/1
                         <div class="example">
                             <h4>How to Use</h4>
                             <pre>
-fetch('/api/posts/1', {
-    method: 'DELETE'
+fetch('/api/posts/12345', {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json'
+    }
 })
 .then(response => response.json())
 .then(data => console.log(data))
@@ -617,13 +600,12 @@ fetch('/api/posts/1', {
                             </pre>
                             <h4>Request</h4>
                             <pre>
-DELETE /api/posts/1
+DELETE /api/posts/12345
                             </pre>
                             <h4>Response</h4>
                             <pre>
 {
-  "success": true,
-  "message": "Post deleted"
+  "message": "Post deleted successfully"
 }
                             </pre>
                         </div>
@@ -632,22 +614,28 @@ DELETE /api/posts/1
             </tr>
         </tbody>
     </table>
-</div>
-<script>
-    function testRoute(method, route) {
-        // Function to test the API routes
-        console.log(`Testing ${method} route: ${route}`);
-        // Implement your testing logic here
-    }
-
-    function toggleCollapse(id) {
-        var content = document.getElementById(id);
-        if (content.style.display === "none") {
-            content.style.display = "block";
-        } else {
-            content.style.display = "none";
+    <script>
+        function testRoute(method, url, body = null) {
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: body ? JSON.stringify(body) : null
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
         }
-    }
-</script>
+
+        function toggleCollapse(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
