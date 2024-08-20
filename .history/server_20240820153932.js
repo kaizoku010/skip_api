@@ -10,11 +10,6 @@ const { expressjwt: jwtMiddleware } = require('express-jwt');
 const dotenv = require('dotenv');
 const crypto = require('crypto');
 const fs = require('fs');
-const cors = require('cors');
-
-app.use(cors({
-  origin: 'https://skip-api-1gup.onrender.com/' // Replace with your actual frontend domain
-}));
 
 dotenv.config();
 

@@ -13,7 +13,7 @@ const fs = require('fs');
 const cors = require('cors');
 
 app.use(cors({
-  origin: 'https://skip-api-1gup.onrender.com/' // Replace with your actual frontend domain
+  origin: 'http://your-frontend-domain.com' // Replace with your actual frontend domain
 }));
 
 dotenv.config();
