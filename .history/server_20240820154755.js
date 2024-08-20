@@ -18,7 +18,6 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-
 app.use(cors({
   origin: 'https://skip-api-1gup.onrender.com/' // Replace with your actual frontend domain
 }));
