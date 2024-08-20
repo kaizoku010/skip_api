@@ -101,7 +101,7 @@ app.post("/auth/make_root", asyncHandler(async (req, res) => {
 // console.log(match);
 
 
-app.post('/auth/root', asyncHandler(async (req, res) => {
+app.get('/auth/root', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await AdminUsers.findOne({ email });
   if (user && await bcrypt.compare(password, user.password)) {

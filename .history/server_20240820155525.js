@@ -20,7 +20,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(cors({
-  origin: ['*', "https://skip-api-1gup.onrender.com"] // Replace with your actual frontend domain
+  origin: ['*'] // Replace with your actual frontend domain
 }));
 
 const isAdmin = (req, res, next) => {
