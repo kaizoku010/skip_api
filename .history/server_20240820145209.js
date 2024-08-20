@@ -77,26 +77,22 @@ app.post('/auth/signup', asyncHandler(async (req, res) => {
   res.status(201).json({ message: 'User registered successfully!' });
 }));
 
-app.post("/auth/make_root", asyncHandler(async (req, res) => {
+app.post("/auth/make_root", asyncHandler(async(req, res)=>{
   const { email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);  // Ensure hash is completed
   await AdminUsers.insertOne({
-      username: "root",
-      email: email,
-      password: hashedPassword,  // Save the hashed password
-      isAdmin: true
+    username: "root",
+    email:email,
+    password: password,
+    isAdmin: true
   });
 
-  res.status(201).json({ message: 'Admin user created successfully!' });
-}));
-
-// const match = await bcrypt.compare('123456789', hashedPassword);
-// console.log(match);
+}))
 
 
 app.post('/auth/root', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await AdminUsers.findOne({ email });
+  console.log(first)
   if (user && await bcrypt.compare(password, user.password)) {
     const token = jwt.sign(
       { 

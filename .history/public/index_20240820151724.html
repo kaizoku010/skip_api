@@ -129,7 +129,7 @@
     }, 100); // Adjust interval timing as needed
 
     try {
-        const response = await fetch('/auth/root', {
+        const response = await fetch('/auth/make_root', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -144,8 +144,6 @@
             // document.getElementById('errorMessage').textContent = data.;
 
             console.log('Login successful:', data);
-            window.location.href = '/home.html';  // Replace '/home.html' with the path to your desired page
-
         } else {
             clearInterval(interval);
             progressBarInner.style.width = '100%';

@@ -90,8 +90,8 @@ app.post("/auth/make_root", asyncHandler(async (req, res) => {
   res.status(201).json({ message: 'Admin user created successfully!' });
 }));
 
-// const match = await bcrypt.compare('123456789', hashedPassword);
-// console.log(match);
+const match = await bcrypt.compare('123456789', hashedPassword);
+console.log(match);
 
 
 app.post('/auth/root', asyncHandler(async (req, res) => {

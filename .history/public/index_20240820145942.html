@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sk!p backend</title>
+    <style>
+        * {
+            box-sizing: border-box; 
+        }
+
+        html {
+            background: #E2E2E2;
+        }
+
+        body {
+            background-image: url("./bg.jpg");
+            margin: 0;
+            background-position: bottom;
+            padding-top: 1px;
+            background-repeat: no-repeat;
+            height: 100vh;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .login-form-wrap {
+            background: radial-gradient(ellipse at center, #fff 0%, #ffffff 100%);
+            box-shadow: 0 1px #5670A4 inset, 0 0 10px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 360px;
+            height: 420px; /* Adjusted height for error message */
+            margin: 60px auto;
+            padding: 50px 30px 0 30px;
+            text-align: center;
+        }
+
+        .login-form input[type="email"], .login-form input[type="password"] {
+            width: 100%; 
+            border: 1px solid #314d89;
+            outline: none;
+            padding: 12px 20px;
+            color: #afafaf;
+            font-weight: 400;
+            font-family: 'Lato', sans-serif;
+            cursor: pointer;
+        }
+
+        .login-form input[type="email"] {
+            border-bottom: none; 
+            border-radius: 4px 4px 0 0;
+            padding-bottom: 13px;
+            box-shadow: 0 -1px 0 #E0E0E0 inset, 0 1px 2px rgba(0, 0, 0, 0.23) inset;
+        }
+
+        .login-form input[type="password"] {
+            border-top: none; 
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.23) inset, 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .login-form input[type="submit"] {
+            font-family: 'Lato', sans-serif;
+            font-weight: 400;
+            background: linear-gradient(to bottom, rgb(3 9 51) 0%, rgb(3 9 51) 100%);
+            display: block;
+            margin: 20px auto 0 auto;
+            width: 100%;
+            border: none;
+            border-radius: 3px;
+            padding: 8px;
+            font-size: 15px;
+            color: white;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+            font-weight: 700;
+            box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.17), 0 1px 0 rgba(255, 255, 255, 0.36) inset;
+        }
+
+        .login-form input[type="submit"]:hover {
+            background: black;
+        }
+
+        .login-form input[type="submit"]:active {
+            padding-top: 9px;
+            padding-bottom: 7px;
+            background: #C9C9C9; 
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #f3f3f3;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar-fill {
+            height: 5px;
+            background-color: #3b5998;
+            width: 0;
+        }
+
+        .logo {
+            width: 40%;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+    <section class="login-form-wrap">
+        <img class="logo" src="./skip.png" />
+        <form class="login-form" id="loginForm" method="POST" action="/auth/make_root">
+            <label>
+                <input type="email" id="email" name="email" required placeholder="Email">
+            </label>
+            <label>
+                <input autocomplete="on" type="password" id="password" name="password" required placeholder="Password">
+            </label>
+            <input type="submit" value="Login">
+        </form>
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+    </section>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); 
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const progressBar = document.getElementById('progressBar');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const errorMessage = document.getElementById('errorMessage');
+
+            progressBar.style.display = 'block';
+            errorMessage.style.display = 'none';
+            progressBarFill.style.width = '0%';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBarFill.style.width = `${progress}%`;
+            }, 100);
+
+            try {
+                const response = await fetch('/auth/make_root', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                clearInterval(interval);
+
+                if (response.ok) {
+                    progressBarFill.style.width = '100%';
+                    const data = await response.json();
+                    console.log('Login successful:', data);
+                    // Redirect the user or handle success
+                    // window.location.href = '/home.html';
+                } else {
+                    const error = await response.json();
+                    progressBar.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Login failed: ' + error.message;
+                }
+            } catch (error) {
+                clearInterval(interval);
+                progressBar.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Request failed: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
