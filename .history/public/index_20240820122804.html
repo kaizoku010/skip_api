@@ -86,9 +86,9 @@ Request Body:
     "email": "string",
     "password": "string",
     "imageUrl":"/user_images/userImage.png",
-    "age":"int",
-    "industry":"string",
-    "phoneNumber":"long"
+    "age":"range",
+    "industry":"Cybersecurity",
+    "phoneNumber":"+000-000-000-000"
 }
                 </code></pre>
                 <p>Response: User registered successfully.</p>
@@ -183,13 +183,7 @@ Request Body:
     "title": "string",
     "description": "string",
     "date": "new Date()",
-    "host":"string",
-    "location":"string",
-    "event_graphics_url":"/event_images/eventImage.jpg",
-    "price":"number",
-    "agenda":"string",
-    "session":"[object]"
-    
+    "host":"moxie 5 events"
 }
 Headers:
 Authorization: Bearer [token]
@@ -220,16 +214,7 @@ Response: Event details.
 Request Body:
 {
     "title": "string",
-    "description": "string",
-    "date": "new Date()",
-    "host":"string",
-    "location":"string",
-    "event_graphics_url":"/event_images/eventImage.jpg",
-    "price":"number",
-    "attendess": "[object]",
-    "checkings":"[object]",
-    "sales":"[object]",
-    "sessions":"[object]"
+    "description": "string"
 }
 Headers:
 Authorization: Bearer [token]
@@ -295,9 +280,7 @@ Request Body:
 {
     "title": "string",
     "description": "string",
-    "time": "ISO 8601 time string",
-    "session_title":"string",
-    "session_agenda":"string"
+    "time": "ISO 8601 time string"
 }
 Headers:
 Authorization: Bearer [token]
