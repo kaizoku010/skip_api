@@ -54,8 +54,8 @@ const Post = db.collection('posts');
 const ChatRequest = db.collection('chatRequests');
 const ChatRoom = db.collection('chatRooms');
 const Notification = db.collection('notifications');
+
 const User = db.collection('users');
-const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
 
 // JWT Middleware Setup
@@ -78,20 +78,13 @@ app.post('/auth/signup', asyncHandler(async (req, res) => {
 }));
 
 app.post("/auth/make_root", asyncHandler(async(req, res)=>{
-  const { id, password } = req.body;
-  await AdminUsers.insertOne({
-    id: uuidv4(),
-    username: id,
-    password: password,
-    isAdmin: true
-  });
-
+  
 }))
 
 
 app.post('/auth/root', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await AdminUsers.findOne({ email });
+  const user = await User.findOne({ email });
   if (user && await bcrypt.compare(password, user.password)) {
     const token = jwt.sign(
       { 

@@ -54,6 +54,7 @@ const Post = db.collection('posts');
 const ChatRequest = db.collection('chatRequests');
 const ChatRoom = db.collection('chatRooms');
 const Notification = db.collection('notifications');
+
 const User = db.collection('users');
 const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
@@ -82,7 +83,7 @@ app.post("/auth/make_root", asyncHandler(async(req, res)=>{
   await AdminUsers.insertOne({
     id: uuidv4(),
     username: id,
-    password: password,
+    password: await bcrypt.hash('securePassword', 4),
     isAdmin: true
   });
 

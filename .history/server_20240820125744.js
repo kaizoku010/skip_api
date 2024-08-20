@@ -16,6 +16,8 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
+const secretPath = './jwtSecret.txt';
+
 const isAdmin = (req, res, next) => {
   if (req.auth.isAdmin) {
     return next();
@@ -54,12 +56,20 @@ const Post = db.collection('posts');
 const ChatRequest = db.collection('chatRequests');
 const ChatRoom = db.collection('chatRooms');
 const Notification = db.collection('notifications');
+
 const User = db.collection('users');
-const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
 
 // JWT Middleware Setup
-const jwtSecret = "64649Sk!p$@1YFFD6573";
+let jwtSecret = "64649Oxen$@1YFFD6573";
+// if (fs.existsSync(secretPath)) {
+//   jwtSecret = fs.readFileSync(secretPath, 'utf8');
+// } else {
+//   // Generate and store the secret
+//   jwtSecret = crypto.randomBytes(32).toString('hex');
+//   fs.writeFileSync(secretPath, jwtSecret);
+// }
+
 const authenticate = jwtMiddleware({ secret: jwtSecret, algorithms: ['HS256'],  credentialsRequired: true});
 
 // Serve static files and HTML documentation
@@ -77,27 +87,14 @@ app.post('/auth/signup', asyncHandler(async (req, res) => {
   res.status(201).json({ message: 'User registered successfully!' });
 }));
 
-app.post("/auth/make_root", asyncHandler(async(req, res)=>{
-  const { id, password } = req.body;
-  await AdminUsers.insertOne({
-    id: uuidv4(),
-    username: id,
-    password: password,
-    isAdmin: true
-  });
-
-}))
-
-
-app.post('/auth/root', asyncHandler(async (req, res) => {
+app.post('/auth/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await AdminUsers.findOne({ email });
+  const user = await User.findOne({ email });
   if (user && await bcrypt.compare(password, user.password)) {
     const token = jwt.sign(
       { 
         userId: user.id,
-        isAdmin: user.isAdmin  // Include admin status in the token payload
-
+        isAdmin: user.isAdmin // Include admin status in the token payload
       },
       jwtSecret,
       { expiresIn: '4h' }

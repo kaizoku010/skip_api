@@ -129,7 +129,7 @@ background-image: url("./bg.jpg");
 
       <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); 
+            event.preventDefault(); // Prevent the default form submission
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -147,7 +147,7 @@ background-image: url("./bg.jpg");
                     const data = await response.json();
                     // Store the token, redirect the user, or handle success
                     console.log('Login successful:', data);
-                    // window.location.href = '/home.html';
+                    window.location.href = '/home.html';
                 } else {
                     const error = await response.json();
                     // Handle error (show error message to the user)

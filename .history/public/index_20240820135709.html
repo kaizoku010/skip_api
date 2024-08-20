@@ -116,7 +116,7 @@ background-image: url("./bg.jpg");
 <body>
     <section class="login-form-wrap">
         <img class="logo" src="./skip.png"/>
-        <form class="login-form" action="POST" action="">
+        <form class="login-form" action="POST" action="./home.html">
           <label>
             <input type="email" name="email" required placeholder="Email">
           </label>
@@ -129,7 +129,7 @@ background-image: url("./bg.jpg");
 
       <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); 
+            event.preventDefault(); // Prevent the default form submission
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -147,7 +147,7 @@ background-image: url("./bg.jpg");
                     const data = await response.json();
                     // Store the token, redirect the user, or handle success
                     console.log('Login successful:', data);
-                    // window.location.href = '/home.html';
+                    window.location.href = '/ho';
                 } else {
                     const error = await response.json();
                     // Handle error (show error message to the user)
