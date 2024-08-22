@@ -93,7 +93,6 @@ const transporter = nodemailer.createTransport({
   port:465,
   debug:"true",
   connectionTimeout:"10000",
-
   auth:{
     user:"dev@moxie5agency.com",
     pass:"dev@64649Tu"
@@ -105,11 +104,10 @@ const transporter = nodemailer.createTransport({
 async function mailer(email) {
 
   const info = await transporter.sendMail({
-    from:`"Sk!p Events"<dev@moxie5agency.com>`,
-    to:email,
-    subject:"Event Registration",
-    text:"Welcome To Moxie5 Events",
-
+    from:`"Moxie Developer"<dev@moxie5agency.com>`,
+    to:"dixontheworldvsy@gmail.com",
+    subject:"Node Mailer example",
+    text:"Hello There",
   })
   
 }
@@ -122,8 +120,7 @@ app.post('/auth/signup', asyncHandler(async (req, res) => {
   const user = { id: uuidv4(), username, email, password: hashedPassword };
   await User.insertOne(user);
   res.status(201).json({ message: 'User registered successfully!' });
-  mailer(email).catch(console.error)
-
+  
 
 }));
 
@@ -138,8 +135,6 @@ app.post("/auth/make_root", asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({ message: 'Admin user created successfully!' });
-  mailer(email).catch(console.error)
-
 }));
 
 // const match = await bcrypt.compare('123456789', hashedPassword);

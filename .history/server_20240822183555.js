@@ -122,8 +122,7 @@ app.post('/auth/signup', asyncHandler(async (req, res) => {
   const user = { id: uuidv4(), username, email, password: hashedPassword };
   await User.insertOne(user);
   res.status(201).json({ message: 'User registered successfully!' });
-  mailer(email).catch(console.error)
-
+  
 
 }));
 

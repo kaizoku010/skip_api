@@ -105,10 +105,10 @@ const transporter = nodemailer.createTransport({
 async function mailer(email) {
 
   const info = await transporter.sendMail({
-    from:`"Sk!p Events"<dev@moxie5agency.com>`,
+    from:`"Sk!p "<dev@moxie5agency.com>`,
     to:email,
-    subject:"Event Registration",
-    text:"Welcome To Moxie5 Events",
+    subject:"Sk!p Regestration",
+    text:"Welcome To Moxie5 Marketing",
 
   })
   
@@ -122,8 +122,7 @@ app.post('/auth/signup', asyncHandler(async (req, res) => {
   const user = { id: uuidv4(), username, email, password: hashedPassword };
   await User.insertOne(user);
   res.status(201).json({ message: 'User registered successfully!' });
-  mailer(email).catch(console.error)
-
+  
 
 }));
 
