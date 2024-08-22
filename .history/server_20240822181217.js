@@ -380,7 +380,7 @@ app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
 //setting up node mailer
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.titan.email",
+  host:"smtp.hostinger.com",
   secure:"true",
   tls:{
     ciphers:"SSLv3",
@@ -405,11 +405,10 @@ async function mailer() {
     to:"dixontheworldvsy@gmail.com",
     subject:"Node Mailer example",
     text:"Hello There",
+    html:""
   })
   
 }
-
-mailer().catch(console.error)
 
 
 // Start the server

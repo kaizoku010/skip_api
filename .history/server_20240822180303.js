@@ -380,7 +380,7 @@ app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
 //setting up node mailer
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.titan.email",
+  host:"smtp.hostinger.com",
   secure:"true",
   tls:{
     ciphers:"SSLv3",
@@ -390,26 +390,8 @@ const transporter = nodemailer.createTransport({
   port:465,
   debug:"true",
   connectionTimeout:"10000",
-  auth:{
-    user:"dev@moxie5agency.com",
-    pass:"dev@64649Tu"
-
-  }
+  auth:
 })
-
-
-async function mailer() {
-
-  const info = await transporter.sendMail({
-    from:`"Moxie Developer"<dev@moxie5agency.com>`,
-    to:"dixontheworldvsy@gmail.com",
-    subject:"Node Mailer example",
-    text:"Hello There",
-  })
-  
-}
-
-mailer().catch(console.error)
 
 
 // Start the server
