@@ -379,18 +379,6 @@ app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
 
 //setting up node mailer
 
-const transporter = nodemailer.createTransport({
-  host:"smtp.hostinger.com",
-  secure:"true",
-  tls:{
-    ciphers:"SSLv3",
-  },
-
-  requireTLS:"true",
-  port:465,
-  debug
-})
-
 
 // Start the server
 const PORT = process.env.PORT || 3000;

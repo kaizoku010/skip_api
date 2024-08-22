@@ -386,9 +386,7 @@ const transporter = nodemailer.createTransport({
     ciphers:"SSLv3",
   },
 
-  requireTLS:"true",
-  port:465,
-  debug
+  requireTLS
 })
 
 

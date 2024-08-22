@@ -11,7 +11,6 @@ const dotenv = require('dotenv');
 const crypto = require('crypto');
 const fs = require('fs');
 const cors = require('cors');
-const nodemailer = require('nodemailer')
 
 
 
@@ -71,6 +70,7 @@ const Notification = db.collection('notifications');
 const User = db.collection('users');
 const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
+
 // JWT Middleware Setup
 const jwtSecret = "64649Sk!p$@1YFFD6573";
 const authenticate = jwtMiddleware({ secret: jwtSecret, algorithms: ['HS256'],  credentialsRequired: true});
@@ -378,18 +378,6 @@ app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
 
 
 //setting up node mailer
-
-const transporter = nodemailer.createTransport({
-  host:"smtp.hostinger.com",
-  secure:"true",
-  tls:{
-    ciphers:"SSLv3",
-  },
-
-  requireTLS:"true",
-  port:465,
-  debug
-})
 
 
 // Start the server
