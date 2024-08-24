@@ -21,7 +21,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(cors({
-  origin: ['*', "https://skip-api-1gup.onrender.com", "http://localhost:3000"]
+  origin: ['*', "https://skip-api-1gup.onrender.com"] // Replace with your actual frontend domain
 }));
 
 app.use((err, req, res, next) => {

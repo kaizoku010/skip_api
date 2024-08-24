@@ -21,7 +21,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(cors({
-  origin: ['*', "https://skip-api-1gup.onrender.com", "http://localhost:3000"]
+  origin: ['*', "https://skip-api-1gup.onrender.com"] // Replace with your actual frontend domain
 }));
 
 app.use((err, req, res, next) => {
@@ -153,7 +153,7 @@ app.post('/auth/root', asyncHandler(async (req, res) => {
     const token = jwt.sign(
       { 
         userId: user.id,
-        isAdmin: user.isAdmin  // admin status in the token payload
+        isAdmin: user.isAdmin  // Include admin status in the token payload
 
       },
       jwtSecret,
