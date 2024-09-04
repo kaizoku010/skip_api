@@ -25,7 +25,6 @@ app.use(bodyParser.json());
 // }));
 
 
-
 //trying to disable cors
 
 app.use(cors({

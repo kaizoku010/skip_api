@@ -24,16 +24,11 @@ app.use(bodyParser.json());
 //   origin: ['*', "https://skip-api-1gup.onrender.com", "http://localhost:3000"]
 // }));
 
-
-
-//trying to disable cors
-
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: true
-}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+}); //trying to disable cors
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
