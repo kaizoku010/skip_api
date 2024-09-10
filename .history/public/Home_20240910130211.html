@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #030933;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #fff 3px solid;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .main {
+            margin: 20px 0;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        h3 {
+            color: #555;
+        }
+        code {
+            /* background: #f4f4f4; */
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 90%;
+        }
+        .endpoint {
+            margin-bottom: 20px;
+        }
+        .endpoint pre {
+            background: #e7e7e7;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .endpoint p {
+            margin: 0;
+            padding: 0;
+        }
+        .endpoint h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>API Documentation</h1>
+            <h4>Endpoint: https://skip-api-1gup.onrender.com/</h4>
+        </div>
+    </header>
+    <div class="container">
+        <div class="main">
+            <h2>Authentication Endpoints</h2>
+            
+            <div class="endpoint">
+                <h3>POST /auth/signup</h3>
+                <p>Register a new user.</p>
+                <pre><code>
+// how to use
+
+const signupData = {
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "imageUrl":"formUpload()",
+    "age":"int",
+    "industry":"string",
+    "phoneNumber":"long"
+  };
+  
+  fetch('/auth/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(signupData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'User registered successfully!') {
+        console.log('Registration successful:', data);
+      } else {
+        console.error('Error during signup:', data.message);
+      }
+    })
+    .catch(error => console.error('Signup error:', error));
+  
+                </code></pre>
+                <p>Response: User registered successfully.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>POST /auth/login</h3>
+                <p>Login a user and return a JWT token.</p>
+                <pre><code>
+How to use:
+
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); 
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, ... }),
+        });
+
+        if (response.ok) {
+
+            const data = await response.json();
+
+            console.log('Login successful:', data);
+
+        } else {
+
+            const error = await response.json();
+            console.error('Login failed:', error.message);
+        }
+
+    } catch (error) {
+
+        console.error('Request failed:', error);
+    }});
+
+
+                </code></pre>
+                <p>Response: JWT token.</p>
+            </div>
+            
+            <!-- <div class="endpoint">
+                <h3>POST /auth/refresh-token</h3>
+                <p>Refresh JWT token.</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: New JWT token.</p>
+            </div> -->
+
+            <h2>User Management Endpoints</h2>
+        
+            
+            <div class="endpoint">
+                <h3>GET /get_user/:user_id</h3>
+                <p>Get details of a user by id.</p>
+                <pre><code>
+Response: User details.
+
+//using axios...
+import axios from 'axios';
+
+// Function to get user information by id
+async function getUser(userId) {
+  try {
+    // Make the GET request to fetch user data
+    const response = await axios.get(`/get_user/${userId}`);
+    console.log('User data:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+  }
+}
+
+// Example usage
+const userId = 'exampleUserId';
+getUser(userId);
+
+
+// or.... use fetch to get user info by id
+async function getUser(userId) {
+  try {
+    // Make the GET request to fetch user data
+    const response = await fetch(`/get_user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const user = await response.json();
+      console.log('User data:', user);
+      return user;
+    } else {
+      console.error('Failed to fetch user:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching user:', error);
+  }
+}
+
+// Example usage
+const userId = 'exampleUserId';
+getUser(userId);
+
+
+
+                </code></pre>
+            </div>
+            
+            <div class="endpoint">
+                <h3>GET /all_users</h3>
+                <p>Get all users (Admin only).</p>
+                <pre><code>
+
+                    // how to use this route/function to get all users
+
+                    async function getAllUsers() {
+                      try {
+                        const response = await fetch('/all_users', {
+                          method: 'GET',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        });
+                    
+                        if (response.ok) {
+                          const users = await response.json();
+                          console.log('All users:', users);
+                          return users;
+                        } else {
+                          console.error('Failed to fetch users:', response.statusText);
+                        }
+                      } catch (error) {
+                        console.error('Error fetching users:', error);
+                      }
+                    }
+                    
+                    // Example usage
+                    getAllUsers();
+                    
+
+                </code></pre>
+                <p>Response: List of users.</p>
+            </div>
+            
+            <!-- <div class="endpoint">
+                <h3>DELETE /all_users/:user_id</h3>
+                <p>Delete a user by user ID (Admin only).</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: User deleted message.</p>
+            </div> -->
+
+            <h2>Event Management Endpoints</h2>
+            
+            <div class="endpoint">
+                <h3>POST /create_event</h3>
+                <p>Only Admin accounts with a payload of isAdmin can create a new event.</p>
+                <pre><code>
+Request Body:
+{
+    "title": "string",
+    "description": "string",
+    "date": "new Date()",
+    "host":"string",
+    "location":"string",
+    "event_graphics_url":"/path/image.jpg",
+    "price":"number",
+    "agenda":"string",
+    "session":"[object]"
+    
+}
+Headers:
+Authorization: Bearer [token]
+
+
+<!-- how to use -->
+const createEvent = async () => {
+    const eventData = {
+      title: "Annual Conference",
+      description: "A conference about the latest in technology.",
+      date: new Date().toISOString(),  // Correct format for date
+      host: "Tech Corp",
+      location: "123 Conference Ave, City",
+      event_graphics_url: "/path/to/image.jpg",
+      price: 100,
+      agenda: "Day 1: Keynote, Day 2: Workshops",
+      session: [{ title: "Workshop", time: "10:00 AM" }]
+    };
+  
+    const response = await fetch('/create_event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-jwt-token' // Include token if needed
+      },
+      body: JSON.stringify(eventData)
+    });
+  
+    const result = await response.json();
+    if (response.ok) {
+      console.log('Event created:', result);
+    } else {
+      console.error('Error:', result);
+    }
+  };
+  
+  createEvent();
+  
+  
+
+
+                </code></pre>
+                <p>Response: Created event.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>GET /get_all_events</h3>
+                <p>Get all events.</p>
+                <pre><code>
+Response: List of events.
+
+
+
+const fetchEvent = async () => {
+    const response = await fetch(`/get_all_events/`);
+    const eventss = await response.json();
+    console.log(event);
+  };
+  
+  // Call the function with the desired event ID
+  fetchEvent();
+                </code></pre>
+            </div>
+            
+            <div class="endpoint">
+                <h3>GET /get_event/:event_id</h3>
+                <p>Get details of an event by event ID.</p>
+                <pre><code>
+Response: Event details.
+<!-- if testing on 3000 -->
+curl http://localhost:3000/get_event/12345
+
+const fetchEvent = async (eventId) => {
+    const response = await fetch(`/get_event/${eventId}`);
+    const event = await response.json();
+    console.log(event);
+  };
+  
+  // Call the function with the desired event ID
+  fetchEvent('12345');
+  
+
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>POST /create_attendee/:event_id</h3>
+                <p>Create or add a user to an event just pass in the event id.</p>
+                <pre><code>
+                    async function addAttendeeToEvent(eventId, attendeeDetails, token) {
+                        try {
+                          const response = await fetch(`create_attendee/${eventId}/attendees`, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${token}`  // If using token-based authentication
+                            },
+                            body: JSON.stringify(attendeeDetails)
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`Error: ${response.statusText}`);
+                          }
+                      
+                          const data = await response.json();
+                          console.log('Attendee added:', data);
+                          return data;
+                        } catch (error) {
+                          console.error('Error adding attendee:', error);
+                        }
+                      }
+                      
+                      // Example usage:
+                      const eventId = 'event-id-here';
+                      const attendeeDetails = {
+                        name: 'John Doe',
+                        email: 'john.doe@example.com',
+                        // Other attendee details
+                      };
+                      const token = 'your-jwt-token-here';  // If using token-based authentication
+                      
+                      addAttendeeToEvent(eventId, attendeeDetails, token);
+                      
+  
+
+                </code></pre>
+            </div>
+            
+            <div class="endpoint">
+                <h3>PUT /edit_event/:event_id</h3>
+                <p>Update an event by event ID (Admin only).</p>
+                <pre><code>
+Request Body:
+{
+    "title": "string",
+    "description": "string",
+    "date": "new Date()",
+    "host":"string",
+    "location":"string",
+    "event_graphics_url":"/event_images/eventImage.jpg",
+    "price":"number",
+    "attendess": "[object]",
+    "checkings":"[object]",
+    "sales":"[object]",
+    "sessions":"[object]"
+}
+
+
+//if you are using axios...
+const eventId = '12345';  // Example event ID
+const updatedEventData = {
+  title: "New Event Title",
+  date: "2024-09-15",
+  location: "New Location",
+  description: "Updated event description."
+};
+
+// Make the PUT request
+fetch(`/edit_events/${eventId}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(updatedEventData),
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.message) {
+      console.error('Error:', data.message);
+    } else {
+      console.log('Event updated successfully:', data);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+
+
+</code></pre>
+                <p>Response: Updated event details.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>DELETE /delete_event/:event_id</h3>
+                <p>Delete an event by event ID (Admin only).</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token] //tokens are handle on the server.
+const eventId = '12345';  // Example event ID to be deleted
+
+fetch(`/delete_event/${eventId}`, {
+  method: 'DELETE',
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.message === 'Event deleted') {
+      console.log('Event deleted successfully');
+    } else {
+      console.error('Error:', data.message);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  //If the user is an admin and the event is successfully deleted, the server will respond with:
+
+  { "message": "Event deleted" }
+
+  //If the user is not an admin, the server will return a 403 Forbidden response:
+
+  { "message": "Forbidden" }
+
+
+
+                </code></pre>
+                <p>Response: Event deleted message.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>GET /all_user_event/user</h3>
+                <p>Get the event that the user is attending.</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: List of events.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>POST /events/:event_id/sign-up</h3>
+                <p>Sign up the authenticated user for an event.</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: Success message.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>GET /events/:event_id/users</h3>
+                <p>Get attendees of an event (Admin only).</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: List of attendees.</p>
+            </div>
+
+            <h2>Session Management Endpoints</h2>
+            
+            <div class="endpoint">
+                <h3>GET /events/:event_id/sessions</h3>
+                <p>Get all sessions for an event.</p>
+                <pre><code>
+Response: List of sessions.
+                </code></pre>
+            </div>
+            
+            <div class="endpoint">
+                <h3>POST /events/:event_id/sessions</h3>
+                <p>Create a new session for an event (Admin only).</p>
+                <pre><code>
+Request Body:
+{
+    "title": "string",
+    "description": "string",
+    "time": "ISO 8601 time string",
+    "session_title":"string",
+    "session_agenda":"string"
+}
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: Created session.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>GET /events/:event_id/sessions/:session_id</h3>
+                <p>Get details of a session by session ID.</p>
+                <pre><code>
+Response: Session details.
+                </code></pre>
+            </div>
+            
+            <div class="endpoint">
+                <h3>PUT /events/:event_id/sessions/:session_id</h3>
+                <p>Update a session by session ID (Admin only).</p>
+                <pre><code>
+Request Body:
+{
+    "title": "string",
+    "description": "string",
+    "time": "ISO 8601 time string"
+}
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: Updated session details.</p>
+            </div>
+            
+            <div class="endpoint">
+                <h3>DELETE /events/:event_id/sessions/:session_id</h3>
+                <p>Delete a session by session ID (Admin only).</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Response: Session deleted message.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
