@@ -257,18 +257,18 @@ const uploadVideo = (path)=>{
 app.post('/auth/signup', asyncHandler(async (req, res) => {
   const { username, email, password, userImage } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  try {
-    const imagePath = await uploadUserImage(userImage); // Ensure this function is working properly
-    const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage_: imagePath };
-    await User.insertOne(user); // Check that User.insertOne is functioning correctly
+  try{
+    // const imagePath = await uploadUserImage(userImage);
+    // const user = { id: uuidv4(), username, email, password: hashedPassword, userImage_:imagePath };
+    const user = { id: uuidv4(), username, email, password: hashedPassword};
+
+    await User.insertOne(user);
     res.status(201).json({ message: 'User registered successfully!' });
-    await mailer(email).catch(console.error); // Ensure mailer is not failing
-  } catch (error) {
-    console.error('Error during signup:', error); // Add this to log the full error stack trace
-    res.status(500).json({ message: error.message || 'Internal Server Error' });
+    mailer(email).catch(console.error)
+  } catch(error){
+    res.status(500).json({message:error})
   }
 }));
-
 
 app.post("/auth/make_root", asyncHandler(async (req, res) => {
   const { email, password, userImage } = req.body;
