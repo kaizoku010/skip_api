@@ -17,7 +17,7 @@ const cloudinary = require('cloudinary').v2;
 
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // You can change the destination folder
+const userImages = multer({ dest: 'user_images/' }); // You can change the destination folder
 
 
 dotenv.config();
@@ -258,19 +258,15 @@ const uploadVideo = (path)=>{
 }
 
 // Authentication Endpoints
-app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, res) => {
+app.post('/auth/signup', asyncHandler(async (req, res) => {
 
-  const { username, email, password } = req.body;
-  const userImage = req.file;
+  const { username, email, password, userImage } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const imagePath = await uploadUserImage(userImage.path); // Ensure this function is working properly
+    const imagePath = await uploadUserImage(userImage); // Ensure this function is working properly
     const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage_: imagePath };
-        await User.insertOne(user); // Check that User.insertOne is functioning correctly
-
-    fs.unlinkSync(userImage.path);
-  
+    await User.insertOne(user); // Check that User.insertOne is functioning correctly
     res.status(201).json({ message: 'User registered successfully!' });
     await mailer(email).catch(console.error); // Ensure mailer is not failing
   } catch (error) {
