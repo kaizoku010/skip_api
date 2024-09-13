@@ -115,20 +115,23 @@
 
   
 const signUpForEvent = async (eventId) => {
+  const token = localStorage.getItem('auth_token'); // Retrieve JWT token from local storage or other secure place
+
   try {
     const response = await fetch(`/sign_up_event/${eventId}`, {
       method: 'POST',
-      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
     });
 
-    const data = await response.json();
     if (response.ok) {
-      console.log('Successfully signed up for the event', data);
+      const data = await response.json();
+      console.log('Successfully signed up for the event:', data);
     } else {
-      console.error('Error signing up for event:', data.message);
+      const error = await response.json();
+      console.error('Error signing up for the event:', error);
     }
   } catch (error) {
     console.error('Network error:', error);

@@ -118,7 +118,7 @@ const signUpForEvent = async (eventId) => {
   try {
     const response = await fetch(`/sign_up_event/${eventId}`, {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'include', // This ensures cookies (including the auth_token) are sent with the request
       headers: {
         'Content-Type': 'application/json',
       },

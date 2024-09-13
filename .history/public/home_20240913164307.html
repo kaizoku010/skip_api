@@ -119,7 +119,7 @@ const signUpForEvent = async (eventId) => {
     const response = await fetch(`/sign_up_event/${eventId}`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
+            headers: {
         'Content-Type': 'application/json',
       },
     });

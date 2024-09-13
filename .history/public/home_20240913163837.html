@@ -109,32 +109,36 @@
 
         <div class="endpoint">
           <h3>POST '/sign_up_event/:eventId'</h3>
-          <p>Register a user for an event.</p>
+          <p>Register a new user.</p>
           <pre><code>
 // how to use
 
+const signupData = {
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "imageUrl":"formUpload()",
+    "age":"int",
+    "industry":"string",
+    "phoneNumber":"long"
+  };
   
-const signUpForEvent = async (eventId) => {
-  try {
-    const response = await fetch(`/sign_up_event/${eventId}`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      console.log('Successfully signed up for the event', data);
-    } else {
-      console.error('Error signing up for event:', data.message);
-    }
-  } catch (error) {
-    console.error('Network error:', error);
-  }
-};
-
+  fetch('/auth/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(signupData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'User registered successfully!') {
+        console.log('Registration successful:', data);
+      } else {
+        console.error('Error during signup:', data.message);
+      }
+    })
+    .catch(error => console.error('Signup error:', error));
   
                 </code></pre>
           <p>Response: User registered successfully.</p>
