@@ -227,7 +227,7 @@ const uploadEventImage = (path)=>{
       if(error){
         reject(error)
       } else {
-        resolve(result.secure_url)
+        resolve(result.url)
       }
     })
   })
@@ -354,31 +354,6 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
 }));
 
 
-
-//signup for an event
-app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) => {
-  const { eventId } = req.params;
-  const { userId } = req.auth; // Assuming userId is part of the JWT payload
-
-  // Check if the event exists
-  const event = await Event.findOne({ eventId });
-  if (!event) {
-    return res.status(404).json({ message: 'Event not found' });
-  }
-
-  // Check if the user is already signed up
-  if (event.participants && event.participants.includes(userId)) {
-    return res.status(400).json({ message: 'User already signed up for this event' });
-  }
-
-  // Add the user to the event's participants list
-  await Event.updateOne(
-    { eventId },
-    { $push: { participants: userId } }
-  );
-
-  res.status(200).json({ message: 'Successfully signed up for the event' });
-}));
 
 
 

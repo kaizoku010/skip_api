@@ -227,7 +227,7 @@ const uploadEventImage = (path)=>{
       if(error){
         reject(error)
       } else {
-        resolve(result.secure_url)
+        resolve(result.url)
       }
     })
   })
@@ -267,7 +267,7 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const imagePath = await uploadUserImage(userImage.path); // Ensure this function is working properly
-    const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage: imagePath };
+    const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage_: imagePath };
         await User.insertOne(user); // Check that User.insertOne is functioning correctly
 
     fs.unlinkSync(userImage.path);
@@ -355,31 +355,6 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
 
 
 
-//signup for an event
-app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) => {
-  const { eventId } = req.params;
-  const { userId } = req.auth; // Assuming userId is part of the JWT payload
-
-  // Check if the event exists
-  const event = await Event.findOne({ eventId });
-  if (!event) {
-    return res.status(404).json({ message: 'Event not found' });
-  }
-
-  // Check if the user is already signed up
-  if (event.participants && event.participants.includes(userId)) {
-    return res.status(400).json({ message: 'User already signed up for this event' });
-  }
-
-  // Add the user to the event's participants list
-  await Event.updateOne(
-    { eventId },
-    { $push: { participants: userId } }
-  );
-
-  res.status(200).json({ message: 'Successfully signed up for the event' });
-}));
-
 
 
 app.post('/auth/refresh-token', authenticate, asyncHandler(async (req, res) => {
@@ -427,24 +402,12 @@ app.delete('/all_users/:user_id', authenticate, asyncHandler(async (req, res) =>
 }));
 
 // Event Management 
-app.post('/create_event', authenticate, isAdmin, upload.single("eventImage"), 
-asyncHandler(async (req, res) => {
-  const eventImage = req.file;
-  const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly
+app.post('/create_event', authenticate, isAdmin, asyncHandler(async (req, res) => {
   if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden action' });
-  const event = { ...req.body, eventId: uuidv4(), organizerId: req.auth.userId, eventImage:imagePath };
+  const event = { ...req.body, eventId: uuidv4(), organizerId: req.auth.userId };
   await Event.insertOne(event);
   res.status(201).json(event);
 }));
-
-
-app.post('/create_event_', asyncHandler(async (req, res) => {
-  
-  const event = { ...req.body, eventId: uuidv4(), organizerId: "mdxi" };
-  await Event.insertOne(event);
-  res.status(201).json(event);
-}));
-
 
 app.post('/create_attendee/:event_id', authenticate, asyncHandler(async (req, res) => {
   const eventId = req.params.event_id;

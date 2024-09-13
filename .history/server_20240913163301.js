@@ -355,7 +355,7 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
 
 
 
-//signup for an event
+//signup for an even
 app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) => {
   const { eventId } = req.params;
   const { userId } = req.auth; // Assuming userId is part of the JWT payload

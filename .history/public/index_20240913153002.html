@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip Api</title>
+    <style>
+    * {
+        box-sizing: border-box; 
+    }
+
+    html {
+      background: #E2E2E2;
+    }
+
+    body {
+        background-image: url("./bg.jpg");
+        margin:0;
+        background-position: bottom;
+        padding-top: 1px;
+        background-repeat: no-repeat;
+        height: 100vh;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .login-form-wrap {
+        background: radial-gradient(ellipse at center, #fff 0%, #ffffff 100%);
+        box-shadow: 0 1px #5670A4 inset, 0 0 10px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        width: 360px;
+        height: 380px;
+        margin: 60px auto;
+        padding: 50px 30px 0 30px;
+        text-align: center;
+    }
+
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+        width: 100%; 
+        border: 1px solid #314d89;
+        outline: none;
+        padding: 12px 20px;
+        color: #afafaf;
+        font-weight: 400;
+        font-family: 'Lato', sans-serif;
+        cursor:pointer;
+    }
+
+    .login-form input[type="submit"] {
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        background: linear-gradient(to bottom, rgb(3 9 51) 0%, rgb(3 9 51) 100%);
+        display: block;
+        margin: 20px auto 0 auto;
+        width: 100%;
+        border: none;
+        border-radius: 3px;
+        padding: 8px;
+        font-size: 15px;
+        color: white;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+        font-weight: 700;
+        box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.17), 0 1px 0 rgba(255, 255, 255, 0.36) inset;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background-color: #f3f3f3;
+        border-radius: 5px;
+        overflow: hidden;
+        height: 10px;
+        margin-top: 20px;
+        display: none;
+    }
+
+    .progress-bar-inner {
+        height: 100%;
+        width: 0;
+        background-color: #4caf50;
+        transition: width 0.5s;
+    }
+    .logo{
+        width: 40%;
+    }
+.login_btn{
+    font-size: small !important;
+}
+    .error-message {
+        color: red;
+        margin-top: 20px;
+    }
+    </style>
+</head>
+<body>
+    <section class="login-form-wrap">
+        <img class="logo" src="./skip.png"/>
+        <form class="login-form" id="loginForm" method="POST">
+            <label>
+                <input type="email" id="email" name="email" required placeholder="Email">
+            </label>
+            <label>
+                <input autocomplete="on" type="password" id="password" name="password" required placeholder="Password">
+            </label>
+            <input type="submit" class="login_btn" value="Login">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-bar-inner" id="progressBarInner"></div>
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+    </section>
+
+    <script>
+ document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); 
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // Show progress bar
+    const progressBar = document.getElementById('progressBar');
+    const progressBarInner = document.getElementById('progressBarInner');
+    progressBar.style.display = 'block';
+
+    // Simulate gradual progress
+    let width = 0;
+    const interval = setInterval(() => {
+        width += 10; // Increment progress
+        if (width <= 90) {
+            progressBarInner.style.width = width + '%';
+        }
+    }, 100); // Adjust interval timing as needed
+
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (response.ok) {
+            clearInterval(interval);
+            progressBarInner.style.width = '100%';
+            const data = await response.json();
+            // document.getElementById('errorMessage').textContent = data.;
+
+            console.log('Login successful:', data);
+            window.location.href = '/home.html';  // Replace '/home.html' with the path to your desired page
+
+        } else {
+            clearInterval(interval);
+            progressBarInner.style.width = '100%';
+            const error = await response.json();
+            document.getElementById('errorMessage').textContent = 'Invalid credentials';
+            console.error('Login failed:', error.message);
+        }
+    } catch (error) {
+        clearInterval(interval);
+        progressBarInner.style.width = '100%';
+        document.getElementById('errorMessage').textContent = 'Request failed';
+        console.error('Request failed:', error);
+    } finally {
+        setTimeout(() => {
+            progressBar.style.display = 'none';
+            progressBarInner.style.width = '0';
+        }, 1000); // Hide after 1 second
+    }
+});
+
+ </script>
+
+</body>    
+</html>

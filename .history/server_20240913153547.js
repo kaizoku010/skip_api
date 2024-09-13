@@ -103,7 +103,7 @@ const jwtSecret = "64649Sk!p$@1YFFD6573";
 
 
 
-// app.use(express.static('public')); // Ensure static files are not conflicting
+app.use(express.static('public')); // Ensure static files are not conflicting
 
 
 // const session = require('express-session');
@@ -155,11 +155,11 @@ const authenticate = (req, res, next) => {
   });
 };
 
-// // Serve static files and HTML documentation
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, './public', 'index.html'));
-// });
+// Serve static files and HTML documentation
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public', 'index.html'));
+});
 
 
 const transporter = nodemailer.createTransport({
@@ -227,7 +227,7 @@ const uploadEventImage = (path)=>{
       if(error){
         reject(error)
       } else {
-        resolve(result.secure_url)
+        resolve(result.url)
       }
     })
   })
@@ -267,7 +267,7 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const imagePath = await uploadUserImage(userImage.path); // Ensure this function is working properly
-    const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage: imagePath };
+    const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage_: imagePath };
         await User.insertOne(user); // Check that User.insertOne is functioning correctly
 
     fs.unlinkSync(userImage.path);
@@ -331,11 +331,10 @@ app.post('/auth/root', asyncHandler(async (req, res) => {
 
 app.post('/auth/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log('Received request:', { email, password });
-
   const user = await User.findOne({ email });
   console.log('User:', user);
-
+  console.log('User:', user);
+  
   if (!user) {
     console.log('User not found');
     return res.status(401).json({ message: 'Invalid credentials' });
@@ -355,32 +354,6 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
 
 
 
-//signup for an event
-app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) => {
-  const { eventId } = req.params;
-  const { userId } = req.auth; // Assuming userId is part of the JWT payload
-
-  // Check if the event exists
-  const event = await Event.findOne({ eventId });
-  if (!event) {
-    return res.status(404).json({ message: 'Event not found' });
-  }
-
-  // Check if the user is already signed up
-  if (event.participants && event.participants.includes(userId)) {
-    return res.status(400).json({ message: 'User already signed up for this event' });
-  }
-
-  // Add the user to the event's participants list
-  await Event.updateOne(
-    { eventId },
-    { $push: { participants: userId } }
-  );
-
-  res.status(200).json({ message: 'Successfully signed up for the event' });
-}));
-
-
 
 app.post('/auth/refresh-token', authenticate, asyncHandler(async (req, res) => {
   const userId = req.auth.userId;
@@ -388,32 +361,16 @@ app.post('/auth/refresh-token', authenticate, asyncHandler(async (req, res) => {
   res.json({ token });
 }));
 
-
-app.get('/test-json', (req, res) => {
-  res.json({ message: 'This is a JSON response' });
-});
 // User Management
 
 app.get('/get_user/:user_id', asyncHandler(async (req, res) => {
   const userId = req.params.user_id;
   const user = await User.findOne({ id: userId });
-
-  if (user) {
-    res.status(200).json(user); // Sends JSON response
-  } else {
-    res.status(404).json({ message: 'User not found' });
-  }
+  res.json(user);
 }));
 
 
-app.get('/all_use', asyncHandler(async (req, res) => {
-  // return res.status(403).json({ message: 'Forbidden' });
-  const users = await User.find().toArray();
-  res.json(users);
-}));
-
-
-app.get('/all_users',authenticate, asyncHandler(async (req, res) => {
+app.get('/all_users', asyncHandler(async (req, res) => {
   if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
   const users = await User.find().toArray();
   res.json(users);
@@ -427,24 +384,12 @@ app.delete('/all_users/:user_id', authenticate, asyncHandler(async (req, res) =>
 }));
 
 // Event Management 
-app.post('/create_event', authenticate, isAdmin, upload.single("eventImage"), 
-asyncHandler(async (req, res) => {
-  const eventImage = req.file;
-  const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly
+app.post('/create_event', authenticate, isAdmin, asyncHandler(async (req, res) => {
   if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden action' });
-  const event = { ...req.body, eventId: uuidv4(), organizerId: req.auth.userId, eventImage:imagePath };
+  const event = { ...req.body, eventId: uuidv4(), organizerId: req.auth.userId };
   await Event.insertOne(event);
   res.status(201).json(event);
 }));
-
-
-app.post('/create_event_', asyncHandler(async (req, res) => {
-  
-  const event = { ...req.body, eventId: uuidv4(), organizerId: "mdxi" };
-  await Event.insertOne(event);
-  res.status(201).json(event);
-}));
-
 
 app.post('/create_attendee/:event_id', authenticate, asyncHandler(async (req, res) => {
   const eventId = req.params.event_id;
@@ -820,21 +765,6 @@ app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
   res.json(notifications);
 }));
 
-
-// Serve static files and HTML documentation
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './public', 'index.html'));
-});
-
-
-app.use(express.static('public')); // Ensure static files are not conflicting
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error' });
-});
 
 //setting up node mailer
 
