@@ -1,6 +1,6 @@
 {
   "name": "skip_api",
-  "version": "4.0.0",
+  "version": "4.2.0",
   "scripts": {
     "build": "echo 'Skipping build step as no build is required.'",
     "start": "node server.js"

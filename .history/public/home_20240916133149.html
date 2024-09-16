@@ -101,20 +101,6 @@
            </q>
 
           <ul>
-            <li>             <p>
-              Added speaker creation                </p></li>
- 
-            </li>
-            <li>
-              <p>
-              updated attendee creation
-                </p>
-            </li>
-            <li>
-              <p>
-              updated session creation
-                </p>
-            </li>
             <li>
               <p>
                 Added simple examples on most functions. the API shld be ready for usage
@@ -128,7 +114,7 @@
             <li><p>Attendee Management fixed</p></li>
       
             <li>
-              <p>Major changes from 3.1.0 to "4.0.0"</p>
+              <p>Major changes from 3.1.0 to "3.2.0"</p>
             </li>
           </ul>
           <p>If you run into any issuse with these functions kindly post your issues here...</p>
@@ -471,29 +457,6 @@ const createEvent = async () => {
                 </code></pre>
         </div>
 
-
-        <div class="endpoint">
-          <h3>POST /create_event_speaker</h3>
-          <p>
-              Create event speaker
-          </p>
-          <pre><code>
-
-input
-{
-    "speaker_name": "string",
-  
-    
-}
-
-  //output is the speaker u just created and successful msg
-
-
-                </code></pre>
-        </div>
-
-
-        
         <div class="endpoint">
           <h3>GET /get_all_events</h3>
           <p>Get all events.</p>
@@ -804,22 +767,21 @@ Authorization: Bearer [token]
         </div>
 
         <div class="endpoint">
-          <h3>POST /events/:event_id/create_sessions</h3>
+          <h3>POST /createevents/:event_id/sessions</h3>
           <p>Create a new session for an event (Admin only).</p>
           <pre><code>
 
 //input
-
-{event_id, session_object } the session object can have title, date, desc, speaker
+[]
 
 async function createSessionForEvent(eventId, sessionData) {
     try {
-      const response = await fetch(`/events/${eventId}/create_sessions`, {
+      const response = await fetch(`/events/${eventId}/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(event_id, session_object),
+        body: JSON.stringify(sessionData),
       });
   
       if (!response.ok) {
@@ -835,12 +797,20 @@ async function createSessionForEvent(eventId, sessionData) {
     }
   }
   
+  // Example usage:
+  const eventId = 'event-id-here';
+  const sessionData = {
+    // Provide the session details here
+    name: 'Session Name',
+    startTime: '2024-09-10T10:00:00Z',
+    endTime: '2024-09-10T11:00:00Z',
+  };
   
-  createSessionForEvent(eventId, session_object);
+  createSessionForEvent(eventId, sessionData);
 
-  <p>Output: Created session.</p>
 
                 </code></pre>
+          <p>Output: Created session.</p>
         </div>
 
         <div class="endpoint">

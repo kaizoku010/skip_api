@@ -101,20 +101,6 @@
            </q>
 
           <ul>
-            <li>             <p>
-              Added speaker creation                </p></li>
- 
-            </li>
-            <li>
-              <p>
-              updated attendee creation
-                </p>
-            </li>
-            <li>
-              <p>
-              updated session creation
-                </p>
-            </li>
             <li>
               <p>
                 Added simple examples on most functions. the API shld be ready for usage
@@ -128,7 +114,7 @@
             <li><p>Attendee Management fixed</p></li>
       
             <li>
-              <p>Major changes from 3.1.0 to "4.0.0"</p>
+              <p>Major changes from 3.1.0 to "3.2.0"</p>
             </li>
           </ul>
           <p>If you run into any issuse with these functions kindly post your issues here...</p>
@@ -472,28 +458,35 @@ const createEvent = async () => {
         </div>
 
 
-        <div class="endpoint">
-          <h3>POST /create_event_speaker</h3>
-          <p>
-              Create event speaker
-          </p>
-          <pre><code>
-
-input
-{
-    "speaker_name": "string",
-  
-    
-}
-
-  //output is the speaker u just created and successful msg
-
-
-                </code></pre>
-        </div>
-
-
         
+        async function addAttendeeToEvent(eventId, user_id) {
+          try {
+            const response = await fetch(`/create_attendee/${eventId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(attendeeObject)
+            });
+        
+            if (!response.ok) {
+              throw new Error(`Error: ${response.statusText}`);
+            }
+        
+            const data = await response.json();
+            console.log('Attendee added:', data);
+            return data;
+          } catch (error) {
+            console.error('Error adding attendee:', error);
+          }
+        }
+        
+        // output:
+       {
+        message: "Attendee created successfully"
+       }
+        
+        addAttendeeToEvent(eventId, user_id);
         <div class="endpoint">
           <h3>GET /get_all_events</h3>
           <p>Get all events.</p>
@@ -819,7 +812,7 @@ async function createSessionForEvent(eventId, sessionData) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(event_id, session_object),
+        body: JSON.stringify(sessionData),
       });
   
       if (!response.ok) {
@@ -836,7 +829,7 @@ async function createSessionForEvent(eventId, sessionData) {
   }
   
   
-  createSessionForEvent(eventId, session_object);
+  createSessionForEvent(eventId, sessionData);
 
   <p>Output: Created session.</p>
 

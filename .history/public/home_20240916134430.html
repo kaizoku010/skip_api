@@ -101,20 +101,6 @@
            </q>
 
           <ul>
-            <li>             <p>
-              Added speaker creation                </p></li>
- 
-            </li>
-            <li>
-              <p>
-              updated attendee creation
-                </p>
-            </li>
-            <li>
-              <p>
-              updated session creation
-                </p>
-            </li>
             <li>
               <p>
                 Added simple examples on most functions. the API shld be ready for usage
@@ -128,7 +114,7 @@
             <li><p>Attendee Management fixed</p></li>
       
             <li>
-              <p>Major changes from 3.1.0 to "4.0.0"</p>
+              <p>Major changes from 3.1.0 to "3.2.0"</p>
             </li>
           </ul>
           <p>If you run into any issuse with these functions kindly post your issues here...</p>
@@ -819,7 +805,7 @@ async function createSessionForEvent(eventId, sessionData) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(event_id, session_object),
+        body: JSON.stringify(, sessionData),
       });
   
       if (!response.ok) {
@@ -836,7 +822,7 @@ async function createSessionForEvent(eventId, sessionData) {
   }
   
   
-  createSessionForEvent(eventId, session_object);
+  createSessionForEvent(eventId, sessionData);
 
   <p>Output: Created session.</p>
 

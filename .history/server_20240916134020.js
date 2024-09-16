@@ -473,7 +473,7 @@ app.delete('/all_users/:user_id', authenticate, asyncHandler(async (req, res) =>
 
 
 // Event Management 
-app.post('/create_event', upload.single("eventImage"), 
+app.post('/create_event', authenticate, isAdmin, upload.single("eventImage"), 
 asyncHandler(async (req, res) => {
   const eventImage = req.file;
   const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly
@@ -503,7 +503,7 @@ asyncHandler(async (req, res) => {
         { $push: { speakers: speaker_name } }
       );
   
-      res.status(200).json({ message: 'Session created successfully', event_speaker:speaker_name });
+      res.status(200).json({ message: 'Session created successfully', event_speaker:session_object });
     } catch (error) {
       console.error('Error creating session:', error);
       res.status(500).json({ message: 'Internal server error' });

@@ -101,20 +101,6 @@
            </q>
 
           <ul>
-            <li>             <p>
-              Added speaker creation                </p></li>
- 
-            </li>
-            <li>
-              <p>
-              updated attendee creation
-                </p>
-            </li>
-            <li>
-              <p>
-              updated session creation
-                </p>
-            </li>
             <li>
               <p>
                 Added simple examples on most functions. the API shld be ready for usage
@@ -128,7 +114,7 @@
             <li><p>Attendee Management fixed</p></li>
       
             <li>
-              <p>Major changes from 3.1.0 to "4.0.0"</p>
+              <p>Major changes from 3.1.0 to "3.2.0"</p>
             </li>
           </ul>
           <p>If you run into any issuse with these functions kindly post your issues here...</p>
@@ -485,8 +471,59 @@ input
   
     
 }
+Headers:
+Authorization: Bearer [token]
 
-  //output is the speaker u just created and successful msg
+
+<!-- how to use -->
+const createEvent = async () => {
+    const eventData = {
+      title: "Annual Conference",
+      description: "A conference about the latest in technology.",
+      date: new Date().toISOString(),  // Correct format for date
+      host: "Tech Corp",
+      location: "123 Conference Ave, City",
+      event_graphics_url: "/path/to/image.jpg",
+      price: 100,
+      agenda: "Day 1: Keynote, Day 2: Workshops",
+      session: [{ title: "Workshop", time: "10:00 AM" }]
+    };
+  
+    const response = await fetch('/create_event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-jwt-token' // Include token if needed
+      },
+      body: JSON.stringify(eventData)
+    });
+  
+    const result = await response.json();
+    if (response.ok) {
+      console.log('Event created:', result);
+    } else {
+      console.error('Error:', result);
+    }
+  };
+  
+  createEvent();
+  
+
+  //output is the event u just created and successful msg
+[
+{
+"_id": "66e43cf6f28108c0253b9376",
+"eventName": "Sample Event",
+"eventDate": "2024-09-15",
+"eventLocation": "New York",
+"description": "This is a sample event.",
+"eventImage": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg",
+"eventId": "b3494507-c6f7-40e6-ac9a-af5e9b178285",
+"organizerId": "mdxi"
+},
+......
+]
+  
 
 
                 </code></pre>
@@ -819,7 +856,7 @@ async function createSessionForEvent(eventId, sessionData) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(event_id, session_object),
+        body: JSON.stringify(sessionData),
       });
   
       if (!response.ok) {
@@ -836,7 +873,7 @@ async function createSessionForEvent(eventId, sessionData) {
   }
   
   
-  createSessionForEvent(eventId, session_object);
+  createSessionForEvent(eventId, sessionData);
 
   <p>Output: Created session.</p>
 

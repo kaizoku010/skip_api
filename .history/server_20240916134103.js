@@ -473,7 +473,7 @@ app.delete('/all_users/:user_id', authenticate, asyncHandler(async (req, res) =>
 
 
 // Event Management 
-app.post('/create_event', upload.single("eventImage"), 
+app.post('/create_event' upload.single("eventImage"), 
 asyncHandler(async (req, res) => {
   const eventImage = req.file;
   const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly

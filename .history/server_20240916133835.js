@@ -473,7 +473,7 @@ app.delete('/all_users/:user_id', authenticate, asyncHandler(async (req, res) =>
 
 
 // Event Management 
-app.post('/create_event', upload.single("eventImage"), 
+app.post('/create_event', authenticate, isAdmin, upload.single("eventImage"), 
 asyncHandler(async (req, res) => {
   const eventImage = req.file;
   const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly
@@ -485,30 +485,6 @@ asyncHandler(async (req, res) => {
     event,
     message: "event_created"
   });
-  }));
-
-
-  app.post('/create_event_speaker', asyncHandler(async (req, res) => {
-
-    const {event_id, speaker_name} = req.params;
-    const event = await Event.findOne({ eventId: event_id });
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found, please try again' });
-    }
-  
-    try {
-      // Add the new session to the event
-      await Event.updateOne(
-        { eventId: event_id },
-        { $push: { speakers: speaker_name } }
-      );
-  
-      res.status(200).json({ message: 'Session created successfully', event_speaker:speaker_name });
-    } catch (error) {
-      console.error('Error creating session:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-    
   }));
 
 
@@ -619,7 +595,7 @@ app.get('/events/:event_id/users', authenticate, asyncHandler(async (req, res) =
 }));
 
 // Event Session Management Endpoints
-app.post('/events/:event_id/create_sessions', asyncHandler(async (req, res) => {
+app.get('/events/:event_id/create_sessions', asyncHandler(async (req, res) => {
 
   const {event_id, session_object} = req.params;
   const event = await Event.findOne({ eventId: event_id });
