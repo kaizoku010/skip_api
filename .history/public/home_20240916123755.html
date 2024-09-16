@@ -71,16 +71,8 @@
         margin-bottom: 2%;
       }
 
-      .changes{
-        
-      }
-
       q{
-        /* margin-left: 5%;
-        margin-right: 5%; */
-
-        font-size: 2em;
-        color: #999999;
+        font-size: large;
       }
     </style>
   </head>
@@ -95,7 +87,7 @@
       <div class="main">
         <h2>Main Endpoints</h2>
         <div class="changes_div">
-          <p class="changes">Changes: 16/09/2024</p>
+          <p>Changes: 16/09/2024</p>
           <q>
             Adjust your documentation to show the input/output parameters rather than function usage. Need to see the data parameters needed not usage.
            </q>
@@ -126,8 +118,10 @@
           <h3>POST '/sign_up_event/:eventId'</h3>
           <p>Register a user for an event.</p>
           <pre><code>
+// how to use
 
-const input= async (eventId) => {
+  
+const signUpForEvent = async (eventId) => {
   try {
     const response = await fetch(`/sign_up_event/${eventId}`, {
       method: 'POST',
@@ -148,20 +142,15 @@ const input= async (eventId) => {
   }
 };
 
-//output
-{
-  "message": "Successfully signed up for the event"
-}  
-
   
                 </code></pre>
-        
+          <p>Output: User registered successfully.</p>
         </div>
 
 
         <div class="endpoint">
           <h3>POST /auth/signup</h3>
-          <p>Create a new user.</p>
+          <p>Register a new user.</p>
           <pre><code>
 
 
@@ -191,24 +180,26 @@ const input = {
       }
     })
     .catch(error => console.error('Signup error:', error));
-
-    //output
-    User registered successfully.
-
+  
                 </code></pre>
+          <p>Output: User registered successfully.</p>
         </div>
 
         <div class="endpoint">
           <h3>POST /auth/login</h3>
           <p>Login a user and return a JWT token.</p>
           <pre><code>
+How to use:
 
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); 
 
 
     //input
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    try {
         const response = await fetch('/auth/login', {
             method: 'POST',
             headers: {
@@ -229,19 +220,14 @@ const input = {
             console.error('Login failed:', error.message);
         }
 
-        //output
+    } catch (error) {
 
-        JWT token pushed to cookies('internal') and a user object
+        console.error('Request failed:', error);
+    }});
 
-        {
-          "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
-          "username": null,
-          "email": "dixontheworldvsy@gmail.com",
-          "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
-          "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
-      }
 
                 </code></pre>
+          <p>Output: JWT token and a user details.</p>
         </div>
 
         <!-- <div class="endpoint">
@@ -260,10 +246,27 @@ Authorization: Bearer [token]
           <h3>GET /get_user/:user_id</h3>
           <p>Get details of a user by id.</p>
           <pre><code>
+Output: User details.
 
+//using axios...
+import axios from 'axios';
+
+// Function to get user information by id
+async function getUser(userId) {
+  try {
+    // Make the GET request to fetch user data
+    const response = await axios.get(`/get_user/${userId}`);
+    console.log('User data:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+  }
+}
 
 // Input
-const userId = 'f740c9e3-fd32-45a6-8089-69b9d698d010';
+const userId = '2121254YTYASD54';
+getUser(userId);
+
 
 // or.... use fetch to get user info by id
 async function getUser(userId) {
@@ -289,7 +292,9 @@ async function getUser(userId) {
   }
 }
 
-//output
+// Example usage
+const userId = 'f740c9e3-fd32-45a6-8089-69b9d698d010';
+getUser(userId);
 
 {
   "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
@@ -309,7 +314,8 @@ async function getUser(userId) {
           <p>Get all users (Admin only).</p>
           <pre><code>
 
-              //input: just call the function
+                    // how to use this route/function to get all users
+
                     async function getAllUsers() {
                       try {
                         const response = await fetch('/all_users', {
@@ -332,39 +338,36 @@ async function getUser(userId) {
                     }
                     
                     getAllUsers();
-
-                  //output
-
-              [
-                    {
-                      "_id": "66e427b1a95cf96e1fd4dd1a",
-                      "id": "01b01eac-a055-4409-86f6-7f65883fbf1a",
-                      "username": "root",
-                      "email": "root@dmail.com",
-                      "password": "$2a$10$cmkEdZcpfUd7l.v8ipbqWO2VQlP0a530/SedN6GSJBPXv1UwzlDJK",
-                      "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228402/user_images/pfihnlyntd9f1jgftpqx.jpg"
-                  },
-                  {
-                      "_id": "66e42865a10368c911f904ae",
-                      "id": "1412d6e6-c145-49fb-9ca5-876e7e270517",
-                      "username": null,
-                      "email": "dixontheworldvsy@gmail.com",
-                      "password": "$2a$10$/Y3fpw2hNtO/mc48xkXzpe8EzHg8Grz2fDS0fyVmut9hD7c2xxf3O",
-                      "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg"
-                  },
-                  {
-                      "_id": "66e42cb01634bedf09eda0ac",
-                      "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
-                      "username": null,
-                      "email": "dixontheworldvsy@gmail.com",
-                      "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
-                      "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
-                  }
-              ]
                     
 
                 </code></pre>
+          <p>Output. </p>
 
+          {
+            "_id": "66e427b1a95cf96e1fd4dd1a",
+            "id": "01b01eac-a055-4409-86f6-7f65883fbf1a",
+            "username": "root",
+            "email": "root@dmail.com",
+            "password": "$2a$10$cmkEdZcpfUd7l.v8ipbqWO2VQlP0a530/SedN6GSJBPXv1UwzlDJK",
+            "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228402/user_images/pfihnlyntd9f1jgftpqx.jpg"
+        },
+        {
+            "_id": "66e42865a10368c911f904ae",
+            "id": "1412d6e6-c145-49fb-9ca5-876e7e270517",
+            "username": null,
+            "email": "dixontheworldvsy@gmail.com",
+            "password": "$2a$10$/Y3fpw2hNtO/mc48xkXzpe8EzHg8Grz2fDS0fyVmut9hD7c2xxf3O",
+            "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg"
+        },
+        {
+            "_id": "66e42cb01634bedf09eda0ac",
+            "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
+            "username": null,
+            "email": "dixontheworldvsy@gmail.com",
+            "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
+            "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
+        }
+    ]
         </div>
 
         <!-- <div class="endpoint">
@@ -386,15 +389,14 @@ Authorization: Bearer [token]
             event.
           </p>
           <pre><code>
-
-input
+Request Body:
 {
     "title": "string",
     "description": "string",
     "date": "new Date()",
     "host":"string",
     "location":"string",
-    "eventImage":req.file, //i extract all media from your request like this one 
+    "eventImage":req.file, //i extract all media from your request 
     "price":"number",
     "agenda":"string",
     
@@ -436,25 +438,28 @@ const createEvent = async () => {
   
   createEvent();
   
-
-  //output is the event u just created and successful msg
-[
-{
-"_id": "66e43cf6f28108c0253b9376",
-"eventName": "Sample Event",
-"eventDate": "2024-09-15",
-"eventLocation": "New York",
-"description": "This is a sample event.",
-"eventImage": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg",
-"eventId": "b3494507-c6f7-40e6-ac9a-af5e9b178285",
-"organizerId": "mdxi"
-},
-......
-]
   
 
 
                 </code></pre>
+          <p>Output</p>
+
+          //output is the event u just created and successful msg
+  [
+    {
+        "_id": "66e43cf6f28108c0253b9376",
+        "eventName": "Sample Event",
+        "eventDate": "2024-09-15",
+        "eventLocation": "New York",
+        "description": "This is a sample event.",
+        "eventImage": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg",
+        "eventId": "b3494507-c6f7-40e6-ac9a-af5e9b178285",
+        "organizerId": "mdxi"
+    },
+    ......
+]
+
+
         </div>
 
         <div class="endpoint">
@@ -495,7 +500,7 @@ const fetchEvent = async () => {
           <pre><code>
 Response: Event details.
 <!-- if testing on 3000 -->
-curl http://localhost:3000/get_event/66e43cf6f28108c0253b9376
+curl http://localhost:3000/get_event/12345
 
 const fetchEvent = async (eventId) => {
     const response = await fetch(`/get_event/${eventId}`);
@@ -504,7 +509,7 @@ const fetchEvent = async (eventId) => {
   };
   
   // Call the function with the desired event ID
-  fetchEvent('66e43cf6f28108c0253b9376');
+  fetchEvent('12345');
 
   //Output
     {
@@ -529,11 +534,7 @@ const fetchEvent = async (eventId) => {
             user object.
           </p>
           <pre><code>
-
-//input 
-user_id and an event_id
-
-                    async function addAttendeeToEvent(eventId, user_id) {
+                    async function addAttendeeToEvent(eventId, attendeeObject) {
                         try {
                           const response = await fetch(`/create_attendee/${eventId}`, {
                             method: 'POST',
@@ -555,12 +556,15 @@ user_id and an event_id
                         }
                       }
                       
-                      // output:
-                     {
-                      message: "Attendee created successfully"
-                     }
+                      // Example usage:
+                      const eventId = 'event-id-here';
+                      const attendeeObject = {
+                        name: 'John Doe',
+                        email: 'john.doe@example.com',
+                        // Other attendee details
+                      };
                       
-                      addAttendeeToEvent(eventId, user_id);
+                      addAttendeeToEvent(eventId, attendeeDetails);
                       
   
 
@@ -570,14 +574,12 @@ user_id and an event_id
         <div class="endpoint">
           <h3>GET /get_attendees/:event_id</h3>
           <p>
-            Get an attendee to an event by id
+            Create or add a user to an event just pass in the event id and a
+            user object.
           </p>
           <pre><code>
 
-                  //input
-                  {event_id}
-
-                  //this is will automatically
+                    //how to use
 
                     async function getAttendeesForEvent(eventId) {
                         try {
@@ -606,22 +608,14 @@ user_id and an event_id
                       
                       getAttendeesForEvent(eventId);
                       
-                    //output
-
-                    {
-                      "message": "Attendee added successfully",
-                      "attendees": [/* Updated list of attendees */]
-                    }
-
-                </code>
-              </pre>
+                </code></pre>
         </div>
 
         <div class="endpoint">
           <h3>PUT /edit_event/:event_id</h3>
           <p>Update an event by event ID (Admin only).</p>
           <pre><code>
-//input 
+Request Body:
 {
     "title": "string",
     "description": "string",
@@ -637,8 +631,16 @@ user_id and an event_id
 }
 
 
-// Make a PUT request
+//if you are using axios...
+const eventId = '12345';  // Example event ID
+const updatedEventData = {
+  title: "New Event Title",
+  date: "2024-09-15",
+  location: "New Location",
+  description: "Updated event description."
+};
 
+// Make the PUT request
 fetch(`/edit_events/${eventId}`, {
   method: 'PUT',
   headers: {
@@ -656,19 +658,18 @@ fetch(`/edit_events/${eventId}`, {
   })
   .catch(error => console.error('Error:', error));
 
-  //output
-
-  Updated event details.
 
 
 </code></pre>
+          <p>Output: Updated event details.</p>
         </div>
 
         <div class="endpoint">
           <h3>DELETE /delete_event/:event_id</h3>
           <p>Delete an event by event ID (Admin only).</p>
           <pre><code>
-
+Headers:
+Authorization: Bearer [token] //tokens are handle on the server.
 const eventId = '12345';  // Example event ID to be deleted
 
 fetch(`/delete_event/${eventId}`, {
@@ -684,29 +685,29 @@ fetch(`/delete_event/${eventId}`, {
   })
   .catch(error => console.error('Error:', error));
 
-  //output:
+  //If the user is an admin and the event is successfully deleted, the server will respond with:
 
   { "message": "Event deleted" }
 
+  //If the user is not an admin, the server will return a 403 Forbidden response:
+
+  { "message": "Forbidden" }
 
 
 
                 </code></pre>
+          <p>Output: Event deleted message.</p>
         </div>
 
-        <div class="endpoint">
+        <!-- <div class="endpoint">
                 <h3>GET /all_user_event/user</h3>
-                <p>Get the event that the user is currently attending.</p>
+                <p>Get the event that the user is attending.</p>
                 <pre><code>
-//input 
-{ user_id }
-
-fetch(`/all_user_event/user`)
-
-<p>Output: List of events.</p>
-
-</code></pre>
-            </div>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: List of events.</p>
+            </div> -->
         <!--             
             <div class="endpoint">
                 <h3>POST /events/:event_id/sign-up</h3>
@@ -735,9 +736,6 @@ Authorization: Bearer [token]
           <p>Get all sessions for an event.</p>
           <pre><code>
 
-            //input
-            { event_id }
-
                     async function getSessionsForEvent(eventId) {
                         try {
                           const response = await fetch(`/events/${eventId}/sessions`, {
@@ -760,8 +758,8 @@ Authorization: Bearer [token]
                         }
                       }
                       
-                      // output:
-                      a list of sessions 
+                      // Example usage:
+                      const eventId = 'event-id-here'; 
                     
                     </code></pre>
         </div>

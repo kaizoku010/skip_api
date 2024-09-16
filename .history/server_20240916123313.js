@@ -390,7 +390,7 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
 //signup for an event
 app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) => {
   const { eventId } = req.params;
-  const { userId } = req.auth;
+  const { userId } = req.auth; // Assuming userId is part of the JWT payload
   const user = await User.findOne({ id: userId });
 
   // Check if the event exists
@@ -412,12 +412,12 @@ app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) 
 
      res.status(200).json({ message: 'Successfully signed up for the event' });
 
-      // // Generate PDF ticket
-      // const ticketPath = path.join(__dirname, `tickets/${uuidv4()}.pdf`);
-      // generateTicket(user, event, ticketPath);
+      // Generate PDF ticket
+      const ticketPath = path.join(__dirname, `tickets/${uuidv4()}.pdf`);
+      generateTicket(user, event, ticketPath);
   
-      // // Send email with ticket
-      // await sendTicketWithAttachment(user.email, 'Your Event Ticket', 'Please find your event ticket attached.', ticketPath);
+      // Send email with ticket
+      await sendTicketWithAttachment(user.email, 'Your Event Ticket', 'Please find your event ticket attached.', ticketPath);
   
   } catch (error) {
     console.error("attendee addition error:", error)    
@@ -485,12 +485,8 @@ asyncHandler(async (req, res) => {
   if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden action' });
   const event = { ...req.body, eventId: uuidv4(), organizerId: req.auth.userId, eventImage:imagePath };
   await Event.insertOne(event);
-  
-  res.status(201).json({
-    event,
-    message: "event_created"
-  });
-  }));
+  res.status(201).json(event,{message: "event_cretae"});
+}));
 
 
 app.post('/create_event_', asyncHandler(async (req, res) => {
@@ -500,61 +496,19 @@ app.post('/create_event_', asyncHandler(async (req, res) => {
   res.status(201).json(event);
 }));
 
+
 app.post('/create_attendee/:event_id', authenticate, asyncHandler(async (req, res) => {
-  const { event_id } = req.params; // Extract event_id from URL
-  const { user_id } = req.body; // Extract attendee data from request body
-
-  // Validate input
-  if (!name || !email) {
-    return res.status(400).json({ message: 'Name and email are required' });
-  }
-
-  // Find the event
-  const event = await Event.findOne({ eventId: event_id });
-
-  if (!event) {
-    return res.status(404).json({ message: 'Event not found' });
-  }
-
-  // Create new attendee
-
-
-  try {
-    // Add the new attendee to the event
-    await Event.updateOne(
-      { eventId: event_id },
-      { $push: { attendees: user_id } }
-    );
-
-    res.status(200).json({ message: 'Attendee created successfully', attendee: user_id });
-  } catch (error) {
-    console.error('Error creating attendee:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  const eventId = req.params.event_id;
+  const attendee = { ...req.body, attendeeId: uuidv4(), eventId };
+  await Attendee.insertOne(attendee);
+  res.status(201).json(attendee);
 }));
-
 
 app.get('/get_attendees/:event_id', asyncHandler(async (req, res) => {
   const eventId = req.params.event_id;
-
-  try {
-    // Find the event by its ID
-    const event = await Event.findOne({ eventId }).exec();
-
-    // Check if the event exists
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    const attendees = event.attendees; 
-    
-    res.json(attendees);
-  } catch (error) {
-    console.error('Error fetching attendees:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  const attendees = await Attendee.find({ eventId }).toArray();
+  res.json(attendees);
 }));
-
 
 
 

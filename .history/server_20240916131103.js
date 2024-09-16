@@ -536,25 +536,9 @@ app.post('/create_attendee/:event_id', authenticate, asyncHandler(async (req, re
 
 app.get('/get_attendees/:event_id', asyncHandler(async (req, res) => {
   const eventId = req.params.event_id;
-
-  try {
-    // Find the event by its ID
-    const event = await Event.findOne({ eventId }).exec();
-
-    // Check if the event exists
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    const attendees = event.attendees; 
-    
-    res.json(attendees);
-  } catch (error) {
-    console.error('Error fetching attendees:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  const attendees = await Attendee.find({ eventId }).toArray();
+  res.json(attendees);
 }));
-
 
 
 

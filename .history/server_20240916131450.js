@@ -546,8 +546,9 @@ app.get('/get_attendees/:event_id', asyncHandler(async (req, res) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    const attendees = event.attendees; 
-    
+    // Extract the attendees from the event
+    const attendees = event.attendees; // Assuming attendees is an array of user objects or user IDs
+
     res.json(attendees);
   } catch (error) {
     console.error('Error fetching attendees:', error);

@@ -547,7 +547,6 @@ app.get('/get_attendees/:event_id', asyncHandler(async (req, res) => {
     }
 
     const attendees = event.attendees; 
-    
     res.json(attendees);
   } catch (error) {
     console.error('Error fetching attendees:', error);

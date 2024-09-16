@@ -191,11 +191,9 @@ const input = {
       }
     })
     .catch(error => console.error('Signup error:', error));
-
-    //output
-    User registered successfully.
-
+  
                 </code></pre>
+          <p>Output: User registered successfully.</p>
         </div>
 
         <div class="endpoint">
@@ -229,19 +227,8 @@ const input = {
             console.error('Login failed:', error.message);
         }
 
-        //output
-
-        JWT token pushed to cookies('internal') and a user object
-
-        {
-          "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
-          "username": null,
-          "email": "dixontheworldvsy@gmail.com",
-          "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
-          "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
-      }
-
                 </code></pre>
+          <p>Output: JWT token and a user details pushed to cookies('internal')</p>
         </div>
 
         <!-- <div class="endpoint">
@@ -570,14 +557,12 @@ user_id and an event_id
         <div class="endpoint">
           <h3>GET /get_attendees/:event_id</h3>
           <p>
-            Get an attendee to an event by id
+            Get or an attendee by id
           </p>
           <pre><code>
 
                   //input
                   {event_id}
-
-                  //this is will automatically
 
                     async function getAttendeesForEvent(eventId) {
                         try {
@@ -621,7 +606,7 @@ user_id and an event_id
           <h3>PUT /edit_event/:event_id</h3>
           <p>Update an event by event ID (Admin only).</p>
           <pre><code>
-//input 
+Request Body:
 {
     "title": "string",
     "description": "string",
@@ -637,8 +622,16 @@ user_id and an event_id
 }
 
 
-// Make a PUT request
+//if you are using axios...
+const eventId = '12345';  // Example event ID
+const updatedEventData = {
+  title: "New Event Title",
+  date: "2024-09-15",
+  location: "New Location",
+  description: "Updated event description."
+};
 
+// Make the PUT request
 fetch(`/edit_events/${eventId}`, {
   method: 'PUT',
   headers: {
@@ -656,19 +649,18 @@ fetch(`/edit_events/${eventId}`, {
   })
   .catch(error => console.error('Error:', error));
 
-  //output
-
-  Updated event details.
 
 
 </code></pre>
+          <p>Output: Updated event details.</p>
         </div>
 
         <div class="endpoint">
           <h3>DELETE /delete_event/:event_id</h3>
           <p>Delete an event by event ID (Admin only).</p>
           <pre><code>
-
+Headers:
+Authorization: Bearer [token] //tokens are handle on the server.
 const eventId = '12345';  // Example event ID to be deleted
 
 fetch(`/delete_event/${eventId}`, {
@@ -684,29 +676,29 @@ fetch(`/delete_event/${eventId}`, {
   })
   .catch(error => console.error('Error:', error));
 
-  //output:
+  //If the user is an admin and the event is successfully deleted, the server will respond with:
 
   { "message": "Event deleted" }
 
+  //If the user is not an admin, the server will return a 403 Forbidden response:
+
+  { "message": "Forbidden" }
 
 
 
                 </code></pre>
+          <p>Output: Event deleted message.</p>
         </div>
 
-        <div class="endpoint">
+        <!-- <div class="endpoint">
                 <h3>GET /all_user_event/user</h3>
-                <p>Get the event that the user is currently attending.</p>
+                <p>Get the event that the user is attending.</p>
                 <pre><code>
-//input 
-{ user_id }
-
-fetch(`/all_user_event/user`)
-
-<p>Output: List of events.</p>
-
-</code></pre>
-            </div>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: List of events.</p>
+            </div> -->
         <!--             
             <div class="endpoint">
                 <h3>POST /events/:event_id/sign-up</h3>
@@ -735,9 +727,6 @@ Authorization: Bearer [token]
           <p>Get all sessions for an event.</p>
           <pre><code>
 
-            //input
-            { event_id }
-
                     async function getSessionsForEvent(eventId) {
                         try {
                           const response = await fetch(`/events/${eventId}/sessions`, {
@@ -760,8 +749,8 @@ Authorization: Bearer [token]
                         }
                       }
                       
-                      // output:
-                      a list of sessions 
+                      // Example usage:
+                      const eventId = 'event-id-here'; 
                     
                     </code></pre>
         </div>

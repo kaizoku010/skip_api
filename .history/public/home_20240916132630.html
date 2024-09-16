@@ -694,19 +694,15 @@ fetch(`/delete_event/${eventId}`, {
                 </code></pre>
         </div>
 
-        <div class="endpoint">
+        <!-- <div class="endpoint">
                 <h3>GET /all_user_event/user</h3>
-                <p>Get the event that the user is currently attending.</p>
+                <p>Get the event that the user is attending.</p>
                 <pre><code>
-//input 
-{ user_id }
-
-fetch(`/all_user_event/user`)
-
-<p>Output: List of events.</p>
-
-</code></pre>
-            </div>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: List of events.</p>
+            </div> -->
         <!--             
             <div class="endpoint">
                 <h3>POST /events/:event_id/sign-up</h3>
@@ -735,9 +731,6 @@ Authorization: Bearer [token]
           <p>Get all sessions for an event.</p>
           <pre><code>
 
-            //input
-            { event_id }
-
                     async function getSessionsForEvent(eventId) {
                         try {
                           const response = await fetch(`/events/${eventId}/sessions`, {
@@ -760,8 +753,8 @@ Authorization: Bearer [token]
                         }
                       }
                       
-                      // output:
-                      a list of sessions 
+                      // Example usage:
+                      const eventId = 'event-id-here'; 
                     
                     </code></pre>
         </div>

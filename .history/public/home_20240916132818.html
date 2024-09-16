@@ -696,16 +696,12 @@ fetch(`/delete_event/${eventId}`, {
 
         <div class="endpoint">
                 <h3>GET /all_user_event/user</h3>
-                <p>Get the event that the user is currently attending.</p>
+                <p>Get the event that the user is attending.</p>
                 <pre><code>
-//input 
-{ user_id }
-
-fetch(`/all_user_event/user`)
-
-<p>Output: List of events.</p>
-
-</code></pre>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: List of events.</p>
             </div>
         <!--             
             <div class="endpoint">
