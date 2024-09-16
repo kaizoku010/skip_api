@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Documentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+      }
+      header {
+        background: #030933;
+        color: #fff;
+        padding-top: 30px;
+        min-height: 70px;
+        border-bottom: #fff 3px solid;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .main {
+        margin: 20px 0;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #333;
+      }
+      h3 {
+        color: #555;
+      }
+      code {
+        /* background: #f4f4f4; */
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 90%;
+      }
+      .endpoint {
+        margin-bottom: 20px;
+      }
+      .endpoint pre {
+        background: #e7e7e7;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+      .endpoint p {
+        margin: 0;
+        padding: 0;
+      }
+      .endpoint h3 {
+        margin-top: 0;
+      }
+
+      .changes_div {
+        background-color: rgb(233, 232, 232);
+        padding-top: 2%;
+        padding-bottom: 2%;
+        margin-bottom: 2%;
+      }
+
+      .changes{
+        
+      }
+
+      q{
+        /* margin-left: 5%;
+        margin-right: 5%; */
+
+        font-size: 2em;
+        color: #999999;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>API Documentation</h1>
+        <h4>Endpoint: https://skip-api-1gup.onrender.com/</h4>
+      </div>
+    </header>
+    <div class="container">
+      <div class="main">
+        <div>
+          <h2>Main Endpoints</h2>
+<a>
+  
+</a>
+<button ht>View Server Logs</button>
+        
+</div>
+        <div class="changes_div">
+          <p class="changes">Changes: 16/09/2024</p>
+          <q>
+            Adjust your documentation to show the input/output parameters rather than function usage. Need to see the data parameters needed not usage.
+           </q>
+
+          <ul>
+            <li>             <p>
+              Added speaker creation                </p></li>
+ 
+            </li>
+            <li>
+              <p>
+              updated attendee creation
+                </p>
+            </li>
+            <li>
+              <p>
+              updated session creation
+                </p>
+            </li>
+            <li>
+              <p>
+                Added simple examples on most functions. the API shld be ready for usage
+              </p>
+            </li>
+            <li><p>Tested All endpoints on postman!!</p></li>
+
+            <li><p>Event creation fixed</p></li>
+            <li><p>Image uploading fixed</p></li>
+            <li><p>Event Management fixed (CRUD)</p></li>
+            <li><p>Attendee Management fixed</p></li>
+      
+            <li>
+              <p>Major changes from 3.1.0 to "4.0.0"</p>
+            </li>
+          </ul>
+          <p>If you run into any issuse with these functions kindly post your issues here...</p>
+        
+<a href="https://github.com/kaizoku010/skip_api/issues" target="_blank">https://github.com/kaizoku010/skip_api/issues</a>
+        </div>
+
+        <div class="endpoint">
+          <h3>POST '/sign_up_event/:eventId'</h3>
+          <p>Register a user for an event.</p>
+          <pre><code>
+
+const input= async (eventId) => {
+  try {
+    const response = await fetch(`/sign_up_event/${eventId}`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      console.log('Successfully signed up for the event', data);
+    } else {
+      console.error('Error signing up for event:', data.message);
+    }
+  } catch (error) {
+    console.error('Network error:', error);
+  }
+};
+
+//output
+{
+  "message": "Successfully signed up for the event"
+}  
+
+  
+                </code></pre>
+        
+        </div>
+
+
+        <div class="endpoint">
+          <h3>POST /auth/signup</h3>
+          <p>Create a new user.</p>
+          <pre><code>
+
+
+const input = {
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "userImage":req.file, // i extract this from you request
+    "age":"int",
+    "industry":"string",
+    "phoneNumber":"long"
+  };
+  
+  fetch('/auth/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input)
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'User registered successfully!') {
+        console.log('Registration successful:', data);
+      } else {
+        console.error('Error during signup:', data.message);
+      }
+    })
+    .catch(error => console.error('Signup error:', error));
+
+    //output
+    User registered successfully.
+
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>POST /auth/login</h3>
+          <p>Login a user and return a JWT token.</p>
+          <pre><code>
+
+
+
+    //input
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, ... }),
+        });
+
+        if (response.ok) {
+
+            const data = await response.json();
+
+            console.log('Login successful:', data);
+
+        } else {
+
+            const error = await response.json();
+            console.error('Login failed:', error.message);
+        }
+
+        //output
+
+        JWT token pushed to cookies('internal') and a user object
+
+        {
+          "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
+          "username": null,
+          "email": "dixontheworldvsy@gmail.com",
+          "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
+          "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
+      }
+
+                </code></pre>
+        </div>
+
+        <!-- <div class="endpoint">
+                <h3>POST /auth/refresh-token</h3>
+                <p>Refresh JWT token.</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: New JWT token.</p>
+            </div> -->
+
+        <h2>User Management Endpoints</h2>
+
+        <div class="endpoint">
+          <h3>GET /get_user/:user_id</h3>
+          <p>Get details of a user by id.</p>
+          <pre><code>
+
+
+// Input
+const userId = 'f740c9e3-fd32-45a6-8089-69b9d698d010';
+
+// or.... use fetch to get user info by id
+async function getUser(userId) {
+  try {
+    // Make the GET request to fetch user data
+    const response = await fetch(`/get_user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const user = await response.json();
+      console.log('User data:', user);
+      return user;
+    } else {
+      console.error('Failed to fetch user:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching user:', error);
+  }
+}
+
+//output
+
+{
+  "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
+  "username": null,
+  "email": "dixontheworldvsy@gmail.com",
+  "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
+  "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
+}
+
+
+
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET /all_users</h3>
+          <p>Get all users (Admin only).</p>
+          <pre><code>
+
+              //input: just call the function
+                    async function getAllUsers() {
+                      try {
+                        const response = await fetch('/all_users', {
+                          method: 'GET',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        });
+                    
+                        if (response.ok) {
+                          const users = await response.json();
+                          console.log('All users:', users);
+                          return users;
+                        } else {
+                          console.error('Failed to fetch users:', response.statusText);
+                        }
+                      } catch (error) {
+                        console.error('Error fetching users:', error);
+                      }
+                    }
+                    
+                    getAllUsers();
+
+                  //output
+
+              [
+                    {
+                      "_id": "66e427b1a95cf96e1fd4dd1a",
+                      "id": "01b01eac-a055-4409-86f6-7f65883fbf1a",
+                      "username": "root",
+                      "email": "root@dmail.com",
+                      "password": "$2a$10$cmkEdZcpfUd7l.v8ipbqWO2VQlP0a530/SedN6GSJBPXv1UwzlDJK",
+                      "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228402/user_images/pfihnlyntd9f1jgftpqx.jpg"
+                  },
+                  {
+                      "_id": "66e42865a10368c911f904ae",
+                      "id": "1412d6e6-c145-49fb-9ca5-876e7e270517",
+                      "username": null,
+                      "email": "dixontheworldvsy@gmail.com",
+                      "password": "$2a$10$/Y3fpw2hNtO/mc48xkXzpe8EzHg8Grz2fDS0fyVmut9hD7c2xxf3O",
+                      "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg"
+                  },
+                  {
+                      "_id": "66e42cb01634bedf09eda0ac",
+                      "id": "f740c9e3-fd32-45a6-8089-69b9d698d010",
+                      "username": null,
+                      "email": "dixontheworldvsy@gmail.com",
+                      "password": "$2a$10$B5vqeIFMKnmVtkY7.GzmFOhJLwP/ahKBoBzJoQJ0WghW1IltMKtYa",
+                      "userImage_": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726229682/user_images/w8zb3xmvcvujeizhiqcb.jpg"
+                  }
+              ]
+                    
+
+                </code></pre>
+
+        </div>
+
+        <!-- <div class="endpoint">
+                <h3>DELETE /all_users/:user_id</h3>
+                <p>Delete a user by user ID (Admin only).</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: User deleted message.</p>
+            </div> -->
+
+        <h2>Event Management Endpoints</h2>
+
+        <div class="endpoint">
+          <h3>POST /create_event</h3>
+          <p>
+            Only Admin accounts with a payload of isAdmin can create a new
+            event.
+          </p>
+          <pre><code>
+
+input
+{
+    "title": "string",
+    "description": "string",
+    "date": "new Date()",
+    "host":"string",
+    "location":"string",
+    "eventImage":req.file, //i extract all media from your request like this one 
+    "price":"number",
+    "agenda":"string",
+    
+}
+Headers:
+Authorization: Bearer [token]
+
+
+<!-- how to use -->
+const createEvent = async () => {
+    const eventData = {
+      title: "Annual Conference",
+      description: "A conference about the latest in technology.",
+      date: new Date().toISOString(),  // Correct format for date
+      host: "Tech Corp",
+      location: "123 Conference Ave, City",
+      event_graphics_url: "/path/to/image.jpg",
+      price: 100,
+      agenda: "Day 1: Keynote, Day 2: Workshops",
+      session: [{ title: "Workshop", time: "10:00 AM" }]
+    };
+  
+    const response = await fetch('/create_event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-jwt-token' // Include token if needed
+      },
+      body: JSON.stringify(eventData)
+    });
+  
+    const result = await response.json();
+    if (response.ok) {
+      console.log('Event created:', result);
+    } else {
+      console.error('Error:', result);
+    }
+  };
+  
+  createEvent();
+  
+
+  //output is the event u just created and successful msg
+[
+{
+"_id": "66e43cf6f28108c0253b9376",
+"eventName": "Sample Event",
+"eventDate": "2024-09-15",
+"eventLocation": "New York",
+"description": "This is a sample event.",
+"eventImage": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg",
+"eventId": "b3494507-c6f7-40e6-ac9a-af5e9b178285",
+"organizerId": "mdxi"
+},
+......
+]
+  
+
+
+                </code></pre>
+        </div>
+
+
+        <div class="endpoint">
+          <h3>POST /create_event_speaker</h3>
+          <p>
+              Create event speaker
+          </p>
+          <pre><code>
+
+input
+{
+    "speaker_name": "string",
+  
+    
+}
+
+  //output is the speaker u just created and successful msg
+
+
+                </code></pre>
+        </div>
+
+
+        
+        <div class="endpoint">
+          <h3>GET /get_all_events</h3>
+          <p>Get all events.</p>
+          <pre><code>
+Response: List of events.
+
+const fetchEvent = async () => {
+    const response = await fetch(`/get_all_events/`);
+    const eventss = await response.json();
+    console.log(event);
+  };
+  
+  // Call the function with the desired event ID
+  fetchEvent();
+
+//output
+  [
+    {
+        "_id": "66e43cf6f28108c0253b9376",
+        "eventName": "Sample Event",
+        "eventDate": "2024-09-15",
+        "eventLocation": "New York",
+        "description": "This is a sample event.",
+        "eventImage": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg",
+        "eventId": "b3494507-c6f7-40e6-ac9a-af5e9b178285",
+        "organizerId": "mdxi"
+    },
+    ......
+]
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET /get_event/:event_id</h3>
+          <p>Get details of an event by event ID.</p>
+          <pre><code>
+Response: Event details.
+<!-- if testing on 3000 -->
+curl http://localhost:3000/get_event/66e43cf6f28108c0253b9376
+
+const fetchEvent = async (eventId) => {
+    const response = await fetch(`/get_event/${eventId}`);
+    const event = await response.json();
+    console.log(event);
+  };
+  
+  // Call the function with the desired event ID
+  fetchEvent('66e43cf6f28108c0253b9376');
+
+  //Output
+    {
+        "_id": "66e43cf6f28108c0253b9376",
+        "eventName": "Sample Event",
+        "eventDate": "2024-09-15",
+        "eventLocation": "New York",
+        "description": "This is a sample event.",
+        "eventImage": "http://res.cloudinary.com/dnko3bvt0/image/upload/v1726228582/user_images/np6dd7ibmmyso1ctkwfo.jpg",
+        "eventId": "b3494507-c6f7-40e6-ac9a-af5e9b178285",
+        "organizerId": "mdxi"
+    }
+
+
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>POST /create_attendee/:event_id</h3>
+          <p>
+            Create or add a user to an event just pass in the event id and a
+            user object.
+          </p>
+          <pre><code>
+
+//input 
+user_id and an event_id
+
+                    async function addAttendeeToEvent(eventId, user_id) {
+                        try {
+                          const response = await fetch(`/create_attendee/${eventId}`, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(attendeeObject)
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`Error: ${response.statusText}`);
+                          }
+                      
+                          const data = await response.json();
+                          console.log('Attendee added:', data);
+                          return data;
+                        } catch (error) {
+                          console.error('Error adding attendee:', error);
+                        }
+                      }
+                      
+                      // output:
+                     {
+                      message: "Attendee created successfully"
+                     }
+                      
+                      addAttendeeToEvent(eventId, user_id);
+                      
+  
+
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET /get_attendees/:event_id</h3>
+          <p>
+            Get an attendee to an event by id
+          </p>
+          <pre><code>
+
+                  //input
+                  {event_id}
+
+                  //this is will automatically
+
+                    async function getAttendeesForEvent(eventId) {
+                        try {
+                          const response = await fetch(`/get_attendees/${eventId}/attendees`, {
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              // Add token if required
+                            }
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`Error: ${response.statusText}`);
+                          }
+                      
+                          const data = await response.json();
+                          console.log('Attendees:', data);
+                          return data;
+                        } catch (error) {
+                          console.error('Error retrieving attendees:', error);
+                        }
+                      }
+                      
+                      // Example usage:
+                      const eventId = 'event-id-here';
+                      
+                      getAttendeesForEvent(eventId);
+                      
+                    //output
+
+                    {
+                      "message": "Attendee added successfully",
+                      "attendees": [/* Updated list of attendees */]
+                    }
+
+                </code>
+              </pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>PUT /edit_event/:event_id</h3>
+          <p>Update an event by event ID (Admin only).</p>
+          <pre><code>
+//input 
+{
+    "title": "string",
+    "description": "string",
+    "date": "new Date()",
+    "host":"string",
+    "location":"string",
+    "event_graphics_url":"/event_images/eventImage.jpg",
+    "price":"number",
+    "attendess": "[object]",
+    "checkings":"[object]",
+    "sales":"[object]",
+    "sessions":"[object]"
+}
+
+
+// Make a PUT request
+
+fetch(`/edit_events/${eventId}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(updatedEventData),
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.message) {
+      console.error('Error:', data.message);
+    } else {
+      console.log('Event updated successfully:', data);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  //output
+
+  Updated event details.
+
+
+</code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>DELETE /delete_event/:event_id</h3>
+          <p>Delete an event by event ID (Admin only).</p>
+          <pre><code>
+
+const eventId = '12345';  // Example event ID to be deleted
+
+fetch(`/delete_event/${eventId}`, {
+  method: 'DELETE',
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.message === 'Event deleted') {
+      console.log('Event deleted successfully');
+    } else {
+      console.error('Error:', data.message);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  //output:
+
+  { "message": "Event deleted" }
+
+
+
+
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+                <h3>GET /all_user_event/user</h3>
+                <p>Get the event that the user is currently attending.</p>
+                <pre><code>
+//input 
+{ user_id }
+
+fetch(`/all_user_event/user`)
+
+<p>Output: List of events.</p>
+
+</code></pre>
+            </div>
+        <!--             
+            <div class="endpoint">
+                <h3>POST /events/:event_id/sign-up</h3>
+                <p>Sign up the authenticated user for an event.</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: Success message.</p>
+            </div> -->
+
+        <!-- <div class="endpoint">
+                <h3>GET /events/:event_id/users</h3>
+                <p>Get attendees of an event (Admin only).</p>
+                <pre><code>
+Headers:
+Authorization: Bearer [token]
+                </code></pre>
+                <p>Output: List of attendees.</p>
+            </div> -->
+
+        <h2>Session Management Endpoints</h2>
+
+        <div class="endpoint">
+          <h3>GET /events/:event_id/sessions</h3>
+          <p>Get all sessions for an event.</p>
+          <pre><code>
+
+            //input
+            { event_id }
+
+                    async function getSessionsForEvent(eventId) {
+                        try {
+                          const response = await fetch(`/events/${eventId}/sessions`, {
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              // Add Authorization header if required
+                            }
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`Error: ${response.statusText}`);
+                          }
+                      
+                          const sessions = await response.json();
+                          console.log('Sessions:', sessions);
+                          return sessions;
+                        } catch (error) {
+                          console.error('Error retrieving sessions:', error);
+                        }
+                      }
+                      
+                      // output:
+                      a list of sessions 
+                    
+                    </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>POST /events/:event_id/create_sessions</h3>
+          <p>Create a new session for an event (Admin only).</p>
+          <pre><code>
+
+//input
+
+{event_id, session_object } the session object can have title, date, desc, speaker
+
+async function createSessionForEvent(eventId, sessionData) {
+    try {
+      const response = await fetch(`/events/${eventId}/create_sessions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event_id, session_object),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+      }
+  
+      const newSession = await response.json();
+      console.log('New Session Created:', newSession);
+      return newSession;
+    } catch (error) {
+      console.error('Error creating session:', error);
+    }
+  }
+  
+  
+  createSessionForEvent(eventId, session_object);
+
+  <p>Output: Created session.</p>
+
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET /events/:event_id/sessions/:session_id</h3>
+          <p>Get details of a session by session ID.</p>
+          <pre><code>
+
+//how to use
+
+async function getSessionDetails(eventId, sessionId) {
+    try {
+      const response = await fetch(`/events/${eventId}/sessions/${sessionId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add Authorization header if required
+          // 'Authorization': `Bearer ${token}`
+        },
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+      }
+  
+      const session = await response.json();
+      console.log('Session Details:', session);
+      return session;
+    } catch (error) {
+      console.error('Error fetching session details:', error);
+    }
+  }
+  
+  // Example usage:
+  const eventId = 'event-id-here';
+  const sessionId = 'session-id-here';
+  
+  getSessionDetails(eventId, sessionId);
+  
+  
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>PUT /events/:event_id/sessions/:session_id</h3>
+          <p>Update a session by session ID (Admin only).</p>
+          <pre><code>
+//how to use
+
+async function updateSession(eventId, sessionId, updates) {
+    try {
+      const response = await fetch(`/events/${eventId}/sessions/${sessionId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add Authorization header if required
+          // 'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updates),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+      }
+  
+      const updatedSession = await response.json();
+      console.log('Updated Session:', updatedSession);
+      return updatedSession;
+    } catch (error) {
+      console.error('Error updating session:', error);
+    }
+  }
+  
+  // Example usage:
+  const eventId = 'event-id-here';
+  const sessionId = 'session-id-here';
+  const updates = { title: 'New Session Title', description: 'Updated description' };
+  
+  updateSession(eventId, sessionId, updates);
+  
+
+                </code></pre>
+          <p>Output: Updated session details.</p>
+        </div>
+
+        <div class="endpoint">
+          <h3>DELETE /events/:event_id/sessions/:session_id</h3>
+          <p>Delete a session by session ID (Admin only).</p>
+          <pre><code>
+
+                    //how to use
+
+                    async function deleteSession(eventId, sessionId) {
+                        try {
+                          const response = await fetch(`/events/${eventId}/sessions/${sessionId}`, {
+                            method: 'DELETE',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+                          }
+                      
+                          const result = await response.json();
+                          console.log('Delete Result:', result);
+                          return result;
+                        } catch (error) {
+                          console.error('Error deleting session:', error);
+                        }
+                      }
+                      
+                      // Example usage:
+                      const eventId = 'event-id-here';
+                      const sessionId = 'session-id-here';
+                      
+                      deleteSession(eventId, sessionId);
+                      
+                </code></pre>
+          <p>Output: Session deleted message.</p>
+        </div>
+        <!-- new functions added -->
+        <div class="endpoint">
+          <h3>POST /payments</h3>
+          <p>Create event payment.</p>
+          <pre><code>
+
+                    //how to use
+                    async function createPayment(paymentData) {
+                        try {
+                          const response = await fetch('/payments', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              // Add Authorization header if required
+                            },
+                            body: JSON.stringify(paymentData),
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+                          }
+                      
+                          const newPayment = await response.json();
+                          console.log('Created Payment:', newPayment);
+                          return newPayment;
+                        } catch (error) {
+                          console.error('Error creating payment:', error);
+                        }
+                      }
+                      
+                      // Example usage:
+                      const paymentData = { amount: 100, method: 'Credit Card', description: 'Payment for order #123' };
+                      createPayment(paymentData);
+                      
+                      
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET /get_payments</h3>
+          <p>Get All Payments.</p>
+          <pre><code>
+
+                    //how to use
+                    async function getAllPayments() {
+                        try {
+                          const response = await fetch('/get_payments', {
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              // Add Authorization header if required
+                            },
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+                          }
+                      
+                          const payments = await response.json();
+                          console.log('Payments:', payments);
+                          return payments;
+                        } catch (error) {
+                          console.error('Error fetching payments:', error);
+                        }
+                      }
+                      
+                      // Example usage:
+                      getAllPayments();
+                      
+                      
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET '/get_payment/:payment_id'</h3>
+          <p>Get Payment by ID (GET request)</p>
+          <pre><code>
+
+                    //how to use
+                   
+                    async function getPaymentById(paymentId) {
+                        try {
+                          const response = await fetch(`/get_payment/${paymentId}`, {
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`Error: ${response.statusText}, ${errorData.message}`);
+                          }
+                      
+                          const payment = await response.json();
+                          console.log('Payment:', payment);
+                          return payment;
+                        } catch (error) {
+                          console.error('Error fetching payment:', error);
+                        }
+                      }
+                      
+                      // Example usage:
+                      const paymentId = 'payment-id-here';
+                      getPaymentById(paymentId);
+                         
+                      
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>POST /create_post</h3>
+          <p>Create Event Fourm Post (POST post)</p>
+          <pre><code>
+
+                    //how to use upon form submission
+
+                    document.getElementById('postForm').addEventListener('submit', async (event) => {
+                        event.preventDefault();
+                      
+                        const date = new Date();
+                        const content = document.getElementById('postContent').value;
+                        const postMedia = document.getElementById('postImage').files[0];
+                        const messageDiv = document.getElementById('message');
+                        const postername = user.username()
+                        const userid = user.userId
+                      
+                        try {
+                          let imageUrl = '';
+        
+                          const response = await fetch('/create_post', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                date,
+                              content,
+                              postername,
+                              postMedia,
+                              userId
+                            }),
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                          }
+                      
+                          const result = await response.json();
+                          messageDiv.textContent = 'Post created successfully!';
+                          console.log(result); // Handle the created post result here
+                        } catch (error) {
+                          messageDiv.textContent = `Error creating post: ${error.message}`;
+                          console.error('Error:', error);
+                        }
+                      });       
+                      
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET '/get_all_posts/'</h3>
+          <p>Get All posts</p>
+          <pre><code>
+
+//how to use
+
+// Function to fetch posts from your backend
+
+async function fetchPosts() {
+  try {
+    const response = await fetch('/get_all_posts');
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const posts = await response.json();
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+}
+
+           
+                </code></pre>
+        </div>
+        <div class="endpoint">
+          <h3>GET '/get_post/:post_id'</h3>
+          <p>Get Post by ID (GET request)</p>
+          <pre><code>
+
+                    //how to use
+                   
+                    async function getPost(postId) {
+                        try {
+                          const response = await fetch(`/get_post/${postId}`);
+                          if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                          }
+                          const post = await response.json();
+                          console.log('Post:', post);
+                        } catch (error) {
+                          console.error('Error fetching post:', error);
+                        }
+                      }
+                      
+                         
+                      
+                </code></pre>
+        </div>
+        <div class="endpoint">
+          <h3>GET '/user_posts/:user_id'</h3>
+          <p>Get All User Posts using a user ID (GET request)</p>
+          <pre><code>
+
+                    //how to use
+                    async function getUserPosts(userId) {
+                        try {
+                          const response = await fetch(`/user_posts/${userId}`);
+                          if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                          }
+                          const posts = await response.json();
+                          console.log('User Posts:', posts);
+                        } catch (error) {
+                          console.error('Error fetching user posts:', error);
+                        }
+                      }
+                      
+                         
+                      
+                </code></pre>
+        </div>
+        <div class="endpoint">
+          <h3>Post '/send_chat_req'</h3>
+          <p>Send A Chat Request To Another Attendee (Post request)</p>
+          <pre><code>
+
+                    //how to use
+                    
+                    //the receiverId is the user you are sending a request to, and the senderID is your id 
+
+
+                    async function sendChatRequest(receiverId, senderID) {
+                        try {
+                          const response = await fetch('/send_chat_req', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ receiverId,senderID, })
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
+                          }
+                      
+                          const chatRequest = await response.json();
+                          console.log('Chat request sent successfully:', chatRequest);
+                        } catch (error) {
+                          console.error('Error sending chat request:', error);
+                        }
+                      }
+                      
+                      // Example usage
+                      sendChatRequest('receiver-user-id', sender-user-id);
+                      
+                         
+                      
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>GET '/get_all_chat_reqs/:user_id'</h3>
+          <p>Get A User's Chat Requests by user_id (GET request)</p>
+          <pre><code>
+
+                    //how to 
+                    async function getChatRequests(userId) {
+                        try {
+                          const response = await fetch(`/get_all_chat_reqs/${userId}`, {
+                            method: 'GET'
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
+                          }
+                      
+                          const chatRequests = await response.json();
+                          console.log('Chat requests:', chatRequests);
+                        } catch (error) {
+                          console.error('Error fetching chat requests:', error);
+                        }
+                      }
+                      
+                      // Example usage
+                      getChatRequests('receiver-user-id');
+                      
+                               
+                </code></pre>
+        </div>
+        <div class="endpoint">
+          <h3>PUT '/accept_chat_req/:request_id'</h3>
+          <p>Accept a chat request</p>
+          <pre><code>
+
+                    //how to use
+
+                    async function acceptChatRequest(requestId) {
+                        try {
+                          const response = await fetch(`/accept_chat_req/${requestId}`, {
+                            method: 'PUT',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            }
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
+                          }
+                      
+                          const updatedRequest = await response.json();
+                          console.log('Chat request accepted:', updatedRequest);
+                        } catch (error) {
+                          console.error('Error accepting chat request:', error);
+                        }
+                      }
+                      
+                      // Example usage
+                      acceptChatRequest('chat-request-id');
+                      
+                   
+                         
+                      
+                </code></pre>
+        </div>
+        <div class="endpoint">
+          <h3>PUT '/decline_chat_req/:request_id'</h3>
+          <p>Decline a chat request</p>
+          <pre><code>
+
+                    //how to use
+                   
+                    async function declineChatRequest(requestId) {
+                        try {
+                          const response = await fetch(`/decline_chat_req/${requestId}`, {
+                            method: 'PUT',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            }
+                          });
+                      
+                          if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
+                          }
+                      
+                          const updatedRequest = await response.json();
+                          console.log('Chat request declined:', updatedRequest);
+                        } catch (error) {
+                          console.error('Error declining chat request:', error);
+                        }
+                      }
+                      
+                      // Example usage
+                      declineChatRequest('chat-request-id');
+                      
+                         
+                      
+                </code>
+            </pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>Post '/send_message'</h3>
+          <p>Send another user a text message (Post request)</p>
+          <pre><code>
+
+                    //how to use
+
+                    const handleSendMessage = async () => {
+                        try {
+                          await fetch('/send_message', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${yourAuthToken}`,
+                            },
+                            body: JSON.stringify({ chatRoomId, message }),
+                          });
+                          setMessage(''); // Clear message input
+                          // Optionally, refresh the message list
+                          // await fetchMessages();
+                        } catch (error) {
+                          console.error('Error sending message:', error);
+                        }
+                      };
+                   
+                         
+                      
+                </code></pre>
+        </div>
+
+        <div class="endpoint">
+          <h3>Get '/get_messages/:room_id'</h3>
+          <p>Get All texts in a room by roomID (GET request)</p>
+          <pre><code>
+
+                    //how to use
+
+                    useEffect(() => {
+                        async function fetchMessages() {
+                          try {
+                            const response = await fetch(`/get_messages/${chatRoomId}`, {
+                              method: 'GET',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${yourAuthToken}`,
+                              },
+                            });
+                            const data = await response.json();
+                            setMessages(data);
+                          } catch (error) {
+                            console.error('Error fetching messages:', error);
+                          }
+                        }
+                    
+                        fetchMessages();
+                      }, [chatRoomId]);
+                   
+                         
+                      
+                </code></pre>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

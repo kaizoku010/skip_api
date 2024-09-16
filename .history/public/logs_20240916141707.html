@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Server Logs</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    pre { white-space: pre-wrap; word-wrap: break-word; }
+    .log-container { margin: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Server Logs</h1>
+  <div class="log-container">
+    <h2>Access Log</h2>
+    <pre id="access-log"></pre>
+    <h2>Error Log</h2>
+    <pre id="error-log"></pre>
+    <h2>Combined Log</h2>
+    <pre id="combined-log"></pre>
+  </div>
+  <script>
+    async function fetchLog(fileName, elementId) {
+      try {
+        const response = await fetch(`/logs/${fileName}`);
+        const text = await response.text();
+        document.getElementById(elementId).textContent = text;
+      } catch (error) {
+        console.error('Error fetching log:', error);
+      }
+    }
+
+    fetchLog('access.log', 'access-log');
+    fetchLog('error.log', 'error-log');
+    fetchLog('combined.log', 'combined-log');
+  </script>
+</body>
+</html>
