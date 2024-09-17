@@ -19,14 +19,16 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // You can change the destination folder
 const morgan = require('morgan');
 const winston = require('winston');
-const cookieParser = require('cookie-parser');
-
 
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cookieParser());
+
+// app.use(cors({
+//   origin: ['*', "https://skip-api-1gup.onrender.com", "http://localhost:3000"]
+// }));
+//trying to disable cors
 
 app.use(cors({
   origin: '*',
@@ -139,7 +141,7 @@ const jwtSecret = "64649Sk!p$@1YFFD6573";
 
 
 const authenticate = (req, res, next) => {
-  const token = req.cookies ? req.cookies.auth_token : null; //safe gaurd
+  const token = req.cookies.auth_token;
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -318,8 +320,7 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
 
 
 app.post("/auth/make_root", asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const userImage = req.file;
+  const { email, password, userImage } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);  
   try {
     const imagePath = await uploadUserImage(userImage);

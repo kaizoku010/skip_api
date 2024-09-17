@@ -318,8 +318,7 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
 
 
 app.post("/auth/make_root", asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const userImage = req.file;
+  const { email, password, userImage } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);  
   try {
     const imagePath = await uploadUserImage(userImage);
