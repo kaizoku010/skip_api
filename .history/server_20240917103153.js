@@ -1,32 +1,31 @@
 require('dotenv').config();
-
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
-const asyncHandler = require('express-async-handler');
-const bodyParser = require('body-parser');
-const path = require('path');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { expressjwt: jwtMiddleware } = require('express-jwt');
-const crypto = require('crypto');
-const fs = require('fs');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-const { error } = require('console');
-const cloudinary = require('cloudinary').v2;
-const PDFDocument = require('pdfkit');
-const multer = require('multer');
+import express, { static } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import asyncHandler from 'express-async-handler';
+import { json } from 'body-parser';
+import { join, basename } from 'path';
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import { hash, compare } from 'bcryptjs';
+import { verify, sign } from 'jsonwebtoken';
+import { expressjwt as jwtMiddleware } from 'express-jwt';
+import crypto from 'crypto';
+import { createWriteStream, unlinkSync, readFile } from 'fs';
+import cors from 'cors';
+import { createTransport } from 'nodemailer';
+import { error } from 'console';
+import { v2 as cloudinary } from 'cloudinary';
+import PDFDocument from 'pdfkit';
+import multer from 'multer';
 const upload = multer({ dest: 'uploads/' }); // You can change the destination folder
-const morgan = require('morgan');
-const winston = require('winston');
-const cookieParser = require('cookie-parser');
+import morgan from 'morgan';
+import { createLogger, format as _format, transports as _transports } from 'winston';
+import cookieParser from 'cookie-parser';
 
 const app = express();
-app.use(bodyParser.json());
+app.use(json());
 app.use(cookieParser());
 
-// console.log("testing env", process.env)
+console.log("testing env", process.env)
 
 app.use(cors({
   origin: '*',
@@ -144,7 +143,7 @@ const authenticate = (req, res, next) => {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  jwt.verify(token, jwtSecret, (err, decoded) => {
+  verify(token, jwtSecret, (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: 'Forbidden' });
     }
@@ -155,7 +154,7 @@ const authenticate = (req, res, next) => {
 
 
 
-const transporter = nodemailer.createTransport({
+const transporter = createTransport({
   host: "smtp.titan.email",
   secure:"true",
   tls:{
@@ -187,7 +186,7 @@ async function mailer(email) {
   
 }
 
-app.use('/logs', express.static(path.join(__dirname, 'logs')));
+app.use('/logs', static(join(__dirname, 'logs')));
 
 
 
@@ -202,7 +201,7 @@ const sendTicketWithAttachment = async (to, subject, text, attachmentPath) => {
     text,
     attachments: [
       {
-        filename: path.basename(attachmentPath),
+        filename: basename(attachmentPath),
         path: attachmentPath,
       },
     ],
@@ -279,7 +278,7 @@ const uploadVideo = (path)=>{
 
 const generateTicket = (user, event, filePath) => {
   const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream(filePath));
+  doc.pipe(createWriteStream(filePath));
 
   doc.fontSize(25).text('Event Ticket', { align: 'center' });
   doc.fontSize(18).text(`Name: ${user.username}`);
@@ -301,11 +300,11 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hash(password, 10);
     const imagePath = await uploadUserImage(userImage.path);     const user = { id: uuidv4(), username: username, email: email, password: hashedPassword, userImage: imagePath };
         await User.insertOne(user); // Chck tht User.insertOne is functioning correctly
 
-    fs.unlinkSync(userImage.path);
+    unlinkSync(userImage.path);
   
     res.status(201).json({ message: 'User registered successfully!' });
     await mailer(email).catch(console.error); // Ensure mailer is not failing
@@ -319,7 +318,7 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
 app.post("/auth/make_root", asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const userImage = req.file;
-  const hashedPassword = await bcrypt.hash(password, 10);  
+  const hashedPassword = await hash(password, 10);  
   try {
     const imagePath = await uploadUserImage(userImage);
 
@@ -347,8 +346,8 @@ app.post("/auth/make_root", asyncHandler(async (req, res) => {
 app.post('/auth/root', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await AdminUsers.findOne({ email });
-  if (user && await bcrypt.compare(password, user.password)) {
-    const token = jwt.sign(
+  if (user && await compare(password, user.password)) {
+    const token = sign(
       { 
         userId: user.id,
         isAdmin: user.isAdmin  // admin status in the token payload
@@ -377,11 +376,11 @@ app.post('/auth/login', asyncHandler(async (req, res) => {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.password);
+  const passwordMatch = await compare(password, user.password);
   console.log('Password Match:', passwordMatch);
   
   if (passwordMatch) {
-    const token = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, jwtSecret, { expiresIn: '4h' });
+    const token = sign({ userId: user.id, isAdmin: user.isAdmin }, jwtSecret, { expiresIn: '4h' });
     res.cookie('auth_token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
     res.status(200).json({ message: 'Logged in successfully', token });
   } else {
@@ -431,7 +430,7 @@ app.post('/sign_up_event/:eventId', authenticate, asyncHandler(async (req, res) 
 
 app.post('/auth/refresh-token', authenticate, asyncHandler(async (req, res) => {
   const userId = req.auth.userId;
-  const token = jwt.sign({ userId }, jwtSecret, { expiresIn: '4h' });
+  const token = sign({ userId }, jwtSecret, { expiresIn: '4h' });
   res.json({ token });
 }));
 
@@ -959,13 +958,13 @@ app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
 
 
 // Serve static files and HTML documentation
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(static(join(__dirname, 'public')));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './public', 'index.html'));
+  res.sendFile(join(__dirname, './public', 'index.html'));
 });
 
 
-app.use(express.static('public')); // Ensure static files are not conflicting
+app.use(static('public')); // Ensure static files are not conflicting
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -977,16 +976,16 @@ app.use((err, req, res, next) => {
 //setting up node mailer
 
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs.log'), { flags: 'a' });
+const accessLogStream = createWriteStream(join(__dirname, 'logs.log'), { flags: 'a' });
 app.use(morgan('combined', { stream: accessLogStream }));
 
 // Setup winston for general logging
-const logger = winston.createLogger({
+const logger = createLogger({
   level: 'info',
-  format: winston.format.json(),
+  format: _format.json(),
   transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new _transports.File({ filename: 'error.log', level: 'error' }),
+    new _transports.File({ filename: 'combined.log' }),
   ],
 });
 
@@ -1007,7 +1006,7 @@ app.use((req, res, next) => {
 
 // Serve the HTML file
 app.get('/logs', (req, res) => {
-  fs.readFile('./public/logs.log', 'utf8', (err, data) => {
+  readFile('./public/logs.log', 'utf8', (err, data) => {
       if (err) throw err;
       res.send(`<pre>${data}</pre>`);
   });

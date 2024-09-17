@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
@@ -25,9 +25,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-// console.log("testing env", process.env)
-
+console.log(process.env)
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -94,7 +92,7 @@ const Chat = db.collection("chats")
 const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
 // JWT Middleware Setup
-const jwtSecret = process.env.JWT_SEC;
+const jwtSecret = process.env.;
 // const authenticate = jwtMiddleware({ secret: jwtSecret, algorithms: ['HS256'],  credentialsRequired: true});
 
 //manage sessions..

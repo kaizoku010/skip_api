@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
@@ -9,6 +9,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { expressjwt: jwtMiddleware } = require('express-jwt');
+const dotenv = require('dotenv');
 const crypto = require('crypto');
 const fs = require('fs');
 const cors = require('cors');
@@ -22,11 +23,12 @@ const morgan = require('morgan');
 const winston = require('winston');
 const cookieParser = require('cookie-parser');
 
+
+dotenv.config();
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-// console.log("testing env", process.env)
 
 app.use(cors({
   origin: '*',
@@ -46,9 +48,9 @@ app.use((err, req, res, next) => {
 
 
 cloudinary.config({
-  cloud_name:process.env.CLOUD_NAME,
-  api_key:process.env.API_KEY,
-  api_secret:process.env.API_SECRET
+  cloud_name:'dnko3bvt0',
+  api_key:"754199529786361",
+  api_secret:'rZfTpZO7DvDxx3LdAfIzN0n3T98'
 })
 
 
@@ -60,7 +62,8 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-const uri = process.env.MONGO_URI
+
+const uri = 'mongodb+srv://dev:64649$@cluster0.snn3y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -94,7 +97,7 @@ const Chat = db.collection("chats")
 const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
 // JWT Middleware Setup
-const jwtSecret = process.env.JWT_SEC;
+const jwtSecret = "64649Sk!p$@1YFFD6573";
 // const authenticate = jwtMiddleware({ secret: jwtSecret, algorithms: ['HS256'],  credentialsRequired: true});
 
 //manage sessions..

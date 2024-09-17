@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const asyncHandler = require('express-async-handler');
@@ -26,7 +25,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// console.log("testing env", process.env)
+console.log("testing env", process.env)
 
 app.use(cors({
   origin: '*',

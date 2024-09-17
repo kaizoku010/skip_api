@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './env' });
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
@@ -26,7 +26,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// console.log("testing env", process.env)
+console.log(process.env)
 
 app.use(cors({
   origin: '*',
