@@ -562,7 +562,7 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
       { eventId: event_id },
       { $push: { attendees: newAttendee } }
     );
-    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.username}.pdf`);
+    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.attendeeId}.pdf`);
 
     // Generate the ticket PDF
     generateTicket(newAttendee, event, ticketFilePath);

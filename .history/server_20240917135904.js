@@ -60,9 +60,6 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-
-
-
 const uri = process.env.MONGO_URI
 const client = new MongoClient(uri, {
   serverApi: {
@@ -98,25 +95,46 @@ const AdminUsers = db.collection("admins")
 const Payment = db.collection('payments');
 // JWT Middleware Setup
 const jwtSecret = process.env.JWT_SEC;
+// const authenticate = jwtMiddleware({ secret: jwtSecret, algorithms: ['HS256'],  credentialsRequired: true});
+
+//manage sessions..
 
 
-async function cleanupSessions() {
 
-  try {
-    const collection = db.collection('events');
+// app.use(express.static('public')); // Ensure static files are not conflicting
 
-    const result = await collection.updateMany(
-      { "sessions": null },
-      { $pull: { "sessions": null } }
-    );
 
-    console.log(`${result.modifiedCount} documents updated.`);
-  } finally {
-    await client.close();
-  }
-}
+// const session = require('express-session');
 
-cleanupSessions().catch(console.error);
+// app.use(session({
+//   secret: 'your_session_secret',
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { secure: true, httpOnly: true, sameSite: 'Strict' } // Cookie settings for production
+// }));
+
+// app.post('/auth/login', async (req, res) => {
+//   const { email, password } = req.body;
+  
+//   const user = await User.findOne({ email });
+//   if (user && await bcrypt.compare(password, user.password)) {
+//     // Store user information in session
+//     req.session.userId = user.id;
+//     req.session.isAdmin = user.isAdmin;
+//     res.status(200).json({ message: 'Logged in successfully' });
+//   } else {
+//     res.status(401).json({ message: 'Invalid credentials' });
+//   }
+// });
+
+// // Middleware to check session
+// const authenticate = (req, res, next) => {
+//   if (req.session.userId) {
+//     return next();
+//   }
+//   res.status(401).json({ message: 'Unauthorized' });
+// };
+// 
 
 
 const authenticate = (req, res, next) => {
@@ -266,8 +284,8 @@ const generateTicket = (user, event, filePath) => {
   doc.fontSize(25).text('Event Ticket', { align: 'center' });
   doc.fontSize(18).text(`Name: ${user.username}`);
   doc.fontSize(18).text(`Email: ${user.email}`);
-  doc.fontSize(18).text(`Event: ${event.eventName}`);
-  doc.fontSize(18).text(`Date: ${event.eventDate}`);
+  doc.fontSize(18).text(`Event: ${event.name}`);
+  doc.fontSize(18).text(`Date: ${event.date}`);
   
   doc.end();
 };
@@ -396,6 +414,14 @@ app.post('/sign_up_event/:eventId', asyncHandler(async (req, res) => {
   );
 
      res.status(200).json({ message: 'Successfully signed up for the event' });
+
+      // // Generate PDF ticket
+      const ticketPath = path.join(__dirname, `tickets/${uuidv4()}.pdf`);
+      generateTicket(user, event, ticketPath);
+  
+      // // Send email with ticket
+      await sendTicketWithAttachment(user.email, 'Your Event Ticket', 'Please find your event ticket attached.', ticketPath);
+  
   } catch (error) {
     console.error("attendee addition error:", error)    
   }
@@ -461,7 +487,7 @@ app.delete('/all_users/:user_id', asyncHandler(async (req, res) => {
 
 }));
 
-app.delete('/all_users/:user_id', asyncHandler(async (req, res) => {
+app.delete('/get_user/:user_id', asyncHandler(async (req, res) => {
 
   try {
       const userId = req.params.user_id;
@@ -473,13 +499,6 @@ app.delete('/all_users/:user_id', asyncHandler(async (req, res) => {
   }
 
 }));
-
-
-app.get('/all_user_event/:user_id', asyncHandler(async (req, res) => {
-  const {userId} = req.body;
-    const events = await Event.find({ attendees: userId }).toArray();
-    res.json(events);
-  }));
 
 // Event Management 
 app.post('/create_event', upload.single("eventImage"), 
@@ -534,10 +553,11 @@ app.post('/create_event_', asyncHandler(async (req, res) => {
 
 app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
   const { event_id } = req.params; // Extract event_id from URL
-  const { user_id, userName, phoneNumber, email } = req.body; // Extract attendee data from request body
+  const { user_id } = req.body; // Extract attendee data from request body
 
-  if ( !userName || !phoneNumber) {
-    return res.status(400).json({ message: 'Missing required fields' });
+  // Validate input
+  if (!name || !email) {
+    return res.status(400).json({ message: 'Name and email are required' });
   }
 
   // Find the event
@@ -547,32 +567,14 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'Event not found' });
   }
 
+  // Create new attendee
+
+
   try {
-
-    const newAttendee = {
-      attendeeId: uuidv4(), // Generate a unique ID for the attendee
-      username: userName,
-      contact: phoneNumber,
-      userEmail:email,
-      ticketCreatedAt: new Date() // Record the creation date
-    };
-
     // Add the new attendee to the event
     await Event.updateOne(
       { eventId: event_id },
-      { $push: { attendees: newAttendee } }
-    );
-    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.username}.pdf`);
-
-    // Generate the ticket PDF
-    generateTicket(newAttendee, event, ticketFilePath);
-
-    // Send the ticket via email
-    await sendTicketWithAttachment(
-      newAttendee.userEmail, 
-      'Your Event Ticket', 
-      'Please find your event ticket attached.', 
-      ticketFilePath
+      { $push: { attendees: user_id } }
     );
 
     res.status(200).json({ message: 'Attendee created successfully', attendee: user_id });
@@ -660,44 +662,42 @@ try {
   console.error("Error Getting Event Attendess")
 
 }
+
+
 }));
 
 // Event Session Management Endpoints
 app.post('/events/:event_id/create_sessions', asyncHandler(async (req, res) => {
-  const session_object = req.body;
-  const { event_id } = req.params;
 
+  const {event_id, session_object} = req.params;
   const event = await Event.findOne({ eventId: event_id });
   if (!event) {
     return res.status(404).json({ message: 'Event not found, please try again' });
   }
 
   try {
-    // Generate a unique session ID and add it to the session object
-    const newSession = {
-      ...session_object,  // Spread the session details
-      sessionId: uuidv4()  // Add a unique session ID
-    };
-
     // Add the new session to the event
     await Event.updateOne(
       { eventId: event_id },
-      { $push: { sessions: newSession } }  // Push the new session
+      { $push: { sessions: session_object } }
     );
 
-    res.status(200).json({ message: 'Session created successfully', session: newSession });
+    res.status(200).json({ message: 'Session created successfully', session:session_object });
   } catch (error) {
     console.error('Error creating session:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+  
 }));
-app.get('/events/:event_id/sessions', asyncHandler(async (req, res) => {
+
+app.post('/events/:event_id/sessions', asyncHandler(async (req, res) => {
 
   try {
-    const event = await Event.findOne({ eventId: req.params.event_id });
-    res.json(event?.sessions || []);  
+    const session = { ...req.body, sessionId: uuidv4(), eventId: req.params.event_id };
+    await db.collection('sessions').insertOne(session);
+    res.status(201).json(session);    
   } catch (error) {
-    console.error("Error Getting Event Sessions", error)
+    console.error("Error Getting Event Attendess", error)
 
   }
 
@@ -723,28 +723,15 @@ try {
 }));
 
 app.delete('/events/:event_id/sessions/:session_id', asyncHandler(async (req, res) => {
-  const { event_id, session_id } = req.params;
 
-  try {
-    const event = await Event.findOne({ eventId: event_id });
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    // Remove the session with the given sessionId
-    await Event.updateOne(
-      { eventId: event_id },
-      { $pull: { sessions: { sessionId: session_id } } }  // Pull the session by sessionId
-    );
-
-    res.status(200).json({ message: 'Session deleted successfully' });
-  } catch (error) {
-    console.error('Delete Session Error', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+try {
+  await db.collection('sessions').deleteOne({ sessionId: req.params.session_id });
+  res.json({ message: 'Session deleted' });
+} catch (error) {
+  console.error("Delete Session Error", error)
+}
+  
 }));
-
-
 
 app.post('/events/:event_id/sessions/:session_id/attend', asyncHandler(async (req, res) => {
 
@@ -785,7 +772,7 @@ app.get('/get_payments', asyncHandler(async (req, res) => {
 
 }));
 
-app.get('/get_payment/:payment_id', asyncHandler(async (req, res) => {
+app.get('/get_payment/:payment_id', authenticate, asyncHandler(async (req, res) => {
 
   try {
     const payment = await Payment.findOne({ paymentId: req.params.payment_id });
@@ -798,11 +785,23 @@ app.get('/get_payment/:payment_id', asyncHandler(async (req, res) => {
  
 }));
 
+// app.put('/payments/:payment_id', authenticate, asyncHandler(async (req, res) => {
+//   if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
+//   const updates = req.body;
+//   const updatedPayment = await Payment.findOneAndUpdate({ paymentId: req.params.payment_id }, { $set: updates }, { returnDocument: 'after' });
+//   res.json(updatedPayment.value);
+// }));
+
+// app.delete('/payments/:payment_id', authenticate, asyncHandler(async (req, res) => {
+//   if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
+//   await Payment.deleteOne({ paymentId: req.params.payment_id });
+//   res.json({ message: 'Payment deleted' });
+// }));
 
 
 
 //create a post
-app.post('/create_post', asyncHandler(async (req, res) => {
+app.post('/create_post', authenticate, asyncHandler(async (req, res) => {
   const { postMedia } = req.body;
 
   
@@ -831,19 +830,19 @@ app.post('/create_post', asyncHandler(async (req, res) => {
 
 
 //get all posts
-app.get('/get_all_posts', asyncHandler(async (req, res) => {
+app.get('/get_all_posts', authenticate, asyncHandler(async (req, res) => {
   const post = { ...req.body, postId: uuidv4(), userId: req.auth.userId, createdAt: new Date() };
   await Post.find().toArray();
   res.status(201).json(post);
 }));
 
-app.get('/get_post/:post_id', asyncHandler(async (req, res) => {
+app.get('/get_post/:post_id', authenticate, asyncHandler(async (req, res) => {
   const post = { ...req.body, postId: uuidv4(), userId: req.auth.userId, createdAt: new Date() };
   await Post.find().toArray();
   res.status(201).json(post);
 }));
 
-app.get('/user_posts/:user_id', asyncHandler(async (req, res) => {
+app.get('/user_posts/:user_id', authenticate, asyncHandler(async (req, res) => {
   const post = { ...req.body, postId: uuidv4(), userId: req.auth.userId, createdAt: new Date() };
   await Post.find().toArray();
   res.status(201).json(post);
@@ -852,7 +851,7 @@ app.get('/user_posts/:user_id', asyncHandler(async (req, res) => {
 
 //send chat requests
 // Send a chat request
-app.post('/send_chat_req', asyncHandler(async (req, res) => {
+app.post('/send_chat_req', authenticate, asyncHandler(async (req, res) => {
   // Validate request body
   const { receiverId, message } = req.body;
   if (!receiverId || !message) {

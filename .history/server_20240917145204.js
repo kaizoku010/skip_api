@@ -396,6 +396,14 @@ app.post('/sign_up_event/:eventId', asyncHandler(async (req, res) => {
   );
 
      res.status(200).json({ message: 'Successfully signed up for the event' });
+
+      // // Generate PDF ticket
+      const ticketPath = path.join(__dirname, `tickets/${uuidv4()}.pdf`);
+      generateTicket(user, event, ticketPath);
+  
+      // // Send email with ticket
+      await sendTicketWithAttachment(user.email, 'Your Event Ticket', 'Please find your event ticket attached.', ticketPath);
+  
   } catch (error) {
     console.error("attendee addition error:", error)    
   }
@@ -551,7 +559,7 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
 
     const newAttendee = {
       attendeeId: uuidv4(), // Generate a unique ID for the attendee
-      username: userName,
+      name: userName,
       contact: phoneNumber,
       userEmail:email,
       ticketCreatedAt: new Date() // Record the creation date
@@ -562,7 +570,7 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
       { eventId: event_id },
       { $push: { attendees: newAttendee } }
     );
-    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.username}.pdf`);
+    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.attendeeId}.pdf`);
 
     // Generate the ticket PDF
     generateTicket(newAttendee, event, ticketFilePath);

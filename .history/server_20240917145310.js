@@ -551,7 +551,7 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
 
     const newAttendee = {
       attendeeId: uuidv4(), // Generate a unique ID for the attendee
-      username: userName,
+      name: userName,
       contact: phoneNumber,
       userEmail:email,
       ticketCreatedAt: new Date() // Record the creation date
@@ -562,14 +562,14 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
       { eventId: event_id },
       { $push: { attendees: newAttendee } }
     );
-    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.username}.pdf`);
+    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.attendeeId}.pdf`);
 
     // Generate the ticket PDF
     generateTicket(newAttendee, event, ticketFilePath);
 
     // Send the ticket via email
     await sendTicketWithAttachment(
-      newAttendee.userEmail, 
+      newAttendee.e, 
       'Your Event Ticket', 
       'Please find your event ticket attached.', 
       ticketFilePath

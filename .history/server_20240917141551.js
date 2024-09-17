@@ -60,9 +60,6 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-
-
-
 const uri = process.env.MONGO_URI
 const client = new MongoClient(uri, {
   serverApi: {
@@ -100,23 +97,6 @@ const Payment = db.collection('payments');
 const jwtSecret = process.env.JWT_SEC;
 
 
-async function cleanupSessions() {
-
-  try {
-    const collection = db.collection('events');
-
-    const result = await collection.updateMany(
-      { "sessions": null },
-      { $pull: { "sessions": null } }
-    );
-
-    console.log(`${result.modifiedCount} documents updated.`);
-  } finally {
-    await client.close();
-  }
-}
-
-cleanupSessions().catch(console.error);
 
 
 const authenticate = (req, res, next) => {
@@ -266,8 +246,8 @@ const generateTicket = (user, event, filePath) => {
   doc.fontSize(25).text('Event Ticket', { align: 'center' });
   doc.fontSize(18).text(`Name: ${user.username}`);
   doc.fontSize(18).text(`Email: ${user.email}`);
-  doc.fontSize(18).text(`Event: ${event.eventName}`);
-  doc.fontSize(18).text(`Date: ${event.eventDate}`);
+  doc.fontSize(18).text(`Event: ${event.name}`);
+  doc.fontSize(18).text(`Date: ${event.date}`);
   
   doc.end();
 };
@@ -396,6 +376,14 @@ app.post('/sign_up_event/:eventId', asyncHandler(async (req, res) => {
   );
 
      res.status(200).json({ message: 'Successfully signed up for the event' });
+
+      // // Generate PDF ticket
+      const ticketPath = path.join(__dirname, `tickets/${uuidv4()}.pdf`);
+      generateTicket(user, event, ticketPath);
+  
+      // // Send email with ticket
+      await sendTicketWithAttachment(user.email, 'Your Event Ticket', 'Please find your event ticket attached.', ticketPath);
+  
   } catch (error) {
     console.error("attendee addition error:", error)    
   }
@@ -534,11 +522,9 @@ app.post('/create_event_', asyncHandler(async (req, res) => {
 
 app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
   const { event_id } = req.params; // Extract event_id from URL
-  const { user_id, userName, phoneNumber, email } = req.body; // Extract attendee data from request body
+  const { user_id } = req.body; // Extract attendee data from request body
 
-  if ( !userName || !phoneNumber) {
-    return res.status(400).json({ message: 'Missing required fields' });
-  }
+  // Validate input
 
   // Find the event
   const event = await Event.findOne({ eventId: event_id });
@@ -548,31 +534,10 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
   }
 
   try {
-
-    const newAttendee = {
-      attendeeId: uuidv4(), // Generate a unique ID for the attendee
-      username: userName,
-      contact: phoneNumber,
-      userEmail:email,
-      ticketCreatedAt: new Date() // Record the creation date
-    };
-
     // Add the new attendee to the event
     await Event.updateOne(
       { eventId: event_id },
-      { $push: { attendees: newAttendee } }
-    );
-    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.username}.pdf`);
-
-    // Generate the ticket PDF
-    generateTicket(newAttendee, event, ticketFilePath);
-
-    // Send the ticket via email
-    await sendTicketWithAttachment(
-      newAttendee.userEmail, 
-      'Your Event Ticket', 
-      'Please find your event ticket attached.', 
-      ticketFilePath
+      { $push: { attendees: user_id } }
     );
 
     res.status(200).json({ message: 'Attendee created successfully', attendee: user_id });
@@ -660,44 +625,42 @@ try {
   console.error("Error Getting Event Attendess")
 
 }
+
+
 }));
 
 // Event Session Management Endpoints
 app.post('/events/:event_id/create_sessions', asyncHandler(async (req, res) => {
-  const session_object = req.body;
-  const { event_id } = req.params;
 
+  const {event_id, session_object} = req.params;
   const event = await Event.findOne({ eventId: event_id });
   if (!event) {
     return res.status(404).json({ message: 'Event not found, please try again' });
   }
 
   try {
-    // Generate a unique session ID and add it to the session object
-    const newSession = {
-      ...session_object,  // Spread the session details
-      sessionId: uuidv4()  // Add a unique session ID
-    };
-
     // Add the new session to the event
     await Event.updateOne(
       { eventId: event_id },
-      { $push: { sessions: newSession } }  // Push the new session
+      { $push: { sessions: session_object } }
     );
 
-    res.status(200).json({ message: 'Session created successfully', session: newSession });
+    res.status(200).json({ message: 'Session created successfully', session:session_object });
   } catch (error) {
     console.error('Error creating session:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+  
 }));
-app.get('/events/:event_id/sessions', asyncHandler(async (req, res) => {
+
+app.post('/events/:event_id/sessions', asyncHandler(async (req, res) => {
 
   try {
-    const event = await Event.findOne({ eventId: req.params.event_id });
-    res.json(event?.sessions || []);  
+    const session = { ...req.body, sessionId: uuidv4(), eventId: req.params.event_id };
+    await db.collection('sessions').insertOne(session);
+    res.status(201).json(session);    
   } catch (error) {
-    console.error("Error Getting Event Sessions", error)
+    console.error("Error Getting Event Attendess", error)
 
   }
 
@@ -723,28 +686,15 @@ try {
 }));
 
 app.delete('/events/:event_id/sessions/:session_id', asyncHandler(async (req, res) => {
-  const { event_id, session_id } = req.params;
 
-  try {
-    const event = await Event.findOne({ eventId: event_id });
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    // Remove the session with the given sessionId
-    await Event.updateOne(
-      { eventId: event_id },
-      { $pull: { sessions: { sessionId: session_id } } }  // Pull the session by sessionId
-    );
-
-    res.status(200).json({ message: 'Session deleted successfully' });
-  } catch (error) {
-    console.error('Delete Session Error', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+try {
+  await db.collection('sessions').deleteOne({ sessionId: req.params.session_id });
+  res.json({ message: 'Session deleted' });
+} catch (error) {
+  console.error("Delete Session Error", error)
+}
+  
 }));
-
-
 
 app.post('/events/:event_id/sessions/:session_id/attend', asyncHandler(async (req, res) => {
 

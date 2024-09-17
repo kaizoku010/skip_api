@@ -266,8 +266,8 @@ const generateTicket = (user, event, filePath) => {
   doc.fontSize(25).text('Event Ticket', { align: 'center' });
   doc.fontSize(18).text(`Name: ${user.username}`);
   doc.fontSize(18).text(`Email: ${user.email}`);
-  doc.fontSize(18).text(`Event: ${event.eventName}`);
-  doc.fontSize(18).text(`Date: ${event.eventDate}`);
+  doc.fontSize(18).text(`Event: ${event.name}`);
+  doc.fontSize(18).text(`Date: ${event.date}`);
   
   doc.end();
 };
@@ -396,6 +396,14 @@ app.post('/sign_up_event/:eventId', asyncHandler(async (req, res) => {
   );
 
      res.status(200).json({ message: 'Successfully signed up for the event' });
+
+      // // Generate PDF ticket
+      const ticketPath = path.join(__dirname, `tickets/${uuidv4()}.pdf`);
+      generateTicket(user, event, ticketPath);
+  
+      // // Send email with ticket
+      await sendTicketWithAttachment(user.email, 'Your Event Ticket', 'Please find your event ticket attached.', ticketPath);
+  
   } catch (error) {
     console.error("attendee addition error:", error)    
   }
@@ -534,9 +542,9 @@ app.post('/create_event_', asyncHandler(async (req, res) => {
 
 app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
   const { event_id } = req.params; // Extract event_id from URL
-  const { user_id, userName, phoneNumber, email } = req.body; // Extract attendee data from request body
+  const { user_id, userName, contact } = req.body; // Extract attendee data from request body
 
-  if ( !userName || !phoneNumber) {
+  if ( !userName || !contact) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -551,9 +559,9 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
 
     const newAttendee = {
       attendeeId: uuidv4(), // Generate a unique ID for the attendee
-      username: userName,
-      contact: phoneNumber,
-      userEmail:email,
+      name: userName,
+      contact: contact,
+      user
       ticketCreatedAt: new Date() // Record the creation date
     };
 
@@ -561,18 +569,6 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
     await Event.updateOne(
       { eventId: event_id },
       { $push: { attendees: newAttendee } }
-    );
-    const ticketFilePath = path.join(__dirname, 'tickets', `${newAttendee.username}.pdf`);
-
-    // Generate the ticket PDF
-    generateTicket(newAttendee, event, ticketFilePath);
-
-    // Send the ticket via email
-    await sendTicketWithAttachment(
-      newAttendee.userEmail, 
-      'Your Event Ticket', 
-      'Please find your event ticket attached.', 
-      ticketFilePath
     );
 
     res.status(200).json({ message: 'Attendee created successfully', attendee: user_id });
