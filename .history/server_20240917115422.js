@@ -1020,7 +1020,7 @@ app.post('/notifications', asyncHandler(async (req, res) => {
 }));
 
 //get notification
-app.get('/notifications', asyncHandler(async (req, res) => {
+app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
   const notifications = await Notification.find({ userId: req.auth.userId }).toArray();
   res.json(notifications);
 }));

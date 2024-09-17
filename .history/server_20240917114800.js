@@ -641,14 +641,13 @@ app.post('/events/:event_id/sign-up', asyncHandler(async (req, res) => {
 
 app.get('/events/:event_id/users', asyncHandler(async (req, res) => {
 try {
-  const event = await Event.findOne({ eventId: req.params.event_id });
-  res.json(event?.attendees || []);  
+  
 } catch (error) {
-  console.error("Error Getting Event Attendess")
-
+  
 }
 
-
+  const event = await Event.findOne({ eventId: req.params.event_id });
+  res.json(event?.attendees || []);
 }));
 
 // Event Session Management Endpoints
@@ -676,17 +675,10 @@ app.post('/events/:event_id/create_sessions', asyncHandler(async (req, res) => {
 }));
 
 app.post('/events/:event_id/sessions', asyncHandler(async (req, res) => {
-
-  try {
-    const session = { ...req.body, sessionId: uuidv4(), eventId: req.params.event_id };
-    await db.collection('sessions').insertOne(session);
-    res.status(201).json(session);    
-  } catch (error) {
-    console.error("Error Getting Event Attendess", error)
-
-  }
-
-
+  if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
+  const session = { ...req.body, sessionId: uuidv4(), eventId: req.params.event_id };
+  await db.collection('sessions').insertOne(session);
+  res.status(201).json(session);
 }));
 
 app.get('/events/:event_id/sessions/:session_id', asyncHandler(async (req, res) => {
@@ -695,31 +687,19 @@ app.get('/events/:event_id/sessions/:session_id', asyncHandler(async (req, res) 
 }));
 
 app.put('/events/:event_id/sessions/:session_id', asyncHandler(async (req, res) => {
-
-try {
+  if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
   const updates = req.body;
   const updatedSession = await db.collection('sessions').findOneAndUpdate({ sessionId: req.params.session_id }, { $set: updates }, { returnDocument: 'after' });
-  res.json(updatedSession.value);  
-} catch (error) {
-  console.error("Event Session Error", error)
-
-}
-
+  res.json(updatedSession.value);
 }));
 
 app.delete('/events/:event_id/sessions/:session_id', asyncHandler(async (req, res) => {
-
-try {
+  if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
   await db.collection('sessions').deleteOne({ sessionId: req.params.session_id });
   res.json({ message: 'Session deleted' });
-} catch (error) {
-  console.error("Delete Session Error", error)
-}
-  
 }));
 
 app.post('/events/:event_id/sessions/:session_id/attend', asyncHandler(async (req, res) => {
-
   const sessionId = req.params.session_id;
   await db.collection('sessions').updateOne({ sessionId }, { $addToSet: { attendees: req.auth.userId } });
   res.json({ message: 'Signed up for session' });
@@ -733,41 +713,21 @@ app.get('/events/:event_id/sessions/:session_id/users', asyncHandler(async (req,
 
 // Payment Management Endpoints
 app.post('/payments', asyncHandler(async (req, res) => {
-
-  try {
-    const {userId} = req.body
-    const payment = { ...req.body, paymentId: uuidv4(), userId: userId };
-    await Payment.insertOne(payment);
-    res.status(201).json(payment);    
-  } catch (error) {
-    console.error("error making payment: ", error)
-  }
-
+  const {userId} = req.body
+  const payment = { ...req.body, paymentId: uuidv4(), userId: userId };
+  await Payment.insertOne(payment);
+  res.status(201).json(payment);
 }));
 
 app.get('/get_payments', asyncHandler(async (req, res) => {
-
-  try {
-    const payments = await Payment.find().toArray();
-    res.json(payments);    
-  } catch (error) {
-    console.error("Error getting Tickets: ", error)
-  }
-
-
+  if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
+  const payments = await Payment.find().toArray();
+  res.json(payments);
 }));
 
 app.get('/get_payment/:payment_id', authenticate, asyncHandler(async (req, res) => {
-
-  try {
-    const payment = await Payment.findOne({ paymentId: req.params.payment_id });
-    res.json(payment);   
-  } catch (error) {
-    console.error("Error getting Ticket By Id: ", error)
-
-  }
-
- 
+  const payment = await Payment.findOne({ paymentId: req.params.payment_id });
+  res.json(payment);
 }));
 
 // app.put('/payments/:payment_id', authenticate, asyncHandler(async (req, res) => {
@@ -871,16 +831,18 @@ app.post('/send_chat_req', authenticate, asyncHandler(async (req, res) => {
 
 
 // get chat requests for a single user
-app.get('/get_all_chat_reqs/:user_id', asyncHandler(async (req, res) => {
+app.get('/get_all_chat_reqs/:user_id', authenticate, asyncHandler(async (req, res) => {
   const chatRequests = await ChatRequest.find({ receiverId: req.auth.userId }).toArray();
   res.json(chatRequests);
 }));
 
 
-
-app.post('/create_chat_room', asyncHandler(async (req, res) => {
+// create a peer to peer chat room
+// Create a chat room
+app.post('/create_chat_room', authenticate, asyncHandler(async (req, res) => {
   const { name, participants } = req.body;
 
+  if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
 
   const chatRoom = {
     chatRoomId: uuidv4(),
@@ -900,7 +862,7 @@ app.post('/create_chat_room', asyncHandler(async (req, res) => {
 
 
 //get all messages from a chat room..
-app.get('/chat-rooms/:room_id/messages', asyncHandler(async (req, res) => {
+app.get('/chat-rooms/:room_id/messages', authenticate, asyncHandler(async (req, res) => {
   const roomId = req.params.room_id;
   const chatRoom = await ChatRoom.findOne({ roomId });
   res.json(chatRoom?.messages || []);
@@ -908,7 +870,7 @@ app.get('/chat-rooms/:room_id/messages', asyncHandler(async (req, res) => {
 
 // Accept a chat request
 // Accept a chat request
-app.put('/accept_chat_req/:request_id', asyncHandler(async (req, res) => {
+app.put('/accept_chat_req/:request_id', authenticate, asyncHandler(async (req, res) => {
   const requestId = req.params.request_id;
 
   // Find the chat request
@@ -953,7 +915,7 @@ app.put('/accept_chat_req/:request_id', asyncHandler(async (req, res) => {
 
 
 // Delete a chat
-app.delete('/delete_chat/:chat_id', asyncHandler(async (req, res) => {
+app.delete('/delete_chat/:chat_id', authenticate, asyncHandler(async (req, res) => {
   const chatId = req.params.chat_id;
 
   // Check if the chat exists
@@ -974,7 +936,7 @@ app.delete('/delete_chat/:chat_id', asyncHandler(async (req, res) => {
 }));
 
 
-app.post('/send_message', asyncHandler(async (req, res) => {
+app.post('/send_message', authenticate, asyncHandler(async (req, res) => {
   const { chatRoomId, messageContent } = req.body;
   const senderId = req.auth.userId;
 
@@ -996,7 +958,7 @@ app.post('/send_message', asyncHandler(async (req, res) => {
 }));
 
 
-app.get('/get_messages/:chat_room_id', asyncHandler(async (req, res) => {
+app.get('/get_messages/:chat_room_id', authenticate, asyncHandler(async (req, res) => {
   const chatRoomId = req.params.chat_room_id;
 
   if (!chatRoomId) {
@@ -1013,14 +975,14 @@ app.get('/get_messages/:chat_room_id', asyncHandler(async (req, res) => {
 
 
 //send notifications
-app.post('/notifications', asyncHandler(async (req, res) => {
+app.post('/notifications', authenticate, asyncHandler(async (req, res) => {
   const notification = { ...req.body, notificationId: uuidv4(), userId: req.auth.userId, createdAt: new Date() };
   await Notification.insertOne(notification);
   res.status(201).json(notification);
 }));
 
 //get notification
-app.get('/notifications', asyncHandler(async (req, res) => {
+app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
   const notifications = await Notification.find({ userId: req.auth.userId }).toArray();
   res.json(notifications);
 }));

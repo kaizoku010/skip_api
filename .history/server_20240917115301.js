@@ -767,7 +767,8 @@ app.get('/get_payment/:payment_id', authenticate, asyncHandler(async (req, res) 
 
   }
 
- 
+  res.status(500).json({ message: error.message });
+
 }));
 
 // app.put('/payments/:payment_id', authenticate, asyncHandler(async (req, res) => {
@@ -871,16 +872,18 @@ app.post('/send_chat_req', authenticate, asyncHandler(async (req, res) => {
 
 
 // get chat requests for a single user
-app.get('/get_all_chat_reqs/:user_id', asyncHandler(async (req, res) => {
+app.get('/get_all_chat_reqs/:user_id', authenticate, asyncHandler(async (req, res) => {
   const chatRequests = await ChatRequest.find({ receiverId: req.auth.userId }).toArray();
   res.json(chatRequests);
 }));
 
 
-
-app.post('/create_chat_room', asyncHandler(async (req, res) => {
+// create a peer to peer chat room
+// Create a chat room
+app.post('/create_chat_room', authenticate, asyncHandler(async (req, res) => {
   const { name, participants } = req.body;
 
+  if (!req.auth.isAdmin) return res.status(403).json({ message: 'Forbidden' });
 
   const chatRoom = {
     chatRoomId: uuidv4(),
@@ -900,7 +903,7 @@ app.post('/create_chat_room', asyncHandler(async (req, res) => {
 
 
 //get all messages from a chat room..
-app.get('/chat-rooms/:room_id/messages', asyncHandler(async (req, res) => {
+app.get('/chat-rooms/:room_id/messages', authenticate, asyncHandler(async (req, res) => {
   const roomId = req.params.room_id;
   const chatRoom = await ChatRoom.findOne({ roomId });
   res.json(chatRoom?.messages || []);
@@ -908,7 +911,7 @@ app.get('/chat-rooms/:room_id/messages', asyncHandler(async (req, res) => {
 
 // Accept a chat request
 // Accept a chat request
-app.put('/accept_chat_req/:request_id', asyncHandler(async (req, res) => {
+app.put('/accept_chat_req/:request_id', authenticate, asyncHandler(async (req, res) => {
   const requestId = req.params.request_id;
 
   // Find the chat request
@@ -953,7 +956,7 @@ app.put('/accept_chat_req/:request_id', asyncHandler(async (req, res) => {
 
 
 // Delete a chat
-app.delete('/delete_chat/:chat_id', asyncHandler(async (req, res) => {
+app.delete('/delete_chat/:chat_id', authenticate, asyncHandler(async (req, res) => {
   const chatId = req.params.chat_id;
 
   // Check if the chat exists
@@ -974,7 +977,7 @@ app.delete('/delete_chat/:chat_id', asyncHandler(async (req, res) => {
 }));
 
 
-app.post('/send_message', asyncHandler(async (req, res) => {
+app.post('/send_message', authenticate, asyncHandler(async (req, res) => {
   const { chatRoomId, messageContent } = req.body;
   const senderId = req.auth.userId;
 
@@ -996,7 +999,7 @@ app.post('/send_message', asyncHandler(async (req, res) => {
 }));
 
 
-app.get('/get_messages/:chat_room_id', asyncHandler(async (req, res) => {
+app.get('/get_messages/:chat_room_id', authenticate, asyncHandler(async (req, res) => {
   const chatRoomId = req.params.chat_room_id;
 
   if (!chatRoomId) {
@@ -1013,14 +1016,14 @@ app.get('/get_messages/:chat_room_id', asyncHandler(async (req, res) => {
 
 
 //send notifications
-app.post('/notifications', asyncHandler(async (req, res) => {
+app.post('/notifications', authenticate, asyncHandler(async (req, res) => {
   const notification = { ...req.body, notificationId: uuidv4(), userId: req.auth.userId, createdAt: new Date() };
   await Notification.insertOne(notification);
   res.status(201).json(notification);
 }));
 
 //get notification
-app.get('/notifications', asyncHandler(async (req, res) => {
+app.get('/notifications', authenticate, asyncHandler(async (req, res) => {
   const notifications = await Notification.find({ userId: req.auth.userId }).toArray();
   res.json(notifications);
 }));
