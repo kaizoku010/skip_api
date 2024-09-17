@@ -264,13 +264,13 @@ const generateTicket = (user, event, filePath) => {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream(filePath));
   const logoPath = path.join(__dirname, './public/skip.png');
-  doc.image(logoPath, { fit: [95, 95], align: 'center' }).moveDown(1);
-  // doc.fontSize(20).text('Skip Ticket', { align: 'left' }).moveDown(1);
+  doc.image(logoPath, { fit: [50, 50], align: 'center' });
+  doc.fontSize(20).text('Skip Ticket', { align: 'left' }).moveDown();
   
   // User and Event Info
-  doc.fontSize(16)
+  doc.fontSize(18)
      .text(`Name: ${user.username}`, { align: 'left' })
-     .moveDown(0.5);
+     .moveDown(1);
   doc.text(`Email: ${user.userEmail}`, { align: 'left' })
      .moveDown(0.5);
   doc.text(`Event: ${event.eventName}`, { align: 'left' })
@@ -279,7 +279,7 @@ const generateTicket = (user, event, filePath) => {
      .moveDown(2);
 
  // Generate QR code
- const qrCodeData = `Event: ${event.eventName}, Attendee: ${user.username}, UserEmail: ${event.userEmail}`;
+ const qrCodeData = `Event: ${event.eventName}, User: ${user.username}, Date: ${event.eventDate}`;
  const qrImage = qr.imageSync(qrCodeData, { type: 'png', size: 5 });
 
  // QR Code below the text
@@ -288,7 +288,7 @@ const generateTicket = (user, event, filePath) => {
  // Footer Text
  doc.moveDown(5)
     .fontSize(12)
-    .text('www.moxie5agency.com', { align: 'center' });
+    .text('www.moxie5Agency.c', { align: 'center' });
 
   
   doc.end();

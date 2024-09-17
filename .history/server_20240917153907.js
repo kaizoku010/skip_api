@@ -264,8 +264,8 @@ const generateTicket = (user, event, filePath) => {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream(filePath));
   const logoPath = path.join(__dirname, './public/skip.png');
-  doc.image(logoPath, { fit: [95, 95], align: 'center' }).moveDown(1);
-  // doc.fontSize(20).text('Skip Ticket', { align: 'left' }).moveDown(1);
+  doc.image(logoPath, { fit: [80, 80], align: 'center' });
+  doc.fontSize(20).text('Skip Ticket', { align: 'left' }).moveDown(1);
   
   // User and Event Info
   doc.fontSize(16)
@@ -279,7 +279,7 @@ const generateTicket = (user, event, filePath) => {
      .moveDown(2);
 
  // Generate QR code
- const qrCodeData = `Event: ${event.eventName}, Attendee: ${user.username}, UserEmail: ${event.userEmail}`;
+ const qrCodeData = `Event: ${event.eventName}, Attendee: ${user.username}, Date: ${event.eventDate}`;
  const qrImage = qr.imageSync(qrCodeData, { type: 'png', size: 5 });
 
  // QR Code below the text

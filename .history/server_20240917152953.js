@@ -263,33 +263,14 @@ const uploadVideo = (path)=>{
 const generateTicket = (user, event, filePath) => {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream(filePath));
-  const logoPath = path.join(__dirname, './public/skip.png');
-  doc.image(logoPath, { fit: [95, 95], align: 'center' }).moveDown(1);
-  // doc.fontSize(20).text('Skip Ticket', { align: 'left' }).moveDown(1);
-  
-  // User and Event Info
-  doc.fontSize(16)
-     .text(`Name: ${user.username}`, { align: 'left' })
-     .moveDown(0.5);
-  doc.text(`Email: ${user.userEmail}`, { align: 'left' })
-     .moveDown(0.5);
-  doc.text(`Event: ${event.eventName}`, { align: 'left' })
-     .moveDown(0.5);
-  doc.text(`Date: ${event.eventDate}`, { align: 'left' })
-     .moveDown(2);
+  const logoPath = path.join(__dirname, 'path_to_logo_image/logo.png');
 
- // Generate QR code
- const qrCodeData = `Event: ${event.eventName}, Attendee: ${user.username}, UserEmail: ${event.userEmail}`;
- const qrImage = qr.imageSync(qrCodeData, { type: 'png', size: 5 });
 
- // QR Code below the text
- doc.image(qrImage, doc.page.width / 2 - 50, doc.y, { fit: [100, 100], align: 'center' });
-
- // Footer Text
- doc.moveDown(5)
-    .fontSize(12)
-    .text('www.moxie5agency.com', { align: 'center' });
-
+  doc.fontSize(25).text('Skip Ticket', { align: 'center' });
+  doc.fontSize(18).text(`Name: ${user.username}`);
+  doc.fontSize(18).text(`Email: ${user.userEmail}`);
+  doc.fontSize(18).text(`Event: ${event.eventName}`);
+  doc.fontSize(18).text(`Date: ${event.eventDate}`);
   
   doc.end();
 };
