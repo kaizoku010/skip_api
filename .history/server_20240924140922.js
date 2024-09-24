@@ -28,6 +28,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // console.log("testing env", process.env)
+
+
 app.use(cors({
   origin: '*', // Allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
