@@ -660,6 +660,7 @@ app.get('/get_all_events', asyncHandler(async (req, res) => {
 app.get('/get_event/:event_id', asyncHandler(async (req, res) => {
   const eventId = req.params.event_id;
   
+  // Try converting the eventId to an ObjectId (if needed)
   try {
     const event = await Event.findById(eventId); // Using MongoDB's default _id field
     if (!event) {
