@@ -509,7 +509,7 @@ asyncHandler(async (req, res) => {
 try {
   const eventImage = req.file;
   const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly
-  const event = { ...req.body, eventId: uuidv4(), eventImage:imagePath };
+  const event = { ...req.body, eventId: uuidv4(), organizerId: "Moxie", eventImage:imagePath };
   await Event.insertOne(event);
   
   res.status(201).json({
