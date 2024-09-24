@@ -517,7 +517,7 @@ asyncHandler(async (req, res) => {
   try {
     const eventImage = req.file;
     const imagePath = await uploadEventImage(eventImage.path); 
-    const event = { ...req.body, eventId: uuidv4(), eventImage: imagePath };
+    const event = { ...req.body, eventId: uuidv4(), eventImage: "imagePath };
     const insertResult = await Event.insertOne(event);
     console.log("Insert Result: ", insertResult);
     res.status(201).json({
