@@ -37,9 +37,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   credentials: false
 }));
-
-app.options('*', cors()); // Enable pre-flight across-the-board
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
   res.header("Access-Control-Allow-Headers", "*"); // Allow all headers
