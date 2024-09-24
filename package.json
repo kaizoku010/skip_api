@@ -1,6 +1,8 @@
 {
   "name": "skip_api",
   "version": "4.0.0",
+  "proxy": "http://skip-api-1gup.onrender.com",
+
   "scripts": {
     "build": "echo 'Skipping build step as no build is required.'",
     "start": "node server.js"
