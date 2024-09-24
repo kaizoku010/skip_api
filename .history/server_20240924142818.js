@@ -513,23 +513,22 @@ app.get('/all_user_event/:user_id', asyncHandler(async (req, res) => {
 // Event Management 
 app.post('/create_event', upload.single("eventImage"), 
 asyncHandler(async (req, res) => {
-  console.log("Request Body: ", req.body); // Log body content
-  try {
-    const eventImage = req.file;
-    const imagePath = await uploadEventImage(eventImage.path); 
-    const event = { ...req.body, eventId: uuidv4(), eventImage: "imagePath" };
-    await Event.insertOne(event);  // Log insertion as well
-    console.log("Event inserted: ", event);
-    res.status(201).json({
-      event,
-      message: "event_created"
-    });  
-  } catch (error) {
-    console.error("Error Creating Event: ", error);
-    res.status(500).json({ error: "Failed to create event" });
-  }
-}));
+try {
+  const eventImage = req.file;
+  const imagePath = await uploadEventImage(eventImage.path); // Ensure this function is working properly
+  const event = { ...req.body, eventId: uuidv4(), eventImage:imagePath };
+  await Event.insertOne(event);
+  
+  res.status(201).json({
+    event,
+    message: "event_created"
+  });  
+} catch (error) {
+  console.error("Error Creating Event: ", error)
+  return res.status(500).json({ message: "Image upload failed" });
 
+}
+}));
 
 
   app.post('/create_event_speaker', asyncHandler(async (req, res) => {
