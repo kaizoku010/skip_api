@@ -264,7 +264,7 @@ const generateTicket = (user, event, filePath) => {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream(filePath));
   const logoPath = path.join(__dirname, './public/skip.png');
-  doc.image(logoPath, { fit: [95, 95], align: 'left' }).moveDown(2);
+  doc.image(logoPath, { fit: [95, 95], align: 'center' }).moveDown(2);
   // doc.fontSize(20).text('Skip Ticket', { align: 'left' }).moveDown(1);
   
   // User and Event Info
