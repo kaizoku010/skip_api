@@ -643,7 +643,6 @@ app.get('/checkins/:event_id', asyncHandler(async (req, res) => {
     const event = await Event.findOne({ eventId });
     res.json(event);    
   } catch (error) {
-    console.error('Error fetching checkins:', error);
     res.status(404).json({ message: 'Event not found' });
     res.status(500).json({ message: 'Internal server error' });
 

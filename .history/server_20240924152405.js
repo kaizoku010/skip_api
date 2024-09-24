@@ -517,7 +517,7 @@ asyncHandler(async (req, res) => {
   try {
     const eventImage = req.file;
     const imagePath = await uploadEventImage(eventImage.path); 
-    const event = { ...req.body, eventId: uuidv4(), eventImage: imagePath };
+    const event = { ...req.body, eventId: uuidv4(), eventImage: "imagePath };
     const insertResult = await Event.insertOne(event);
     console.log("Insert Result: ", insertResult);
     res.status(201).json({
@@ -637,20 +637,6 @@ app.get('/get_attendees/:event_id', asyncHandler(async (req, res) => {
 
 
 
-app.get('/checkins/:event_id', asyncHandler(async (req, res) => {
-  const eventId = req.params.event_id;
-  try {
-    const event = await Event.findOne({ eventId });
-    res.json(event);    
-  } catch (error) {
-    console.error('Error fetching checkins:', error);
-    res.status(404).json({ message: 'Event not found' });
-    res.status(500).json({ message: 'Internal server error' });
-
-  }
-
-}));
-
 
 app.get('/get_all_events', asyncHandler(async (req, res) => {
   const events = await Event.find().toArray();
@@ -662,8 +648,6 @@ app.get('/get_event/:event_id', asyncHandler(async (req, res) => {
   const event = await Event.findOne({ eventId });
   res.json(event);
 }));
-
-
 
 app.put('/edit_events/:event_id', asyncHandler(async (req, res) => {
   try {
