@@ -520,6 +520,7 @@ asyncHandler(async (req, res) => {
     const event = { ...req.body, eventId: uuidv4(), eventImage: "imagePath" };
     const insertResult = await Event.insertOne(event);
     console.log("Insert Result: ", insertResult);
+        console.log("Event inserted: ", event);
     res.status(201).json({
       event,
       message: "event_created"
