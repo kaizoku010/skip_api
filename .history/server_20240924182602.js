@@ -565,7 +565,7 @@ app.post('/create_event_', asyncHandler(async (req, res) => {
 
 app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
   const { event_id } = req.params; // Extract event_id from URL
-  const { user_id, userName, phoneNumber, email, ageRange, jobIndustry } = req.body; // Extract attendee data from request body
+  const { user_id, userName, phoneNumber, email, ageRange } = req.body; // Extract attendee data from request body
 
   if ( !userName || !phoneNumber) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -585,8 +585,6 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
       username: userName,
       contact: phoneNumber,
       userEmail:email,
-      job:jobIndustry,
-      age:ageRange, 
       ticketCreatedAt: new Date() // Record the creation date
     };
 

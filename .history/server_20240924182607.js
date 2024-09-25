@@ -585,8 +585,6 @@ app.post('/create_attendee/:event_id', asyncHandler(async (req, res) => {
       username: userName,
       contact: phoneNumber,
       userEmail:email,
-      job:jobIndustry,
-      age:ageRange, 
       ticketCreatedAt: new Date() // Record the creation date
     };
 
