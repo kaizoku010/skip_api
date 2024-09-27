@@ -719,7 +719,7 @@ app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, re
 
     // Save the updated event
    await Event.updateOne(
-      { eventId: event_id },
+      { eventId: eventObjectId },
       { $set: { attendees: event.attendees } }
     );
 
