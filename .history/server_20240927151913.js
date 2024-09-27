@@ -718,7 +718,7 @@ app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, re
     event.attendees.splice(attendeeIndex, 1);
 
     // Save the updated event
-   await Event.updateOne(
+   await Eve.updateOne(
       { eventId: eventObjectId },
       { $set: { attendees: event.attendees } }
     );
