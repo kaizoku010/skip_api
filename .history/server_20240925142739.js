@@ -688,33 +688,6 @@ try {
 }
 }));
 
-
-
-app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) => {
-  try {
-    await User.deleteOne({ attendeeId: req.params.attendeeId });
-    res.json({ message: 'User deleted' }); 
-  } catch (error) {
-    console.error("Error Deleting Attendee")
-    res.json({ message: error }); 
-  
-  }
-  }));
-
-
-  //edit attendee information
-app.put('/edit_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) => {
-
-  try {
-    const updates = req.body;
-    const updatedUser = await User.findOneAndUpdate({ attendeeId: req.params.attendeeId }, { $set: updates }, { returnDocument: 'after' });
-    res.json(updatedUser.value);  
-  } catch (error) {
-    console.error("Event Session Error", error)
-  }
-  }));
-
-
 app.get('/all_user_event/user', asyncHandler(async (req, res) => {
   const events = await Event.find({ attendees: req.auth.userId }).toArray();
   res.json(events);

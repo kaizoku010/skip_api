@@ -693,9 +693,9 @@ try {
 app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) => {
   try {
     await User.deleteOne({ attendeeId: req.params.attendeeId });
-    res.json({ message: 'User deleted' }); 
+    res.json({ message: 'Event deleted' }); 
   } catch (error) {
-    console.error("Error Deleting Attendee")
+    console.error("Error Deleting Event")
     res.json({ message: error }); 
   
   }
@@ -707,11 +707,12 @@ app.put('/edit_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) =>
 
   try {
     const updates = req.body;
-    const updatedUser = await User.findOneAndUpdate({ attendeeId: req.params.attendeeId }, { $set: updates }, { returnDocument: 'after' });
+    const updatedUser = await User.findOneAndUpdate({ userId: req.params.user_id }, { $set: updates }, { returnDocument: 'after' });
     res.json(updatedUser.value);  
   } catch (error) {
     console.error("Event Session Error", error)
   }
+  
   }));
 
 

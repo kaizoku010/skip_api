@@ -693,7 +693,7 @@ try {
 app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) => {
   try {
     await User.deleteOne({ attendeeId: req.params.attendeeId });
-    res.json({ message: 'User deleted' }); 
+    res.json({ message: 'Event deleted' }); 
   } catch (error) {
     console.error("Error Deleting Attendee")
     res.json({ message: error }); 
