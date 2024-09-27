@@ -697,8 +697,8 @@ app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, re
     console.log(`Deleting attendee with ID: ${attendeeId} for event ID: ${event_id}`);
 
     // Find the event by its ID
-    const event = await Event.findOne({eventId:event_id}); // Replace with your event model
-    console.log("event found")
+    const event = await Event.findOne("eventId"); // Replace with your event model
+
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
