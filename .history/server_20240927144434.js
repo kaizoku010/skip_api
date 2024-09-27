@@ -693,40 +693,21 @@ try {
 app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) => {
   try {
     const { event_id, attendeeId } = req.params;
-
+    
     console.log(`Deleting attendee with ID: ${attendeeId} for event ID: ${event_id}`);
+    
+    const result = await User.deleteOne({ userId: attendeeId });
 
-    // Find the event by its ID
-    const event = await Event.findById(event_id); // Replace with your event model
-
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Attendee not found' });
     }
 
-    // Check if the attendee exists in the attendees array
-    const attendeeIndex = event.attendees.findIndex(attendee => 
-      typeof attendee === 'object' && attendee.attendeeId === attendeeId
-    );
-
-    console.log("Attendee to be deleted: ". attendeeIndex)
-
-    if (attendeeIndex === -1) {
-      return res.status(404).json({ message: 'Attendee not found in this event' });
-    }
-
-    // Remove the attendee
-    event.attendees.splice(attendeeIndex, 1);
-
-    // Save the updated event
-    await event.save();
-
-    res.json({ message: 'Attendee deleted successfully' });
+    res.json({ message: 'Attendee deleted' });
   } catch (error) {
     console.error("Error Deleting Attendee", error);
     res.status(500).json({ message: error.message });
   }
 }));
-
 
   //edit attendee information
 app.put('/edit_attendee/:event_id/:attendeeId', asyncHandler(async (req, res) => {

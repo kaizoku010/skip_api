@@ -708,7 +708,7 @@ app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, re
       typeof attendee === 'object' && attendee.attendeeId === attendeeId
     );
 
-    console.log("Attendee to be deleted: ". attendeeIndex)
+    console.log("Attendee to be deleted")
 
     if (attendeeIndex === -1) {
       return res.status(404).json({ message: 'Attendee not found in this event' });
