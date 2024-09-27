@@ -724,7 +724,7 @@ app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, re
     );
 
 
-    res.json({ message: 'Attendee deleted, Event Updated' });
+    res.json({ message: 'Attendee deleted successfully' });
   } catch (error) {
     console.error("Error Deleting Attendee", error);
     res.status(500).json({ message: error.message });

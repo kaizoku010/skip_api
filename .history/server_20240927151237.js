@@ -718,13 +718,9 @@ app.delete('/delete_attendee/:event_id/:attendeeId', asyncHandler(async (req, re
     event.attendees.splice(attendeeIndex, 1);
 
     // Save the updated event
-   await eventsCollection.updateOne(
-      { eventId: eventObjectId },
-      { $set: { attendees: event.attendees } }
-    );
+    await event.save();
 
-
-    res.json({ message: 'Attendee deleted, Event Updated' });
+    res.json({ message: 'Attendee deleted successfully' });
   } catch (error) {
     console.error("Error Deleting Attendee", error);
     res.status(500).json({ message: error.message });
