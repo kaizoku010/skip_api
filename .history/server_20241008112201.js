@@ -165,13 +165,13 @@ const transporter = nodemailer.createTransport({
 })
 
 
-async function mailer(email, password) {
+async function mailer(email) {
 
  await transporter.sendMail({
     from:`"Sk!p Events"<dev@moxie5agency.com>`,
     to:email,
-    subject:"Event Registration Complete",
-    text:`Welcome To Moxie5 Events, proceed by logging into your sk!p account...here are your login details. User Email: ${email}, password: ${password}`,
+    subject:"Event Registration",
+    text:`Welcome To Moxie5 Events, proceed by logging into your sk!p account...here are your login details ${email}`,
 
   })
   
@@ -319,7 +319,7 @@ app.post('/auth/signup',  upload.single('userImage'), asyncHandler(async (req, r
     fs.unlinkSync(userImage.path);
   
     res.status(201).json({ message: 'User registered successfully!' });
-    await mailer(email, password).catch(console.error); // Ensure mailer is not failing
+    await mailer(email).catch(console.error); // Ensure mailer is not failing
   } catch (error) {
     console.error('Error during signup:', error); // Add this to log the full error stack trace
     res.status(500).json({ message: error.message || 'Internal Server Error' });

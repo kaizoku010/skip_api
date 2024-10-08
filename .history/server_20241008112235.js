@@ -165,13 +165,13 @@ const transporter = nodemailer.createTransport({
 })
 
 
-async function mailer(email, password) {
+async function mailer(email) {
 
  await transporter.sendMail({
     from:`"Sk!p Events"<dev@moxie5agency.com>`,
     to:email,
-    subject:"Event Registration Complete",
-    text:`Welcome To Moxie5 Events, proceed by logging into your sk!p account...here are your login details. User Email: ${email}, password: ${password}`,
+    subject:"Event Registration",
+    text:`Welcome To Moxie5 Events, proceed by logging into your sk!p account...here are your login details. User Email: ${email}, password`,
 
   })
   
