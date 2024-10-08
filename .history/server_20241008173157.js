@@ -423,7 +423,7 @@ app.post(
         sameSite: "Strict",
       });
       res.status(200).json({ message: "Logged in successfully", token, user:{
-        userId:user.id,
+        user_id:user.id,
         userName:user.username,
         userEmail:user.email,
         phone:user.phone,

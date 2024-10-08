@@ -423,14 +423,11 @@ app.post(
         sameSite: "Strict",
       });
       res.status(200).json({ message: "Logged in successfully", token, user:{
-        userId:user.id,
-        userName:user.username,
+        user_id:user.id,
+        username:user.username,
         userEmail:user.email,
         phone:user.phone,
-        job:user.job,
-        gender:user.gender,
-        industry:user.industry,
-        userImage:user.userImage
+        job:user.job
 
       } });
     } else {

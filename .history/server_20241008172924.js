@@ -423,15 +423,7 @@ app.post(
         sameSite: "Strict",
       });
       res.status(200).json({ message: "Logged in successfully", token, user:{
-        userId:user.id,
-        userName:user.username,
-        userEmail:user.email,
-        phone:user.phone,
-        job:user.job,
-        gender:user.gender,
-        industry:user.industry,
-        userImage:user.userImage
-
+        
       } });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
