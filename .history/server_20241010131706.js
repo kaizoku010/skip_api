@@ -446,7 +446,7 @@ app.post(
   "/sign_up_event/:eventId",
   asyncHandler(async (req, res) => {
     const { eventId } = req.params;
-    const { userId } = req.req;
+    const { userId } = req.auth;
     const user = await User.findOne({ id: userId });
 
     // Check if the event exists
