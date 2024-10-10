@@ -642,7 +642,7 @@ app.post(
     try {
       const newAttendee = {
         attendeeId: uuidv4(), // Generate a unique ID for the attendee
-        userId:user_id,
+       userId:user_
         username: userName,
         contact: phoneNumber,
         userEmail: email,
