@@ -556,7 +556,7 @@ app.put(
     const { id } = req.params;
     const { username, email } = req.body;
 
-    const updatedUser = await User.findOneAndUpdate(
+    const updatedUser = await USre.findOneAndUpdate(
       { _id: ObjectId(id) }, // Using ObjectId here
       { $set: { username, email } },
       { returnOriginal: false }
@@ -575,7 +575,7 @@ app.delete(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const deletedUser = await User.findOneAndDelete(
+    const deletedUser = await db.collection("users").findOneAndDelete(
       { _id: ObjectId(id) } // Using ObjectId here
     );
 

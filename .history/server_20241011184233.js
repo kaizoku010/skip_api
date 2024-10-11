@@ -575,7 +575,7 @@ app.delete(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const deletedUser = await User.findOneAndDelete(
+    const deletedUser = await db.collection("users").findOneAndDelete(
       { _id: ObjectId(id) } // Using ObjectId here
     );
 
