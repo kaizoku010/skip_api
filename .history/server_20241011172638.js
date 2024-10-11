@@ -695,7 +695,7 @@ app.post(
         username: userName,
         contact: phoneNumber,
         userEmail: email,
-        userImage:userimage,
+        userImage
         job: jobIndustry,
         age: ageRange,
         ticketCreatedAt: new Date(), // Record the creation date
