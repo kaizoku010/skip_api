@@ -681,7 +681,7 @@ app.post(
 
 
      // Check if the user is already an attendee for this event
-     const existingAttendee = event.attendees.find(attendee => attendee.userEmail === email);
+     const existingAttendee = event.attendees.find(attendee => attendee.userId === user_id);
 
      if (existingAttendee) {
        return res.status(409).json({ message: "User is already signed up for this event" });

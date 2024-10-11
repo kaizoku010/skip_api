@@ -305,32 +305,6 @@ const generateTicket = (user, event, filePath) => {
   doc.end();
 };
 
-app.get("/verify-email", asyncHandler(async (req, res) => {
-  const { token } = req.query;
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { email } = decoded;
-
-    // Activate the user
-    await User.updateOne({ email }, { $set: { isVerified: true } });
-
-    res.status(200).json({ message: "Email verified successfully!" });
-  } catch (error) {
-    console.error("Email verification error:", error);
-    res.status(400).json({ message: "Invalid or expired verification link." });
-  }
-}));
-
-
-const sendVerificationEmail = async (email) => {
-  const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-  const verificationLink = `/verify-email?token=${verificationToken}`;
-
-  await mailer(email, "Verify Your Email", `Click on this link to verify your email: ${verificationLink}`);
-};
-
 // Authentication Endpoints
 app.post(
   "/auth/signup",
@@ -346,12 +320,8 @@ app.post(
 
     try {
 
-//check if email exists already
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(409).json({ message: "Email already registered" });
-      }
 
+      
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const imagePath = await uploadUserImage(userImage.path);
@@ -372,11 +342,7 @@ app.post(
       fs.unlinkSync(userImage.path);
 
       res.status(201).json({ message: "User registered successfully!" });
-      
-       // Send a verification email
-       await sendVerificationEmail(email).catch(console.error);
-
-      
+      await mailer(email, password).catch(console.error); // Ensure mailer is not failing
     } catch (error) {
       console.error("Error during signup:", error); // Add this to log the full error stack trace
       res
@@ -659,8 +625,6 @@ app.post(
   })
 );
 
-
-//create event attendee
 app.post(
   "/create_attendee/:event_id",
   asyncHandler(async (req, res) => {
@@ -678,15 +642,6 @@ app.post(
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
-
-
-     // Check if the user is already an attendee for this event
-     const existingAttendee = event.attendees.find(attendee => attendee.userEmail === email);
-
-     if (existingAttendee) {
-       return res.status(409).json({ message: "User is already signed up for this event" });
-     }
- 
 
     try {
       const newAttendee = {

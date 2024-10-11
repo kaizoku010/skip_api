@@ -679,15 +679,6 @@ app.post(
       return res.status(404).json({ message: "Event not found" });
     }
 
-
-     // Check if the user is already an attendee for this event
-     const existingAttendee = event.attendees.find(attendee => attendee.userEmail === email);
-
-     if (existingAttendee) {
-       return res.status(409).json({ message: "User is already signed up for this event" });
-     }
- 
-
     try {
       const newAttendee = {
         attendeeId: uuidv4(), // Generate a unique ID for the attendee
