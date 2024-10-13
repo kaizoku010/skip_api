@@ -1124,35 +1124,30 @@ app.get(
 
 //create a post
 app.post(
-  '/create_post/:eventId',
+  "/create_post",
   asyncHandler(async (req, res) => {
-    const { userId, content, mediaUrl } = req.body;
-    const { eventId } = req.params;
+    const { postMedia } = req.body;
 
-    // Validate required fields
-    if (!userId || !content) {
-      return res.status(400).json({ message: 'UserId and content are required' });
-    }
-
-    // Create a new post object
-    const newPost = {
-      postId: uuidv4(),
-      userId: userId,
-      eventId: eventId,
-      content: content,
-      mediaUrl: mediaUrl || null, // Media URL if provided
-      likes: 0,
-      comments: [],
-      createdAt: new Date(),
-    };
-
-    // Save post to the database
     try {
-      const savedPost = await Post.create(newPost); // Assuming you're using MongoDB or similar
-      res.status(201).json(savedPost);
+      // Upload image to Cloudinary
+      let imageUrl = "";
+      if (req.file) {
+        imageUrl = await uploadPostImage(postMedia); // Upload the image and get the URL
+      }
+
+      // Create post object
+      const post = {
+        ...req.body,
+        postId: uuidv4(),
+        userId: req.auth.userId,
+        createdAt: new Date(),
+        imageUrl, // Include the image URL if available
+      };
+      // Insert post into MongoDB
+      await Post.insertOne(post);
+      res.status(201).json(post);
     } catch (error) {
-      console.error("Error creating post:", error);
-      res.status(500).json({ message: 'Failed to create post' });
+      res.status(500).json({ message: error.message });
     }
   })
 );
@@ -1165,6 +1160,7 @@ app.get(
       ...req.body,
       postId: uuidv4(),
       userId: req.auth.userId,
+      createdAt: new Date(),
     };
     await Post.find().toArray();
     res.status(201).json(post);
