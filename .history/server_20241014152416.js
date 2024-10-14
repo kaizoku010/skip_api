@@ -1176,7 +1176,7 @@ app.post(
 app.get(
   "/get_all_posts",
   asyncHandler(async (req, res) => {
-    const { userId, eventId } = req.query;  // Extract userId and eventId from request body
+    const { userId, eventId } = = req.query;  // Extract userId and eventId from request body
     
     try {
       // Find the event with the provided eventId
