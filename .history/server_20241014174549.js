@@ -1148,7 +1148,7 @@ app.post(
       mediaUrl: post_media_url,
       content: content,
       userName:userName,
-      userImage:userImage,
+      user
       createdAt: new Date(),
     };
 

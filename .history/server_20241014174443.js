@@ -1127,7 +1127,7 @@ app.post(
   '/create_post/:eventId',
   upload.single('mediaUrl'), // Add this middleware to handle the file upload
   asyncHandler(async (req, res) => {
-    const { userId, content, userName, userImage,  } = req.body;
+    const { userId, content } = req.body;
     const { eventId } = req.params;
     const mediaFile = req.file; 
 
@@ -1147,8 +1147,6 @@ app.post(
       userId: userId,
       mediaUrl: post_media_url,
       content: content,
-      userName:userName,
-      userImage:userImage,
       createdAt: new Date(),
     };
 
@@ -1178,7 +1176,7 @@ app.post(
 app.get(
   "/get_all_posts",
   asyncHandler(async (req, res) => {
-    const { eventId } = req.query;  // Extract userId and eventId from request body
+    const { eventId, userName, userImage, userId } = req.query;  // Extract userId and eventId from request body
     
     try {
       // Find the event with the provided eventId
