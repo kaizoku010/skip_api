@@ -1122,7 +1122,6 @@ app.get(
   })
 );
 
-//create fourm
 app.post(
   '/create_post/:eventId',
   upload.single('mediaUrl'), // Add this middleware to handle the file upload
