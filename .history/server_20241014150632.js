@@ -1188,7 +1188,7 @@ app.get(
 
       // Filter posts by the provided userId
       const userPosts = event.posts.filter(post => post.userId === userId);
-console.log("user posts mbu:", userPosts)
+console.log("user posts mbu:")
       // Return the user's posts for this event
       res.status(200).json(userPosts);
     } catch (error) {
