@@ -1240,8 +1240,8 @@ app.delete(
 );
 
 
-
 //add comment to a single post oba
+// Add a comment to a post
 app.post(
   '/add_comment/:eventId/:postId',
   asyncHandler(async (req, res) => {
@@ -1288,79 +1288,6 @@ app.post(
     }
   })
 );
-
-
-//get comments  for a single post
-app.get(
-  '/get_comments/:eventId/:postId',
-  asyncHandler(async (req, res) => {
-    const { eventId, postId } = req.params;
-
-    try {
-      const event = await Event.findOne({ eventId });
-
-      if (!event) {
-        return res.status(404).json({ message: 'Event not found' });
-      }
-
-      // Find the specific post
-      const post = event.posts.find(post => post.postId === postId);
-      if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
-      }
-
-      // Return the comments
-      res.status(200).json(post.comments || []);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-      res.status(500).json({ message: 'Server error', error });
-    }
-  })
-);
-
-//like or unlike a post. lol..
-app.post(
-  '/like_post/:eventId/:postId',
-  asyncHandler(async (req, res) => {
-    const { eventId, postId } = req.params;
-    const { userId } = req.body;
-
-    try {
-      const event = await Event.findOne({ eventId });
-
-      if (!event) {
-        return res.status(404).json({ message: 'Event not found' });
-      }
-
-      // Find the specific post
-      const post = event.posts.find(post => post.postId === postId);
-      if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
-      }
-
-      // Toggle like
-      post.likes = post.likes || []; // Ensure likes array exists
-      const liked = post.likes.includes(userId);
-
-      if (liked) {
-        // If user has already liked the post, unlike it
-        post.likes = post.likes.filter(id => id !== userId);
-      } else {
-        // Otherwise, add the like
-        post.likes.push(userId);
-      }
-
-      await event.save();
-
-      res.status(200).json({ likes: post.likes.length });
-    } catch (error) {
-      console.error('Error liking post:', error);
-      res.status(500).json({ message: 'Server error', error });
-    }
-  })
-);
-
-
 
 app.get(
   "/get_post/:post_id",

@@ -1318,7 +1318,8 @@ app.get(
   })
 );
 
-//like or unlike a post. lol..
+//like a post.
+// Like or unlike a post
 app.post(
   '/like_post/:eventId/:postId',
   asyncHandler(async (req, res) => {
