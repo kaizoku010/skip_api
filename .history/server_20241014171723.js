@@ -1176,7 +1176,7 @@ app.post(
 app.get(
   "/get_all_posts",
   asyncHandler(async (req, res) => {
-    const { eventId } = req.query;  // Extract userId and eventId from request body
+    const { userId, eventId } = req.query;  // Extract userId and eventId from request body
     
     try {
       // Find the event with the provided eventId
@@ -1187,10 +1187,8 @@ app.get(
       }
 
       // Filter posts by the provided userId
-      // const userPosts = event.posts.filter(post => post.userId === userId);
-
-   const userPosts = event.posts;
-      console.log("user posts mbu:", userPosts)
+      const userPosts = event.posts;
+console.log("user posts mbu:", userPosts)
       // Return the user's posts for this event
       res.status(200).json(userPosts);
     } catch (error) {
