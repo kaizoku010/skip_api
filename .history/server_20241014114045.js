@@ -1133,18 +1133,20 @@ app.post(
     if (!userId || !content) {
       return res.status(400).json({ message: 'UserId and content are required' });
     }
-   const post_media_url = await uploadPostImage(mediaUrl)
 
     // Create a new post object
     const newPost = {
       postId: uuidv4(),
       userId: userId,
-      mediaUrl:post_media_url,
       eventId: eventId,
       content: content,
+      mediaUrl: mediaUrl || null, // Media URL if provided
+      likes: 0,
+      comments: [],
       createdAt: new Date(),
     };
 
+    await uploadPostImage()
 
     // Save post to the database
     try {

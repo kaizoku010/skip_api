@@ -1139,7 +1139,7 @@ app.post(
     const newPost = {
       postId: uuidv4(),
       userId: userId,
-      mediaUrl:post_media_url,
+      mediaUrl:pos
       eventId: eventId,
       content: content,
       createdAt: new Date(),
