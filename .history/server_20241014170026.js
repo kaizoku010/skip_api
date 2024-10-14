@@ -1180,7 +1180,7 @@ app.get(
     
     try {
       // Find the event with the provided eventId
-      const event = await Event.findOne({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
+      const event = await Event.findOne({ eventId: "eventId" });
 
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
