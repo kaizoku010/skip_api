@@ -1135,7 +1135,6 @@ app.post(
     if (!userId || !content) {
       return res.status(400).json({ message: 'UserId and content are required' });
     }
-
     let post_media_url = null;
     if (mediaFile) {
       post_media_url = await uploadPostImage(mediaFile.path); // Upload the file and get the URL
@@ -1144,7 +1143,7 @@ app.post(
     const newPost = {
       postId: uuidv4(),
       userId: userId,
-      mediaUrl:post_media_url,
+      mediaUrl:post_media_url || null,
       eventId: eventId,
       content: content,
       createdAt: new Date(),
