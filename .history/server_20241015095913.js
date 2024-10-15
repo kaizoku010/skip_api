@@ -1206,17 +1206,30 @@ app.get(
 app.delete(
   '/delete_post/:eventId/:postId',
   asyncHandler(async (req, res) => {
-    const { eventId, postId } = req.params; 
-    try {
-      const result = await Event.updateOne(
-        { eventId: eventId }, 
-        { $pull: { posts: { postId: postId } } } 
-      );
+    const { eventId, postId } = req.params;  // Extract eventId and postId from params
 
-      if (result.modifiedCount === 0) {
-        return res.status(404).json({ message: "Event or Post not found" });
+    try {
+      // Find the event by eventId
+      const event = await Event.findOne({ eventId: eventId });
+
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
       }
 
+      // Find the index of the post to be deleted
+      const postIndex = event.posts.findIndex(post => post.postId === postId);
+
+      if (postIndex === -1) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      // Remove the post from the posts array
+      event.posts.splice(postIndex, 1);
+
+      // Save the updated event document
+      await event.save();
+
+      // Return success response
       res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -1224,7 +1237,6 @@ app.delete(
     }
   })
 );
-
 
 
 

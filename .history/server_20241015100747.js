@@ -1217,7 +1217,7 @@ app.delete(
         return res.status(404).json({ message: "Event or Post not found" });
       }
 
-      res.status(200).json({ message: "Post deleted successfully" });
+      res.status(200).json({ message: "Post deleted =successfully" });
     } catch (error) {
       console.error("Error deleting post:", error);
       res.status(500).json({ message: "Server error", error });
