@@ -1243,7 +1243,7 @@ app.post(
 
 
       // Find the event by eventId
-      const event = await Event.findOne({ eventId });
+      const event = await eve.findOne({ eventId });
 
       if (!event) {
         return res.status(404).json({ message: 'Event not found' });
@@ -1273,6 +1273,9 @@ app.post(
         { eventId, "posts.postId": postId },
         { $set: { "posts.$.comments": event.posts[postIndex].comments } }
       );
+
+      client.close();
+
       res.status(201).json(event.posts[postIndex]); // Return the updated post
     } catch (error) {
       console.error('Error adding comment:', error);
