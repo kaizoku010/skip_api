@@ -1269,7 +1269,7 @@ app.post(
       event.posts[postIndex].comments.push(newComment);
 
       // Update the document in the database
-      await Event.findOneAndUpdate(
+      await Event.updateOne(
         { eventId, "posts.postId": postId },
         { $set: { "posts.$.comments": event.posts[postIndex].comments } }
       );
