@@ -1244,9 +1244,8 @@ app.post(
       if (!event) {
         return res.status(404).json({ message: 'Event not found' });
       }
-
+      // Find the specific post
       const post = event.posts.find(post => post.postId === postId);
-
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }

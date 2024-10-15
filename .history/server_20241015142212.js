@@ -1235,18 +1235,19 @@ app.post(
     const { eventId, postId } = req.params;
     const { userName, userImage, comment } = req.body;
 
-    if (!postId || !comment) {
-      return res.status(400).json({ message: 'postId and comment are required' });
+    if (!userId || !comment) {
+      return res.status(400).json({ message: 'UserId and comment are required' });
     }
 
     try {
       const event = await Event.findOne({ eventId });
+
       if (!event) {
         return res.status(404).json({ message: 'Event not found' });
       }
 
+      // Find the specific post
       const post = event.posts.find(post => post.postId === postId);
-
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
@@ -1254,6 +1255,7 @@ app.post(
       // Create a new comment object
       const newComment = {
         commentId: uuidv4(),
+        userId,
         userName,
         userImage,
         comment,
