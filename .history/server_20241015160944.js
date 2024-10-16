@@ -1316,15 +1316,17 @@ app.post(
   asyncHandler(async (req, res) => {
     const { eventId, postId } = req.params;
     const { userId } = req.body;
+
     try {
       const event = await Event.findOne({ eventId });
+
       if (!event) {
         return res.status(404).json({ message: 'Event not found' });
       }
 
       // Find the specific post
-      const post = event.posts.findIndex(post => post.postId === postId);
-      if (post === -1) {
+      const post = event.posts.find(post => post.postId === postId);
+      if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
 
@@ -1341,11 +1343,6 @@ app.post(
       }
 
       await event.save();
-
-  await Event.findOneAndUpdate(
-        { eventId, "posts.postId": postId },
-        { $set: { "posts.$.comments.$.likes": event.posts.comments[postIndex].likes}}
-      );
 
       res.status(200).json({ likes: post.likes.length });
     } catch (error) {

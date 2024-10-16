@@ -1318,6 +1318,7 @@ app.post(
     const { userId } = req.body;
     try {
       const event = await Event.findOne({ eventId });
+
       if (!event) {
         return res.status(404).json({ message: 'Event not found' });
       }
