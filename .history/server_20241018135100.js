@@ -1391,18 +1391,19 @@ app.post(
   asyncHandler(async (req, res) => {
     // Validate request body
     const { receiverId, senderId } = req.body;
-    if (!receiverId || !senderId) {
+    if (!receiverId) {
       return res
         .status(400)
-        .json({ message: "Receiver ID and Sender ID are required" });
+        .json({ message: "Receiver ID" });
     }
 
-    // Check if the sender is trying to send a request to themselves
+
     if (receiverId === senderId) {
       return res
         .status(400)
         .json({ message: "You cannot send a chat request to yourself" });
     }
+
 
     // Construct chat request object
     const chatRequest = {
