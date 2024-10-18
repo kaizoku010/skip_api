@@ -1386,122 +1386,142 @@ app.get(
 
 //send chat requests
 // Send a chat request
+
+// Send a chat request
 app.post(
-  "/chat_request",
+  "/send_chat_req",
   asyncHandler(async (req, res) => {
-    // Validate request body
-    const { receiverId, senderId } = req.body;
-    if (!receiverId) {
-      return res
-        .status(400)
-        .json({ message: "Receiver ID" });
+    const { receiverId, message } = req.body;
+
+    if (!receiverId || !message) {
+      return res.status(400).json({ message: "Receiver ID and message are required" });
     }
 
-    // Construct chat request object
     const chatRequest = {
-      requestId: uuidv4(), // Unique ID for the request
-      senderId: senderId, // ID of the user sending the request
-      receiverId: receiverId, // ID of the user receiving the request
-      status: "pending", // Initial status of the chat request
-      createdAt: new Date(), // Timestamp of when the request is created
+      requestId: uuidv4(), // Generate unique ID
+      senderId: req.auth.userId, // ID of the sender (authenticated user)
+      receiverId, // ID of the receiver
+      message, // The chat request message
+      status: "pending", // Default status
+      createdAt: new Date(), // Timestamp
     };
 
     try {
-      // Insert chat request into the database
       const result = await ChatRequest.insertOne(chatRequest);
 
-      // Check if the request was successfully inserted
       if (result.insertedCount === 1) {
         return res.status(201).json(chatRequest);
       } else {
         return res.status(500).json({ message: "Failed to send chat request" });
       }
     } catch (error) {
-      // Handle potential database errors
       console.error("Error sending chat request:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
   })
 );
 
-// get chat requests for a single user
+// Get all chat requests for the authenticated user
 app.get(
-  "/get_all_chat_reqs/:user_id",
+  "/get_all_chat_reqs",
   asyncHandler(async (req, res) => {
-    const chatRequests = await ChatRequest.find({
-      receiverId: req.auth.userId,
-    }).toArray();
-    res.json(chatRequests);
+    try {
+      const chatRequests = await ChatRequest.find({
+        receiverId: req.auth.userId, // Fetch requests where the user is the receiver
+      }).toArray();
+      res.json(chatRequests);
+    } catch (error) {
+      console.error("Error fetching chat requests:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   })
 );
 
+// Create a chat room
 app.post(
   "/create_chat_room",
   asyncHandler(async (req, res) => {
     const { name, participants } = req.body;
 
+    if (!name || !participants || !Array.isArray(participants)) {
+      return res.status(400).json({ message: "Name and participants are required" });
+    }
+
     const chatRoom = {
       chatRoomId: uuidv4(),
       name,
-      participants, // An array of user IDs who are part of this chat room
+      participants, // Array of user IDs
       createdAt: new Date(),
       createdBy: req.auth.userId,
     };
 
     try {
-      await ChatRoom.insertOne(chatRoom);
-      res.status(201).json(chatRoom);
+      const result = await ChatRoom.insertOne(chatRoom);
+      if (result.insertedCount === 1) {
+        return res.status(201).json(chatRoom);
+      } else {
+        return res.status(500).json({ message: "Failed to create chat room" });
+      }
     } catch (error) {
-      res.status(500).json({ message: "Error creating chat room", error });
+      console.error("Error creating chat room:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   })
 );
 
-//get all messages from a chat room..
+// Get all messages from a specific chat room
 app.get(
   "/chat-rooms/:room_id/messages",
   asyncHandler(async (req, res) => {
     const roomId = req.params.room_id;
-    const chatRoom = await ChatRoom.findOne({ roomId });
-    res.json(chatRoom?.messages || []);
+
+    try {
+      const chatRoom = await ChatRoom.findOne({ chatRoomId: roomId });
+      if (!chatRoom) {
+        return res.status(404).json({ message: "Chat room not found" });
+      }
+      res.json(chatRoom.messages || []); // Return messages or empty array
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   })
 );
 
-// Accept a chat request
-// Accept a chat request
+// Accept a chat request and create a chat room
 app.put(
   "/accept_chat_req/:request_id",
   asyncHandler(async (req, res) => {
     const requestId = req.params.request_id;
 
-    // Find the chat request
-    const chatRequest = await ChatRequest.findOne({ requestId });
-    if (!chatRequest) {
-      return res.status(404).json({ message: "Chat request not found" });
-    }
-
-    // Check if the user is the receiver
-    if (chatRequest.receiverId !== req.auth.userId) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-
-    // Update the status to 'accepted'
-    const updatedChatRequest = await ChatRequest.findOneAndUpdate(
-      { requestId },
-      { $set: { status: "accepted" } },
-      { returnDocument: "after" }
-    );
-
-    // Create a new chat room
-    const chatRoom = {
-      chatRoomId: uuidv4(), // Generate a unique ID for the chat room
-      name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`, // Or any name you prefer
-      participants: [chatRequest.senderId, chatRequest.receiverId],
-      createdAt: new Date(),
-      createdBy: req.auth.userId,
-    };
-
     try {
+      const chatRequest = await ChatRequest.findOne({ requestId });
+
+      if (!chatRequest) {
+        return res.status(404).json({ message: "Chat request not found" });
+      }
+
+      // Check if the authenticated user is the receiver
+      if (chatRequest.receiverId !== req.auth.userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      // Update the status of the chat request to "accepted"
+      const updatedChatRequest = await ChatRequest.findOneAndUpdate(
+        { requestId },
+        { $set: { status: "accepted" } },
+        { returnDocument: "after" }
+      );
+
+      // Create a chat room after accepting the chat request
+      const chatRoom = {
+        chatRoomId: uuidv4(),
+        name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`,
+        participants: [chatRequest.senderId, chatRequest.receiverId],
+        createdAt: new Date(),
+        createdBy: req.auth.userId,
+      };
+
       await ChatRoom.insertOne(chatRoom);
 
       res.json({
@@ -1509,7 +1529,8 @@ app.put(
         chatRoom,
       });
     } catch (error) {
-      res.status(500).json({ message: "Error creating chat room", error });
+      console.error("Error accepting chat request:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   })
 );

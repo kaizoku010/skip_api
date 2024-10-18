@@ -1387,20 +1387,20 @@ app.get(
 //send chat requests
 // Send a chat request
 app.post(
-  "/chat_request",
+  "/send_chat_req",
   asyncHandler(async (req, res) => {
     // Validate request body
-    const { receiverId, senderId } = req.body;
-    if (!receiverId) {
+    const { receiverId } = req.body;
+    if (!receiverId || !message) {
       return res
         .status(400)
-        .json({ message: "Receiver ID" });
+        .json({ message: "Receiver ID and message are required" });
     }
 
     // Construct chat request object
     const chatRequest = {
       requestId: uuidv4(), // Unique ID for the request
-      senderId: senderId, // ID of the user sending the request
+      senderId: req.auth.userId, // ID of the user sending the request
       receiverId: receiverId, // ID of the user receiving the request
       status: "pending", // Initial status of the chat request
       createdAt: new Date(), // Timestamp of when the request is created

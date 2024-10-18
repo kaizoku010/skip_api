@@ -1391,7 +1391,7 @@ app.post(
   asyncHandler(async (req, res) => {
     // Validate request body
     const { receiverId, senderId } = req.body;
-    if (!receiverId) {
+    if (!receiverId ) {
       return res
         .status(400)
         .json({ message: "Receiver ID" });
