@@ -1458,26 +1458,23 @@ app.get(
 app.get(
   "/get_sent_chat_reqs/:user_id",
   asyncHandler(async (req, res) => {
-    const { user_id } = req.params; // Destructure correctly
+    const { userId } = req.params;
     try {
       const chatRequests = await ChatRequest.find({
-        senderId: user_id,  // Use the correct destructured value
+        senderId: userId,
       }).toArray();
 
-      if (chatRequests.length === 0) {  // Check if the array is empty
+      res.status(200).json(chatRequests);
+      console.log
+      if (!chatRequests) {
         return res.status(404).json({ message: "User Requests Not Found" });
       }
-
-      res.status(200).json(chatRequests);  // Send the response with found requests
-      console.log("requests found");
-      
     } catch (error) {
       console.error("Error fetching user requests:", error);
       res.status(500).json({ message: "Server error", error });
     }
   })
 );
-
 
 app.post(
   "/create_chat_room",
