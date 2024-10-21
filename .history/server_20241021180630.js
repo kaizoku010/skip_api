@@ -1522,15 +1522,10 @@ app.get(
 app.put(
   "/accept_chat_req/:request_id",
   asyncHandler(async (req, res) => {
-    const { request_id } = req.params;
-    const { action } = req.body;  // 'accept' or 'decline'
-
-    if (!['accept', 'decline'].includes(action)) {
-      return res.status(400).json({ message: "Invalid action" });
-    }
+    const requestId = req.params.request_id;
 
     // Find the chat request
-    const chatRequest = await ChatRequest.findOne({ requestId: request_id });
+    const chatRequest = await ChatRequest.findOne({ requestId });
     if (!chatRequest) {
       return res.status(404).json({ message: "Chat request not found" });
     }
@@ -1540,42 +1535,34 @@ app.put(
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    // Update the status based on the action
-    const updatedStatus = action === 'accept' ? 'accepted' : 'declined';
+    // Update the status to 'accepted'
     const updatedChatRequest = await ChatRequest.findOneAndUpdate(
-      { requestId: request_id },
-      { $set: { status: updatedStatus } },
-      { returnDocument: 'after' }
+      { requestId },
+      { $set: { status: "accepted" } },
+      { returnDocument: "after" }
     );
 
-    if (updatedStatus === 'accepted') {
-      // Create a new chat room
-      const chatRoom = {
-        chatRoomId: uuidv4(),
-        name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`,
-        participants: [chatRequest.senderId, chatRequest.receiverId],
-        createdAt: new Date(),
-        createdBy: req.auth.userId,
-      };
+    // Create a new chat room
+    const chatRoom = {
+      chatRoomId: uuidv4(), // Generate a unique ID for the chat room
+      name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`, // Or any name you prefer
+      participants: [chatRequest.senderId, chatRequest.receiverId],
+      createdAt: new Date(),
+      createdBy: req.auth.userId,
+    };
 
-      try {
-        await ChatRoom.insertOne(chatRoom);
-        return res.json({
-          message: "Chat request accepted and chat room created",
-          chatRoom,
-        });
-      } catch (error) {
-        return res.status(500).json({ message: "Error creating chat room", error });
-      }
+    try {
+      await ChatRoom.insertOne(chatRoom);
+
+      res.json({
+        message: "Chat request accepted and chat room created",
+        chatRoom,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error creating chat room", error });
     }
-
-    res.json({
-      message: `Chat request ${updatedStatus}`,
-      updatedChatRequest,
-    });
   })
 );
-
 
 // Delete a chat
 app.delete(
