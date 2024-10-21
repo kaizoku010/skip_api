@@ -943,7 +943,7 @@ app.get(
   })
 );
 
-//signup for an event
+//sin
 app.post(
   "/events/:event_id/sign-up",
   asyncHandler(async (req, res) => {
@@ -1460,7 +1460,7 @@ app.get(
       }
 
       res.status(200).json(chatRequests);  // Send the response with found requests
-      // console.log("requests found:", chatRequests);
+      console.log("requests found:", chatRequests);
       
     } catch (error) {
       console.error("Error fetching user requests:", error);
