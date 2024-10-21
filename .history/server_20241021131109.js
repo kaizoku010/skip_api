@@ -1398,7 +1398,7 @@ app.get(
 //send chat requests
 // Send a chat request
 app.post(
-  "/chat_request/:receiverId",
+  "/chat_request",
   asyncHandler(async (req, res) => {
     // Validate request body
     const { receiverId } = req.params;
