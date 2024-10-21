@@ -1447,7 +1447,8 @@ app.get(
 app.get(
   "/get_sent_chat_reqs/:user_id",
   asyncHandler(async (req, res) => {
-    const { userid } = req.params;
+    const { user_id } = req.params;
+
     const chatRequests = await ChatRequest.find({
       user_id: userid,
     }).toArray();
