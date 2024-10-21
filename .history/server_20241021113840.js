@@ -1402,14 +1402,10 @@ app.post(
   asyncHandler(async (req, res) => {
     // Validate request body
     const { receiverId, senderId } = req.body;
-    if (!receiverId) {
+    if (!receiverId || !senderId) {
       return res
         .status(400)
-        .json({ message: "Receiver ID is required" });
-    } else if(!senderId) {
-      return res
-        .status(400)
-        .json({ message: "sender ID is required" });
+        .json({ message: "Receiver ID and Sender ID are required" });
     }
 
     // Check if the sender is trying to send a request to themselves
@@ -1473,7 +1469,7 @@ app.get(
       }
 
       res.status(200).json(chatRequests);  // Send the response with found requests
-      console.log("requests found:", chatRequests);
+      console.log("requests found:", );
       
     } catch (error) {
       console.error("Error fetching user requests:", error);

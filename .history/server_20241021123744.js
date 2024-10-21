@@ -1402,11 +1402,13 @@ app.post(
   asyncHandler(async (req, res) => {
     // Validate request body
     const { receiverId, senderId } = req.body;
-    if (!receiverId) {
+    if (!receiverId || !senderId) {
       return res
         .status(400)
-        .json({ message: "Receiver ID is required" });
-    } else if(!senderId) {
+        .json({ message: "Receiver ID and Sender ID are required" });
+    }
+
+    if (!senderId) {
       return res
         .status(400)
         .json({ message: "sender ID is required" });

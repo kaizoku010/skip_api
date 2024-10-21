@@ -1406,7 +1406,9 @@ app.post(
       return res
         .status(400)
         .json({ message: "Receiver ID is required" });
-    } else if(!senderId) {
+    } ele
+
+    if (!senderId) {
       return res
         .status(400)
         .json({ message: "sender ID is required" });
