@@ -304,40 +304,30 @@ const generateTicket = (user, event, filePath) => {
   doc.end();
 };
 
-app.get(
-  "/verify-email",
-  asyncHandler(async (req, res) => {
-    const { token } = req.query;
+app.get("/verify-email", asyncHandler(async (req, res) => {
+  const { token } = req.query;
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const { email } = decoded;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { email } = decoded;
 
-      // Activate the user
-      await User.updateOne({ email }, { $set: { isVerified: true } });
+    // Activate the user
+    await User.updateOne({ email }, { $set: { isVerified: true } });
 
-      res.status(200).json({ message: "Email verified successfully!" });
-    } catch (error) {
-      console.error("Email verification error:", error);
-      res
-        .status(400)
-        .json({ message: "Invalid or expired verification link." });
-    }
-  })
-);
+    res.status(200).json({ message: "Email verified successfully!" });
+  } catch (error) {
+    console.error("Email verification error:", error);
+    res.status(400).json({ message: "Invalid or expired verification link." });
+  }
+}));
+
 
 const sendVerificationEmail = async (email) => {
-  const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+  const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
   const verificationLink = `/verify-email?token=${verificationToken}`;
 
-  await mailer(
-    email,
-    "Verify Your Email",
-    `Click on this link to verify your email: ${verificationLink}`
-  );
+  await mailer(email, "Verify Your Email", `Click on this link to verify your email: ${verificationLink}`);
 };
 
 // Authentication Endpoints
@@ -354,11 +344,13 @@ app.post(
     }
 
     try {
-      //check if email exists already
+
+//check if email exists already
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(409).json({ message: "Email already registered" });
       }
+
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const imagePath = await uploadUserImage(userImage.path);
@@ -379,9 +371,11 @@ app.post(
       fs.unlinkSync(userImage.path);
 
       res.status(201).json({ message: "User registered successfully!" });
+      
+       // Send a verification email
+       await sendVerificationEmail(email).catch(console.error);
 
-      // Send a verification email
-      await sendVerificationEmail(email).catch(console.error);
+      
     } catch (error) {
       console.error("Error during signup:", error); // Add this to log the full error stack trace
       res
@@ -467,20 +461,17 @@ app.post(
         secure: true,
         sameSite: "Strict",
       });
-      res.status(200).json({
-        message: "Logged in successfully",
-        token,
-        user: {
-          userId: user.id,
-          userName: user.username,
-          userEmail: user.email,
-          phone: user.phone,
-          job: user.job,
-          gender: user.gender,
-          industry: user.industry,
-          userImage: user.userImage,
-        },
-      });
+      res.status(200).json({ message: "Logged in successfully", token, user:{
+        userId:user.id,
+        userName:user.username,
+        userEmail:user.email,
+        phone:user.phone,
+        job:user.job,
+        gender:user.gender,
+        industry:user.industry,
+        userImage:user.userImage
+
+      } });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }
@@ -555,6 +546,8 @@ app.get(
   })
 );
 
+
+
 // Edit user
 app.put(
   "/edit_user/:id",
@@ -569,7 +562,7 @@ app.put(
     );
 
     if (!updatedUser.value) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
     res.json(updatedUser.value);
   })
@@ -586,11 +579,12 @@ app.delete(
     );
 
     if (!deletedUser.value) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ message: "User deleted successfully" });
+    res.json({ message: 'User deleted successfully' });
   })
 );
+
 
 app.get(
   "/all_users",
@@ -682,10 +676,12 @@ app.post(
         { $push: { speakers: speaker_name } }
       );
 
-      res.status(200).json({
-        message: "Session created successfully",
-        event_speaker: speaker_name,
-      });
+      res
+        .status(200)
+        .json({
+          message: "Session created successfully",
+          event_speaker: speaker_name,
+        });
     } catch (error) {
       console.error("Error creating session:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -702,20 +698,14 @@ app.post(
   })
 );
 
+
 //create event attendee
 app.post(
   "/create_attendee/:event_id",
   asyncHandler(async (req, res) => {
     const { event_id } = req.params; // Extract event_id from URL
-    const {
-      user_id,
-      userName,
-      phoneNumber,
-      email,
-      ageRange,
-      jobIndustry,
-      userimage,
-    } = req.body; // Extract attendee data from request body
+    const { user_id, userName, phoneNumber, email, ageRange, jobIndustry, userimage } =
+      req.body; // Extract attendee data from request body
 
     if (!userName || !phoneNumber) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -728,25 +718,23 @@ app.post(
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // Check if the user is already an attendee for this event
-    const existingAttendee = event.attendees.find(
-      (attendee) => attendee.userEmail === email
-    );
 
-    if (existingAttendee) {
-      return res
-        .status(409)
-        .json({ message: "User is already signed up for this event" });
-    }
+     // Check if the user is already an attendee for this event
+     const existingAttendee = event.attendees.find(attendee => attendee.userEmail === email);
+
+     if (existingAttendee) {
+       return res.status(409).json({ message: "User is already signed up for this event" });
+     }
+ 
 
     try {
       const newAttendee = {
         attendeeId: uuidv4(), // Generate a unique ID for the attendee
-        userId: user_id,
+        userId:user_id,
         username: userName,
         contact: phoneNumber,
         userEmail: email,
-        userImage: userimage,
+        userImage:userimage,
         job: jobIndustry,
         age: ageRange,
         ticketCreatedAt: new Date(), // Record the creation date
@@ -1135,18 +1123,16 @@ app.get(
 
 //create fourm
 app.post(
-  "/create_post/:eventId",
-  upload.single("mediaUrl"), // Add this middleware to handle the file upload
+  '/create_post/:eventId',
+  upload.single('mediaUrl'), // Add this middleware to handle the file upload
   asyncHandler(async (req, res) => {
-    const { userId, content, userName, userImage } = req.body;
+    const { userId, content, userName, userImage,  } = req.body;
     const { eventId } = req.params;
-    const mediaFile = req.file;
+    const mediaFile = req.file; 
 
     // Validate required fields
     if (!userId || !content) {
-      return res
-        .status(400)
-        .json({ message: "UserId and content are required" });
+      return res.status(400).json({ message: 'UserId and content are required' });
     }
 
     let post_media_url = null;
@@ -1160,8 +1146,8 @@ app.post(
       userId: userId,
       mediaUrl: post_media_url,
       content: content,
-      userName: userName,
-      userImage: userImage,
+      userName:userName,
+      userImage:userImage,
       createdAt: new Date(),
     };
 
@@ -1175,14 +1161,14 @@ app.post(
 
       // Check if the event was found
       if (!event) {
-        return res.status(404).json({ message: "Event not found" });
+        return res.status(404).json({ message: 'Event not found' });
       }
 
       // Return the updated event with the new post
       res.status(201).json(event);
     } catch (error) {
-      console.error("Error creating post:", error);
-      res.status(500).json({ message: "Failed to create post" });
+      console.error('Error creating post:', error);
+      res.status(500).json({ message: 'Failed to create post' });
     }
   })
 );
@@ -1191,8 +1177,8 @@ app.post(
 app.get(
   "/get_all_posts",
   asyncHandler(async (req, res) => {
-    const { eventId } = req.query; // Extract userId and eventId from request body
-
+    const { eventId } = req.query;  // Extract userId and eventId from request body
+    
     try {
       // Find the event with the provided eventId
       const event = await Event.findOne({ eventId: eventId });
@@ -1204,7 +1190,7 @@ app.get(
       // Filter posts by the provided userId
       // const userPosts = event.posts.filter(post => post.userId === userId);
 
-      const userPosts = event.posts;
+   const userPosts = event.posts;
       // console.log("user posts mbu:", userPosts)
       // Return the user's posts for this event
       res.status(200).json(userPosts);
@@ -1215,15 +1201,16 @@ app.get(
   })
 );
 
+
 //delete a post....// Delete a post by postId and eventId
 app.delete(
-  "/delete_post/:eventId/:postId",
+  '/delete_post/:eventId/:postId',
   asyncHandler(async (req, res) => {
-    const { eventId, postId } = req.params;
+    const { eventId, postId } = req.params; 
     try {
       const result = await Event.updateOne(
-        { eventId: eventId },
-        { $pull: { posts: { postId: postId } } }
+        { eventId: eventId }, 
+        { $pull: { posts: { postId: postId } } } 
       );
 
       if (result.modifiedCount === 0) {
@@ -1238,31 +1225,34 @@ app.delete(
   })
 );
 
+
+
+
 //add comment to a single post oba
 app.post(
-  "/add_comment/:eventId/:postId",
+  '/add_comment/:eventId/:postId',
   asyncHandler(async (req, res) => {
     const { eventId, postId } = req.params;
     const { userName, userImage, comment } = req.body;
 
     if (!postId || !comment) {
-      return res
-        .status(400)
-        .json({ message: "postId and comment are required" });
+      return res.status(400).json({ message: 'postId and comment are required' });
     }
 
     try {
+
+
       // Find the event by eventId
       const event = await Event.findOne({ eventId });
 
       if (!event) {
-        return res.status(404).json({ message: "Event not found" });
+        return res.status(404).json({ message: 'Event not found' });
       }
 
       // Find the specific post in the event
-      const postIndex = event.posts.findIndex((post) => post.postId === postId);
+      const postIndex = event.posts.findIndex(post => post.postId === postId);
       if (postIndex === -1) {
-        return res.status(404).json({ message: "Post not found" });
+        return res.status(404).json({ message: 'Post not found' });
       }
 
       // Create the new comment
@@ -1285,15 +1275,16 @@ app.post(
       );
       res.status(201).json(event.posts[postIndex]); // Return the updated post
     } catch (error) {
-      console.error("Error adding comment:", error);
-      res.status(500).json({ message: "Server error", error });
+      console.error('Error adding comment:', error);
+      res.status(500).json({ message: 'Server error', error });
     }
   })
 );
 
+
 //get comments  for a single post
 app.get(
-  "/get_comments/:eventId/:postId",
+  '/get_comments/:eventId/:postId',
   asyncHandler(async (req, res) => {
     const { eventId, postId } = req.params;
 
@@ -1301,71 +1292,69 @@ app.get(
       const event = await Event.findOne({ eventId });
 
       if (!event) {
-        return res.status(404).json({ message: "Event not found" });
+        return res.status(404).json({ message: 'Event not found' });
       }
 
       // Find the specific post
-      const post = event.posts.find((post) => post.postId === postId);
+      const post = event.posts.find(post => post.postId === postId);
       if (!post) {
-        return res.status(404).json({ message: "Post not found" });
+        return res.status(404).json({ message: 'Post not found' });
       }
 
       // Return the comments
       res.status(200).json(post.comments || []);
     } catch (error) {
-      console.error("Error fetching comments:", error);
-      res.status(500).json({ message: "Server error", error });
+      console.error('Error fetching comments:', error);
+      res.status(500).json({ message: 'Server error', error });
     }
   })
 );
 
 //like or unlike a post. lol..
-app.post(
-  "/like_post/:eventId/:postId",
-  asyncHandler(async (req, res) => {
-    const { eventId, postId } = req.params;
-    const { userId } = req.body;
-    try {
-      const event = await db.collection("events").findOne({ eventId });
+app.post('/like_post/:eventId/:postId', asyncHandler(async (req, res) => {
+  const { eventId, postId } = req.params;
+  const { userId } = req.body;
+  try {
+    const event = await db.collection('events').findOne({ eventId });
 
-      if (!event) {
-        return res.status(404).json({ message: "Event not found" });
-      }
-
-      const postIndex = event.posts.findIndex((post) => post.postId === postId);
-      if (postIndex === -1) {
-        return res.status(404).json({ message: "Post not found" });
-      }
-
-      // Toggle like
-      const post = event.posts[postIndex];
-      post.likes = post.likes || []; // Ensure the likes array exists
-      const liked = post.likes.includes(userId);
-
-      if (liked) {
-        // If user has already liked the post, unlike it
-        post.likes = post.likes.filter((id) => id !== userId);
-      } else {
-        // Otherwise, add the like
-        post.likes.push(userId);
-      }
-
-      // Update the event in MongoDB
-      await db
-        .collection("events")
-        .updateOne(
-          { eventId, "posts.postId": postId },
-          { $set: { "posts.$.likes": post.likes } }
-        );
-
-      // Send back the updated likes count
-      res.status(200).json({ likes: post.likes.length });
-    } catch (error) {
-      console.error("Error liking post:", error);
-      res.status(500).json({ message: "Server error", error });
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
     }
-  })
-);
+
+    const postIndex = event.posts.findIndex(post => post.postId === postId);
+    if (postIndex === -1) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Toggle like
+    const post = event.posts[postIndex];
+    post.likes = post.likes || []; // Ensure the likes array exists
+    const liked = post.likes.includes(userId);
+
+    if (liked) {
+      // If user has already liked the post, unlike it
+      post.likes = post.likes.filter(id => id !== userId);
+    } else {
+      // Otherwise, add the like
+      post.likes.push(userId);
+    }
+
+    // Update the event in MongoDB
+    await db.collection('events').updateOne(
+      { eventId, "posts.postId": postId },
+      { $set: { "posts.$.likes": post.likes } }
+    );
+
+    // Send back the updated likes count
+    res.status(200).json({ likes: post.likes.length });
+  } catch (error) {
+    console.error('Error liking post:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+}));
+
+
+
 
 app.get(
   "/get_post/:post_id",
@@ -1458,23 +1447,14 @@ app.get(
 app.get(
   "/get_sent_chat_reqs/:user_id",
   asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-    try {
-      const chatRequests = await ChatRequest.find({
-        senderId: userId,
-      }).toArray();
-
-      res.status(200).json(chatRequests);
-
-      if (!chatRequests) {
-        return res.status(404).json({ message: "User Requests Not Found" });
-      }
-    } catch (error) {
-      console.error("Error fetching user requests:", error);
-      res.status(500).json({ message: "Server error", error });
-    }
+    const { user_id } = req.params;
+    const chatRequests = await ChatRequest.find({
+      user_id: userid,
+    }).toArray();
+    res.json(chatRequests);
   })
 );
+
 
 app.post(
   "/create_chat_room",
