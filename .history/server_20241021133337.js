@@ -1433,10 +1433,12 @@ app.post(
     try {
       // Insert chat request into the database
       const result = await ChatRequest.insertOne(chatRequest);
-
-      // Check if the request was successfully inserted
-      res.status(201).json(result); // Return the updated post
-
+      // // Check if the request was successfully inserted
+      // if (result.insertedCount === 1) {
+      //   return res.status(201).json(chatRequest);
+      // } else {
+      //   return res.status(500).json({ message: "Failed to send chat request" });
+      // }
     } catch (error) {
       // Handle potential database errors
       console.error("Error sending chat request:", error);

@@ -1435,7 +1435,7 @@ app.post(
       const result = await ChatRequest.insertOne(chatRequest);
 
       // Check if the request was successfully inserted
-      res.status(201).json(result); // Return the updated post
+      res.status(201).json(event.posts[postIndex]); // Return the updated post
 
     } catch (error) {
       // Handle potential database errors
