@@ -1666,7 +1666,7 @@ app.get(
 
 //get a single user chat rooms
 app.get(
-  "/user_chatrooms/:userId",
+  "/chat_rooms/:userId",
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
 

@@ -1666,7 +1666,7 @@ app.get(
 
 //get a single user chat rooms
 app.get(
-  "/user_chatrooms/:userId",
+  "/chat_rooms/:userId",
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
 
@@ -1674,7 +1674,7 @@ app.get(
       const chatRooms = await ChatRoom.find({ participants: userId }).toArray(); // Assuming Message is your MongoDB collection for messages
       res.json(chatRooms);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching user chat rooms", error });
+      res.status(500).json({ message: "Error fetching messages", error });
     }
   })
 );
