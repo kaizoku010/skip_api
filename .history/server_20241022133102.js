@@ -1580,7 +1580,7 @@ app.put(
         name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`,
         participants: [chatRequest.senderId, chatRequest.receiverId],
         createdAt: new Date(),
-        createdBy: userId,
+        createdBy: req.auth.userId,
       };
 
       await ChatRoom.insertOne(chatRoom);

@@ -1562,7 +1562,7 @@ app.put(
     }
 
     // Ensure user is authorized
-    if (chatRequest.receiverId !== userId) {
+    if (chatRequest.receiverId !== req.auth.userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -1580,7 +1580,7 @@ app.put(
         name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`,
         participants: [chatRequest.senderId, chatRequest.receiverId],
         createdAt: new Date(),
-        createdBy: userId,
+        createdBy: req.auth.userId,
       };
 
       await ChatRoom.insertOne(chatRoom);
