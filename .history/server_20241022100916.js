@@ -1493,7 +1493,7 @@ app.get(
     const { userEmail } = req.params; // Destructure correctly
     try {
       const chatRequests = await ChatRequest.find({
-        receiverId: userEmail,  // Use the correct destructured value
+        receiverId: user_id,  // Use the correct destructured value
       }).toArray();
 
       if (chatRequests.length === 0) {  // Check if the array is empty

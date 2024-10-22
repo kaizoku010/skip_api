@@ -1399,6 +1399,7 @@ app.get(
 );
 
 //send chat requests
+// Send a chat request
 app.post("/chat_request/:receiverId", asyncHandler(async (req, res) => {
   const { receiverId } = req.params;
   const { senderId } = req.body;
@@ -1470,30 +1471,6 @@ app.get(
     try {
       const chatRequests = await ChatRequest.find({
         senderId: user_id,  // Use the correct destructured value
-      }).toArray();
-
-      if (chatRequests.length === 0) {  // Check if the array is empty
-        return res.status(404).json({ message: "User Requests Not Found" });
-      }
-
-      res.status(200).json(chatRequests);  // Send the response with found requests
-      // console.log("requests found:", chatRequests);
-      
-    } catch (error) {
-      console.error("Error fetching user requests:", error);
-      res.status(500).json({ message: "Server error", error });
-    }
-  })
-);
-
-//get recieved chat requests.
-app.get(
-  "/my_chat_reqs/:userEmail",
-  asyncHandler(async (req, res) => {
-    const { userEmail } = req.params; // Destructure correctly
-    try {
-      const chatRequests = await ChatRequest.find({
-        receiverId: userEmail,  // Use the correct destructured value
       }).toArray();
 
       if (chatRequests.length === 0) {  // Check if the array is empty

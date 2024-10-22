@@ -1488,12 +1488,12 @@ app.get(
 
 //get recieved chat requests.
 app.get(
-  "/my_chat_reqs/:userEmail",
+  "/my_chat_reqs/:user_id",
   asyncHandler(async (req, res) => {
-    const { userEmail } = req.params; // Destructure correctly
+    const { user_id } = req.params; // Destructure correctly
     try {
       const chatRequests = await ChatRequest.find({
-        receiverId: userEmail,  // Use the correct destructured value
+        receiverId: user_id,  // Use the correct destructured value
       }).toArray();
 
       if (chatRequests.length === 0) {  // Check if the array is empty
