@@ -1451,7 +1451,6 @@ app.post("/chat_request/:receiverId", asyncHandler(async (req, res) => {
 
 
 
-
 // get recieved chat requests for a single user
 app.get(
   "/get_all_chat_reqs/:user_id",

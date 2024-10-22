@@ -1411,32 +1411,17 @@ app.post("/chat_request/:receiverId", asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: "You cannot send a chat request to yourself" });
   }
 
+  const chatRequest = {
+    requestId: uuidv4(),
+    senderId: senderId,
+    receiverId: receiverId,
+    status: "pending",
+    createdAt: new Date(),
+  };
+
   try {
-    // Query the database to check the count of chat requests between senderId and receiverId
-    const existingRequestsCount = await ChatRequest.countDocuments({
-      senderId: senderId,
-      receiverId: receiverId
-    });
-
-    // If there are already 2 requests, reject the new request
-    if (existingRequestsCount >= 2) {
-      return res.status(403).json({ 
-        success: false, 
-        message: "You have already sent the maximum number of chat requests to this user" 
-      });
-    }
-
-    // Proceed with creating the new chat request if the limit is not reached
-    const chatRequest = {
-      requestId: uuidv4(),
-      senderId: senderId,
-      receiverId: receiverId,
-      status: "pending",
-      createdAt: new Date(),
-    };
-
     const result = await ChatRequest.insertOne(chatRequest);
-
+    
     if (result.acknowledged) {
       return res.status(201).json({ success: true, message: "Chat request sent successfully" });
     } else {
@@ -1447,7 +1432,6 @@ app.post("/chat_request/:receiverId", asyncHandler(async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 }));
-
 
 
 
@@ -1793,7 +1777,7 @@ async function deleteAllChatRequests() {
     await client.connect();
     
     const result = await ChatRequest.deleteMany({});
-    console.log(`${result.deletedCount} operation complete.`);
+    console.log(`${result.deletedCount} operation  deleted.`);
   } catch (error) {
     console.error('Error deleting chat requests:', error);
   } finally {

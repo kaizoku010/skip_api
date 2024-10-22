@@ -1411,32 +1411,17 @@ app.post("/chat_request/:receiverId", asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: "You cannot send a chat request to yourself" });
   }
 
+  const chatRequest = {
+    requestId: uuidv4(),
+    senderId: senderId,
+    receiverId: receiverId,
+    status: "pending",
+    createdAt: new Date(),
+  };
+
   try {
-    // Query the database to check the count of chat requests between senderId and receiverId
-    const existingRequestsCount = await ChatRequest.countDocuments({
-      senderId: senderId,
-      receiverId: receiverId
-    });
-
-    // If there are already 2 requests, reject the new request
-    if (existingRequestsCount >= 2) {
-      return res.status(403).json({ 
-        success: false, 
-        message: "You have already sent the maximum number of chat requests to this user" 
-      });
-    }
-
-    // Proceed with creating the new chat request if the limit is not reached
-    const chatRequest = {
-      requestId: uuidv4(),
-      senderId: senderId,
-      receiverId: receiverId,
-      status: "pending",
-      createdAt: new Date(),
-    };
-
     const result = await ChatRequest.insertOne(chatRequest);
-
+    
     if (result.acknowledged) {
       return res.status(201).json({ success: true, message: "Chat request sent successfully" });
     } else {
@@ -1449,7 +1434,20 @@ app.post("/chat_request/:receiverId", asyncHandler(async (req, res) => {
 }));
 
 
+// async function deleteAllChatRequests() {
+//   try {
+//     await client.connect();
+    
+//     const result = await ChatRequest.deleteMany({});
+//     console.log(`${result.deletedCount} chat requests deleted.`);
+//   } catch (error) {
+//     console.error('Error deleting chat requests:', error);
+//   } finally {
+//     await client.close();
+//   }
+// }
 
+// deleteAllChatRequests();
 
 
 // get recieved chat requests for a single user
@@ -1728,18 +1726,6 @@ app.get(
 
 ////start here...
 
-// Function to remove duplicates by email
-const removeDuplicateParticipants = (attendees) => {
-  const seenEmails = new Set();
-  return attendees.filter((attendee) => {
-    if (seenEmails.has(attendee.userEmail)) {
-      return false;
-    } else {
-      seenEmails.add(attendee.userEmail);
-      return true;
-    }
-  });
-};
 
 // Assuming you have already set up your Express app
 app.get('/chat_rooms/:userId', asyncHandler(async (req, res) => {
@@ -1782,26 +1768,7 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: "error.log", level: "error" }),
     new winston.transports.File({ filename: "combined.log" }),
   ],
-
 });
-
-
-
-///delete function..
-async function deleteAllChatRequests() {
-  try {
-    await client.connect();
-    
-    const result = await ChatRequest.deleteMany({});
-    console.log(`${result.deletedCount} operation complete.`);
-  } catch (error) {
-    console.error('Error deleting chat requests:', error);
-  } finally {
-    await client.close();
-  }
-}
-
-deleteAllChatRequests();
 
 app.use((req, res, next) => {
   const start = Date.now();
