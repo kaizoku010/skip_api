@@ -1664,7 +1664,7 @@ app.get(
 );
 
 
-//get a single user chat rooms
+//get single room
 app.get(
   "/chat_rooms/:roomId",
   asyncHandler(async (req, res) => {

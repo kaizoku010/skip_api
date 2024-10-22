@@ -1535,9 +1535,9 @@ app.post(
 
 //get all messages from a chat room..
 app.get(
-  "/chat-rooms/:userId",
+  "/chat-rooms/:room_id/messages",
   asyncHandler(async (req, res) => {
-    const  {roomId } = req.params;
+    const roomId = req.params.room_id;
     const chatRoom = await ChatRoom.findOne({ roomId });
     res.json(chatRoom?.messages || []);
   })
@@ -1594,7 +1594,10 @@ app.put(
       message: `Chat request ${updatedStatus}`,
     });
   })
-)
+);
+
+
+
 
 // Delete a chat
 app.delete(
@@ -1626,9 +1629,9 @@ app.delete(
 
 //get all chaRoom messages
 app.post(
-  "/chat_rooms/:roomId/messages/:userId",
+  "/chat_rooms/:roomId/messages/:",
   asyncHandler(async (req, res) => {
-    const { roomId, userId } = req.params;
+    const { roomId } = req.params;
     const { senderId, content } = req.body; // The user sending the message and the message content
 
     const message = {
@@ -1648,25 +1651,9 @@ app.post(
   })
 );
 
-//get single room
+//new recieve texts...
 app.get(
-  "/chat_rooms/:roomId",
-  asyncHandler(async (req, res) => {
-    const { roomId } = req.params;
-
-    try {
-      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
-      res.json(messages);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching messages", error });
-    }
-  })
-);
-
-
-//get a single user chat rooms
-app.get(
-  "/chat_rooms/:roomId",
+  "/chat_rooms/:roomId/messages",
   asyncHandler(async (req, res) => {
     const { roomId } = req.params;
 
@@ -1722,21 +1709,31 @@ app.get(
   })
 );
 
+//send notifications
+app.post(
+  "/notifications",
+  asyncHandler(async (req, res) => {
+    const notification = {
+      ...req.body,
+      notificationId: uuidv4(),
+      userId: req.auth.userId,
+      createdAt: new Date(),
+    };
+    await Notification.insertOne(notification);
+    res.status(201).json(notification);
+  })
+);
 
-
-////start here...
-
-// Assuming you have already set up your Express app
-app.get('/chat_rooms/:userId', asyncHandler(async (req, res) => {
-  const {userId}= req.params
-  try {
-    const chatRooms = await ChatRoom.find({ participants: userId }); 
-    res.json(chatRooms);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching chat rooms', error });
-  }
-}));
-
+//get notification
+app.get(
+  "/notifications",
+  asyncHandler(async (req, res) => {
+    const notifications = await Notification.find({
+      userId: req.auth.userId,
+    }).toArray();
+    res.json(notifications);
+  })
+);
 
 // Serve static files and HTML documentation
 app.use(express.static(path.join(__dirname, "public")));

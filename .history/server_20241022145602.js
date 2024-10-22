@@ -1648,25 +1648,9 @@ app.post(
   })
 );
 
-//get single room
+//new recieve texts...
 app.get(
-  "/chat_rooms/:roomId",
-  asyncHandler(async (req, res) => {
-    const { roomId } = req.params;
-
-    try {
-      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
-      res.json(messages);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching messages", error });
-    }
-  })
-);
-
-
-//get a single user chat rooms
-app.get(
-  "/chat_rooms/:roomId",
+  "/chat_rooms/:roomId/messages",
   asyncHandler(async (req, res) => {
     const { roomId } = req.params;
 

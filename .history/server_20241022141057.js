@@ -1537,7 +1537,7 @@ app.post(
 app.get(
   "/chat-rooms/:userId",
   asyncHandler(async (req, res) => {
-    const  {roomId } = req.params;
+    const roomId = req.params.room_id;
     const chatRoom = await ChatRoom.findOne({ roomId });
     res.json(chatRoom?.messages || []);
   })
@@ -1594,7 +1594,10 @@ app.put(
       message: `Chat request ${updatedStatus}`,
     });
   })
-)
+);
+
+
+
 
 // Delete a chat
 app.delete(
@@ -1648,25 +1651,9 @@ app.post(
   })
 );
 
-//get single room
+//new recieve texts...
 app.get(
-  "/chat_rooms/:roomId",
-  asyncHandler(async (req, res) => {
-    const { roomId } = req.params;
-
-    try {
-      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
-      res.json(messages);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching messages", error });
-    }
-  })
-);
-
-
-//get a single user chat rooms
-app.get(
-  "/chat_rooms/:roomId",
+  "/chat_rooms/:roomId/messages",
   asyncHandler(async (req, res) => {
     const { roomId } = req.params;
 
@@ -1721,21 +1708,6 @@ app.get(
     res.json(messages);
   })
 );
-
-
-
-////start here...
-
-// Assuming you have already set up your Express app
-app.get('/chat_rooms/:userId', asyncHandler(async (req, res) => {
-  const {userId}= req.params
-  try {
-    const chatRooms = await ChatRoom.find({ participants: userId }); 
-    res.json(chatRooms);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching chat rooms', error });
-  }
-}));
 
 
 // Serve static files and HTML documentation
