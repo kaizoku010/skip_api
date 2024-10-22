@@ -1627,46 +1627,7 @@ app.delete(
 );
 
 
-//get all chaRoom messages
-app.post(
-  "/chat_rooms/:roomId/messages",
-  asyncHandler(async (req, res) => {
-    const { roomId } = req.params;
-    const { senderId, content } = req.body; // The user sending the message and the message content
-
-    const message = {
-      messageId: uuidv4(),
-      chatRoomId: roomId,
-      senderId,
-      content,
-      timestamp: new Date(),
-    };
-
-    try {
-      await Chat.insertOne(message); // Assuming Message is your MongoDB collection for messages
-      res.status(201).json(message);
-    } catch (error) {
-      res.status(500).json({ message: "Error sending message", error });
-    }
-  })
-);
-
-//new recieve texts...
-app.get(
-  "/chat_rooms/:roomId/messages",
-  asyncHandler(async (req, res) => {
-    const { roomId } = req.params;
-
-    try {
-      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
-      res.json(messages);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching messages", error });
-    }
-  })
-);
-
-
+//get all chaRoom
 app.post(
   "/send_message",
   asyncHandler(async (req, res) => {

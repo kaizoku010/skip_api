@@ -1651,21 +1651,6 @@ app.post(
   })
 );
 
-//new recieve texts...
-app.get(
-  "/chat_rooms/:roomId/messages",
-  asyncHandler(async (req, res) => {
-    const { roomId } = req.params;
-
-    try {
-      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
-      res.json(messages);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching messages", error });
-    }
-  })
-);
-
 
 app.post(
   "/send_message",

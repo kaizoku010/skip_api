@@ -1658,7 +1658,7 @@ app.get(
     const { roomId } = req.params;
 
     try {
-      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
+      const messages = await Message.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
       res.json(messages);
     } catch (error) {
       res.status(500).json({ message: "Error fetching messages", error });
