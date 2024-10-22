@@ -1512,7 +1512,7 @@ app.get(
 
 //create chat room
 app.post(
-  "/create_chat_room/",
+  "/create_chat_room",
   asyncHandler(async (req, res) => {
     const { name, participants } = req.body;
 

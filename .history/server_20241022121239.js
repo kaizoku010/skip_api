@@ -1512,9 +1512,9 @@ app.get(
 
 //create chat room
 app.post(
-  "/create_chat_room/",
+  "/create_chat_room/:senderEmail/:reciverEmail",
   asyncHandler(async (req, res) => {
-    const { name, participants } = req.body;
+    const { name, participants } = req.param;
 
     const chatRoom = {
       chatRoomId: uuidv4(),

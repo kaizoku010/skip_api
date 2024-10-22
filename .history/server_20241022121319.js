@@ -1512,13 +1512,13 @@ app.get(
 
 //create chat room
 app.post(
-  "/create_chat_room/",
+  "/create_chat_room/:senderEmail/:reciverEmail",
   asyncHandler(async (req, res) => {
-    const { name, participants } = req.body;
+    const { senderMail, rereciverEmail } = req.params;
 
     const chatRoom = {
       chatRoomId: uuidv4(),
-      name,
+      from,
       participants, // An array of user IDs who are part of this chat room
       createdAt: new Date(),
       createdBy: req.auth.userId,
