@@ -1788,20 +1788,20 @@ const logger = winston.createLogger({
 
 
 ///delete function..
-// async function deleteAllChatRequests() {
-//   try {
-//     await client.connect();
+async function deleteAllChatRequests() {
+  try {
+    await client.connect();
     
-//     const result = await ChatRoom.deleteMany({});
-//     console.log(`${result.deletedCount} operation complete.`);
-//   } catch (error) {
-//     console.error('Error deleting chat requests:', error);
-//   } finally {
-//     await client.close();
-//   }
-// }
+    const result = await ChatRoom.deleteMany({});
+    console.log(`${result.deletedCount} operation complete.`);
+  } catch (error) {
+    console.error('Error deleting chat requests:', error);
+  } finally {
+    await client.close();
+  }
+}
 
-// deleteAllChatRequests();
+deleteAllChatRequests();
 
 app.use((req, res, next) => {
   const start = Date.now();
