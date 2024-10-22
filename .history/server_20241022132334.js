@@ -1598,7 +1598,6 @@ app.put(
 
 
 
-
 // Delete a chat
 app.delete(
   "/delete_chat/:chat_id",

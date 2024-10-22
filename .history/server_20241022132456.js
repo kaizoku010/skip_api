@@ -1545,12 +1545,11 @@ app.get(
 
 // Accept a chat request
 app.put(
-  "/chat_requests/:request_id/accept",
+  "/accept_chat_req/:request_id",
   asyncHandler(async (req, res) => {
     const { request_id } = req.params;
-    const { action } = req.body;
+    const { action } = req.body;  // 'accept' or 'decline'
 
-    // Validate action
     if (!['accept', 'decline'].includes(action)) {
       return res.status(400).json({ message: "Invalid action" });
     }
@@ -1561,20 +1560,21 @@ app.put(
       return res.status(404).json({ message: "Chat request not found" });
     }
 
-    // Ensure user is authorized
+    // Check if the user is the receiver
     if (chatRequest.receiverId !== req.auth.userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    // Update request status
+    // Update the status based on the action
     const updatedStatus = action === 'accept' ? 'accepted' : 'declined';
-    await ChatRequest.findOneAndUpdate(
+    const updatedChatRequest = await ChatRequest.findOneAndUpdate(
       { requestId: request_id },
       { $set: { status: updatedStatus } },
       { returnDocument: 'after' }
     );
 
-    if (action === 'accept') {
+    if (updatedStatus === 'accepted') {
+      // Create a new chat room
       const chatRoom = {
         chatRoomId: uuidv4(),
         name: `Chat between ${chatRequest.senderId} and ${chatRequest.receiverId}`,
@@ -1583,20 +1583,23 @@ app.put(
         createdBy: req.auth.userId,
       };
 
-      await ChatRoom.insertOne(chatRoom);
-      return res.status(201).json({
-        message: "Chat request accepted and chat room created",
-        chatRoom,
-      });
+      try {
+        await ChatRoom.insertOne(chatRoom);
+        return res.json({
+          message: "Chat request accepted and chat room created",
+          chatRoom,
+        });
+      } catch (error) {
+        return res.status(500).json({ message: "Error creating chat room", error });
+      }
     }
 
     res.json({
       message: `Chat request ${updatedStatus}`,
+      updatedChatRequest,
     });
   })
 );
-
-
 
 
 // Delete a chat
