@@ -345,7 +345,7 @@ app.post(
   "/auth/signup",
   upload.single("userImage"),
   asyncHandler(async (req, res) => {
-    const { username, email, password, job, gender, industry, phone, age, position } =
+    const { username, email, password, job, gender, industry, phone } =
       req.body;
     const userImage = req.file;
 

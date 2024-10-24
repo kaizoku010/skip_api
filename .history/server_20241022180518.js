@@ -345,7 +345,7 @@ app.post(
   "/auth/signup",
   upload.single("userImage"),
   asyncHandler(async (req, res) => {
-    const { username, email, password, job, gender, industry, phone, age, position } =
+    const { username, email, password, job, gender, industry, phone } =
       req.body;
     const userImage = req.file;
 
@@ -1787,12 +1787,12 @@ const logger = winston.createLogger({
 
 
 
-// /delete function..
+///delete function..
 // async function deleteAllChatRequests() {
 //   try {
 //     await client.connect();
     
-//     const result = await ChatRequest.deleteMany({});
+//     const result = await ChatReq.deleteMany({});
 //     console.log(`${result.deletedCount} operation complete.`);
 //   } catch (error) {
 //     console.error('Error deleting chat requests:', error);
