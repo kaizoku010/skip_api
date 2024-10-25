@@ -191,14 +191,7 @@ const sendTicketWithAttachment = async (to, subject, text, attachmentPath) => {
 };
 
 const sendCheckinNotification = async(to, subject, text)=>{
-  const mailOptions = {
-    from: "dev@moxie5agency.com",
-    to,
-    subject,
-    text
-  };
-
-  return transporter.sendMail(mailOptions);
+  
 }
 
 const uploadUserImage = (path) => {
@@ -1826,54 +1819,37 @@ app.use((req, res, next) => {
 });
 
 
-//save_checkin.
-app.post("/save_checkin", asyncHandler(async (req, res) => {
-  const { attendeeId, userName, userEmail } = req.body;
+//accrediting attendees, checls
+app.get('/checkin_user/:userEmail', asyncHandler(async (req, res) => {
+  const {userEmail}= req.params
+  try {
+    const chatRooms = await ChatRoom.find({ participants: userId }); 
+    res.json(chatRooms);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching chat rooms', error });
+  }
+}));
+
+
+app.post("/checkin_user", asyncHandler(async(req, res)=>{
+  const {attendeeId} = req.body
 
   const checkinData = {
-    checkinId: uuidv4(), // Generate a unique check-in ID
-    attendeeId,
-    attendeeEmail: userEmail,
+    checkinId: uuidv4(),
+    attendeeId: attendeeId,
     timestamp: new Date(),
-  };
+  }
 
   try {
-    // Save check-in to the database
-    await Checkins.insertOne(checkinData);
-    
-    // Respond with success and check-in data
+    await Checkins.insertOne(checkinData)
     res.status(201).json(checkinData);
 
-    // Send a notification (if needed)
-    sendCheckinNotification(userEmail, "Sk!p Check-in Complete", 
-      `Hello ${userName}, Your check-in status has been updated. Check-in ID: ${checkinData.checkinId}`);
   } catch (error) {
-    // Handle error and send response
-    res.status(500).json({ message: "Error saving check-in", error });
+    res.status(500).json({ message: "Error Checkin in Attendee", error });
+
   }
-}));
 
-
-
-app.post("/check_duplicate", asyncHandler(async (req, res) => {
-  const { attendeeId } = req.body;
-
-  try {
-    // Search for an existing check-in with the same attendee ID
-    const existingCheckin = await Checkins.findOne({ attendeeId });
-
-    if (existingCheckin) {
-      // If a check-in exists, send a response indicating it's a duplicate
-      res.status(200).json({ duplicate: true, checkinId: existingCheckin.checkinId });
-    } else {
-      // If no check-in exists, allow the check-in process to proceed
-      res.status(200).json({ duplicate: false });
-    }
-  } catch (error) {
-    // Handle error and send response
-    res.status(500).json({ message: "Error checking for duplicate check-in", error });
-  }
-}));
+}))
 
 
 // Serve the HTML file

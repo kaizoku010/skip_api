@@ -1855,25 +1855,29 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
 
 
 
-app.post("/check_duplicate", asyncHandler(async (req, res) => {
-  const { attendeeId } = req.body;
+//accrediting attendees, checls
+app.post("/checkin_user", asyncHandler(async(req, res)=>{
+  const {attendeeId, userName,userEmail } = req.body
 
-  try {
-    // Search for an existing check-in with the same attendee ID
-    const existingCheckin = await Checkins.findOne({ attendeeId });
-
-    if (existingCheckin) {
-      // If a check-in exists, send a response indicating it's a duplicate
-      res.status(200).json({ duplicate: true, checkinId: existingCheckin.checkinId });
-    } else {
-      // If no check-in exists, allow the check-in process to proceed
-      res.status(200).json({ duplicate: false });
-    }
-  } catch (error) {
-    // Handle error and send response
-    res.status(500).json({ message: "Error checking for duplicate check-in", error });
+  const checkinData = {
+    checkinId: uuidv4(),
+    attendeeId: attendeeId,
+    attendeeEmail: userEmail,
+    timestamp: new Date(),
   }
-}));
+  
+  //loo
+  try {
+    await Checkins.insertOne(checkinData)
+    res.status(201).json(checkinData);
+
+    sendCheckinNotification(userEmail, "Sk!p Checkin Complete", `Hello ${userName}, Your checkin status has been updated, here is your checkin Id: ${checkinData.checkinId}. `)
+  } catch (error) {
+    res.status(500).json({ message: "Error Checkin in Attendee", error });
+
+  }
+
+}))
 
 
 // Serve the HTML file

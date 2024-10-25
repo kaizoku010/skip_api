@@ -102,7 +102,6 @@ const ChatRequest = db.collection("chatRequests");
 const ChatRoom = db.collection("chatRooms");
 const Notification = db.collection("notifications");
 const User = db.collection("users");
-const Checkins = db.collection("checkins");
 const Chat = db.collection("chats");
 const AdminUsers = db.collection("admins");
 const Payment = db.collection("payments");
@@ -189,17 +188,6 @@ const sendTicketWithAttachment = async (to, subject, text, attachmentPath) => {
 
   return transporter.sendMail(mailOptions);
 };
-
-const sendCheckinNotification = async(to, subject, text)=>{
-  const mailOptions = {
-    from: "dev@moxie5agency.com",
-    to,
-    subject,
-    text
-  };
-
-  return transporter.sendMail(mailOptions);
-}
 
 const uploadUserImage = (path) => {
   return new Promise((resolve, reject) => {
@@ -1826,54 +1814,47 @@ app.use((req, res, next) => {
 });
 
 
-//save_checkin.
-app.post("/save_checkin", asyncHandler(async (req, res) => {
-  const { attendeeId, userName, userEmail } = req.body;
-
-  const checkinData = {
-    checkinId: uuidv4(), // Generate a unique check-in ID
-    attendeeId,
-    attendeeEmail: userEmail,
-    timestamp: new Date(),
-  };
-
+//accrediting attendees, checls
+app.get('/checkin_user/:userEmail', asyncHandler(async (req, res) => {
+  const {userEmail}= req.params
   try {
-    // Save check-in to the database
-    await Checkins.insertOne(checkinData);
-    
-    // Respond with success and check-in data
-    res.status(201).json(checkinData);
-
-    // Send a notification (if needed)
-    sendCheckinNotification(userEmail, "Sk!p Check-in Complete", 
-      `Hello ${userName}, Your check-in status has been updated. Check-in ID: ${checkinData.checkinId}`);
+    const chatRooms = await ChatRoom.find({ participants: userId }); 
+    res.json(chatRooms);
   } catch (error) {
-    // Handle error and send response
-    res.status(500).json({ message: "Error saving check-in", error });
+    res.status(500).json({ message: 'Error fetching chat rooms', error });
   }
 }));
 
 
+app.post("/checkin_user", {
+  const {}  req.body
+})
 
-app.post("/check_duplicate", asyncHandler(async (req, res) => {
-  const { attendeeId } = req.body;
 
-  try {
-    // Search for an existing check-in with the same attendee ID
-    const existingCheckin = await Checkins.findOne({ attendeeId });
 
-    if (existingCheckin) {
-      // If a check-in exists, send a response indicating it's a duplicate
-      res.status(200).json({ duplicate: true, checkinId: existingCheckin.checkinId });
-    } else {
-      // If no check-in exists, allow the check-in process to proceed
-      res.status(200).json({ duplicate: false });
+app.post(
+  "/chat_rooms/:roomId/messages/:userId",
+  asyncHandler(async (req, res) => {
+    const { roomId, userId } = req.params;
+    const { senderId, content } = req.body; // The user sending the message and the message content
+
+    const message = {
+      messageId: uuidv4(),
+      chatRoomId: roomId,
+      senderId,
+      content,
+      timestamp: new Date(),
+    };
+
+    try {
+      await Chat.insertOne(message); // Assuming Message is your MongoDB collection for messages
+      res.status(201).json(message);
+    } catch (error) {
+      res.status(500).json({ message: "Error sending message", error });
     }
-  } catch (error) {
-    // Handle error and send response
-    res.status(500).json({ message: "Error checking for duplicate check-in", error });
-  }
-}));
+  })
+);
+
 
 
 // Serve the HTML file
