@@ -1712,7 +1712,7 @@ app.post(
   "/send_message/:senderId/:receiverId",
   asyncHandler(async (req, res) => {
     const { chatRoomId, messageContent } = req.body;
-    const {senderId, receiverId} = req.params;
+    const {senderId} = req.params;
 
 
     console.log("user msg: ", messageContent)
