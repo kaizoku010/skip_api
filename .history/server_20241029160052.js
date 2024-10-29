@@ -1712,7 +1712,7 @@ app.post(
   "/send_message/:senderId",
   asyncHandler(async (req, res) => {
     const { chatRoomId, messageContent } = req.body;
-    const {senderId} = req.params;
+    const {userID} = req.params;
 
     if (!chatRoomId || !messageContent) {
       return res
@@ -1723,7 +1723,7 @@ app.post(
     const message = {
       messageId: uuidv4(),
       chatRoomId,
-      senderId,
+      userID,
       receiverId,
       messageContent,
       timestamp: new Date().toISOString(),

@@ -1723,7 +1723,7 @@ app.post(
     const message = {
       messageId: uuidv4(),
       chatRoomId,
-      senderId,
+      userID,
       receiverId,
       messageContent,
       timestamp: new Date().toISOString(),

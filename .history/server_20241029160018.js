@@ -1709,10 +1709,10 @@ app.get("/chat_rooms/:roomId", asyncHandler(async (req, res) => {
 
 //send chat message
 app.post(
-  "/send_message/:senderId",
+  "/send_message/:userID",
   asyncHandler(async (req, res) => {
     const { chatRoomId, messageContent } = req.body;
-    const {senderId} = req.params;
+    const senderId = {userID} = req.params;
 
     if (!chatRoomId || !messageContent) {
       return res

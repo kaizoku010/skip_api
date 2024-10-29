@@ -1689,30 +1689,12 @@ app.get(
   })
 );
 
-
-//get single room
-app.get("/chat_rooms/:roomId", asyncHandler(async (req, res) => {
-  const { roomId } = req.params;
-  const { limit = 20, offset = 0 } = req.query; // Default pagination
-
-  try {
-    const messages = await Chat.find({ chatRoomId: roomId })
-      .skip(parseInt(offset))
-      .limit(parseInt(limit))
-      .toArray();
-    res.json(messages);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching messages", error });
-  }
-}));
-
-
 //send chat message
 app.post(
-  "/send_message/:senderId",
+  "/send_message",
   asyncHandler(async (req, res) => {
     const { chatRoomId, messageContent } = req.body;
-    const {senderId} = req.params;
+    const senderId = req.auth.userId;
 
     if (!chatRoomId || !messageContent) {
       return res
@@ -1754,18 +1736,18 @@ app.get(
 
 ////start here...
 
-// // Function to remove duplicates by email
-// const removeDuplicateParticipants = (attendees) => {
-//   const seenEmails = new Set();
-//   return attendees.filter((attendee) => {
-//     if (seenEmails.has(attendee.userEmail)) {
-//       return false;
-//     } else {
-//       seenEmails.add(attendee.userEmail);
-//       return true;
-//     }
-//   });
-// };
+// Function to remove duplicates by email
+const removeDuplicateParticipants = (attendees) => {
+  const seenEmails = new Set();
+  return attendees.filter((attendee) => {
+    if (seenEmails.has(attendee.userEmail)) {
+      return false;
+    } else {
+      seenEmails.add(attendee.userEmail);
+      return true;
+    }
+  });
+};
 
 // Assuming you have already set up your Express app
 app.get('/chat_rooms/:userId', asyncHandler(async (req, res) => {

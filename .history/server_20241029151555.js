@@ -1691,28 +1691,26 @@ app.get(
 
 
 //get single room
-app.get("/chat_rooms/:roomId", asyncHandler(async (req, res) => {
-  const { roomId } = req.params;
-  const { limit = 20, offset = 0 } = req.query; // Default pagination
+app.get(
+  "/chat_rooms/:roomId",
+  asyncHandler(async (req, res) => {
+    const { roomId } = req.params;
 
-  try {
-    const messages = await Chat.find({ chatRoomId: roomId })
-      .skip(parseInt(offset))
-      .limit(parseInt(limit))
-      .toArray();
-    res.json(messages);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching messages", error });
-  }
-}));
-
+    try {
+      const messages = await Chat.find({ chatRoomId: roomId }).toArray(); // Assuming Message is your MongoDB collection for messages
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching messages", error });
+    }
+  })
+);
 
 //send chat message
 app.post(
-  "/send_message/:senderId",
+  "/send_message",
   asyncHandler(async (req, res) => {
     const { chatRoomId, messageContent } = req.body;
-    const {senderId} = req.params;
+    const senderId = req.auth.userId;
 
     if (!chatRoomId || !messageContent) {
       return res
