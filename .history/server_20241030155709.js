@@ -1607,10 +1607,11 @@ app.put(
 )
 
 // Delete a chat
+const asyncHandler = require('express-async-handler'); // Ensure asyncHandler is imported
 
 app.delete(
   "/delete_message/:messageId",
-  async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { messageId } = req.params;
 
     try {
@@ -1626,7 +1627,7 @@ app.delete(
       console.error("Error deleting message:", error);
       res.status(500).json({ message: "Server error", error });
     }
-  }
+  })
 );
 
 

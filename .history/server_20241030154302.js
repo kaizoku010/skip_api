@@ -1607,28 +1607,32 @@ app.put(
 )
 
 // Delete a chat
+app.delete('/delete_message/:messageId', async (req, res) => {
+  const { messageId } = req.params;
 
-app.delete(
-  "/delete_message/:messageId",
-  async (req, res) => {
-    const { messageId } = req.params;
 
-    try {
-      // Delete the message with the specified messageId
-      const result = await Chat.deleteOne({ messageId });
-
-      if (result.deletedCount === 0) {
-        return res.status(404).json({ message: "Message not found" });
-      }
-
-      res.status(200).json({ message: "Message deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting message:", error);
-      res.status(500).json({ message: "Server error", error });
+  try {
+    // Ensure the messageId is valid
+    if (!ObjectId.isValid(messageId)) {
+      return res.status(400).json({ error: "Invalid message ID" });
     }
-  }
-);
 
+    // Access the 'chat' collection
+
+    // Delete the message with the specified messageId
+    const result = await Chat.deleteOne({ _id: (messageId) });
+
+    // Check if the message was found and deleted
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting message:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 
 // Fetch all messages

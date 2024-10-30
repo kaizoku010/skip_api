@@ -1610,7 +1610,7 @@ app.put(
 
 app.delete(
   "/delete_message/:messageId",
-  async (req, res) => {
+  asyn(async (req, res) => {
     const { messageId } = req.params;
 
     try {
@@ -1626,7 +1626,7 @@ app.delete(
       console.error("Error deleting message:", error);
       res.status(500).json({ message: "Server error", error });
     }
-  }
+  })
 );
 
 

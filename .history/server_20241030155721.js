@@ -1626,7 +1626,7 @@ app.delete(
       console.error("Error deleting message:", error);
       res.status(500).json({ message: "Server error", error });
     }
-  }
+  })
 );
 
 
