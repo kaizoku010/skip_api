@@ -1845,9 +1845,7 @@ app.use((req, res, next) => {
 //save_checkin.
 app.post("/save_checkin", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail } = req.body;
- 
 
-  const attendeeObject = attendeeId;
   const checkinData = {
     checkinId: uuidv4(), // Generate a unique check-in ID
     attendeeObject,
