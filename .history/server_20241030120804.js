@@ -1618,6 +1618,7 @@ app.delete('/delete_message/:messageId', async (req, res) => {
     }
 
     // Access the 'chat' collection
+    const chatCollection = db.collection('chat');
 
     // Delete the message with the specified messageId
     const result = await Chat.deleteOne({ _id: new ObjectId(messageId) });

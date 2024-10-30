@@ -1618,9 +1618,10 @@ app.delete('/delete_message/:messageId', async (req, res) => {
     }
 
     // Access the 'chat' collection
+    const chatCollection = db.collection('chat');
 
     // Delete the message with the specified messageId
-    const result = await Chat.deleteOne({ _id: new ObjectId(messageId) });
+    const result = await ChatdeleteOne({ _id: new ObjectId(messageId) });
 
     // Check if the message was found and deleted
     if (result.deletedCount === 0) {
