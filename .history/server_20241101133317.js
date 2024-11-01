@@ -1915,6 +1915,7 @@ app.post('/messageCount', async (req, res) => {
 
 
 app.post('/contactShareCount', async (req, res) => {
+  const { userId } = req.params;
   const { eventId, increment } = req.body; // assuming you want to increment the count
 
   try {

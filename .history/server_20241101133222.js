@@ -1894,7 +1894,8 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 }));
 
 // POST /api/users/:userId/messageCount
-app.post('/messageCount', async (req, res) => {
+app.post('/api/users/:userId/messageCount', async (req, res) => {
+  const { userId } = req.params;
   const { eventId, increment } = req.body; // assuming you want to increment the count
 
   try {
@@ -1912,27 +1913,6 @@ app.post('/messageCount', async (req, res) => {
       res.status(500).send({ error: 'An error occurred while updating message count' });
   }
 });
-
-
-app.post('/contactShareCount', async (req, res) => {
-  const { eventId, increment } = req.body; // assuming you want to increment the count
-
-  try {
-      const result = await eventsCollection.updateOne(
-          { _id: eventId}, // Find the event by ID and userId
-          { $inc: { contactShareCount: increment } } // Increment the contactShareCount field
-      );
-
-      if (result.modifiedCount > 0) {
-          res.status(200).send({ message: 'Contact share count updated successfully' });
-      } else {
-          res.status(404).send({ message: 'Event not found or no update made' });
-      }
-  } catch (error) {
-      res.status(500).send({ error: 'An error occurred while updating contact share count' });
-  }
-});
-
 
 // Serve the HTML file
 app.get("/logs", (req, res) => {

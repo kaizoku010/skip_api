@@ -1895,6 +1895,7 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 
 // POST /api/users/:userId/messageCount
 app.post('/messageCount', async (req, res) => {
+  const { userId } = req.params;
   const { eventId, increment } = req.body; // assuming you want to increment the count
 
   try {
@@ -1915,11 +1916,12 @@ app.post('/messageCount', async (req, res) => {
 
 
 app.post('/contactShareCount', async (req, res) => {
+  const { userId } = req.params;
   const { eventId, increment } = req.body; // assuming you want to increment the count
 
   try {
       const result = await eventsCollection.updateOne(
-          { _id: eventId}, // Find the event by ID and userId
+          { _id: eventId, userId: userId }, // Find the event by ID and userId
           { $inc: { contactShareCount: increment } } // Increment the contactShareCount field
       );
 
