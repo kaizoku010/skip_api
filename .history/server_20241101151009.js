@@ -1923,7 +1923,7 @@ app.post('/contactShareCount', async (req, res) => {
 
   try {
       const result = await Event.updateOne(
-          { eventId: eventId}, // Find the event by ID and userId
+          { _id: eventId}, // Find the event by ID and userId
           { $inc: { contactShareCount: increment } } // Increment the contactShareCount field
       );
 
