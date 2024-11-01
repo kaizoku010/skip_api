@@ -1925,13 +1925,12 @@ app.post('/contactShareCount', async (req, res) => {
 
       if (result.modifiedCount > 0) {
           res.status(200).send({ message: 'Contact share count updated successfully' });
-          console.log("conatct shared: ", increment)
       } else {
           res.status(404).send({ message: 'Event not found or no update made' });
       }
   } catch (error) {
       res.status(500).send({ error: 'An error occurred while updating contact share count' });
-      console.error("contact count error: ", error)
+      console.log(""contact count error)
   }
 });
 
