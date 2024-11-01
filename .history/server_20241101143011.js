@@ -1895,7 +1895,7 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 
 // POST /api/users/:userId/messageCount
 app.post('/messageCount', async (req, res) => {
-  console.log("messageCount with body:", req.body); // Debugging line
+  console.log("Received request at /messageCount with body:", req.body); // Debugging line
 
   const { eventId, increment } = req.body; // assuming you want to increment the count
 
@@ -1917,8 +1917,6 @@ app.post('/messageCount', async (req, res) => {
 
 
 app.post('/contactShareCount', async (req, res) => {
-  console.log("shared message Count with body:", req.body); // Debugging line
-
   const { eventId, increment } = req.body; // assuming you want to increment the count
 
   try {
