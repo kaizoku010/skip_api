@@ -1896,15 +1896,14 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 
 
 app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
-  const { eventId } = req.params; // Retrieve eventId directly from params
-
-  console.log("Received eventId:", eventId); // Log the received eventId for debugging
+  const { eventId } = req.params;
+  
+  console.log("Received eventId:", eventId);
 
   try {
-    // Fetch check-ins from the database without conversion
-    const checkins = await Checkins.find({ eventId });
-
-    console.log("Retrieved checkins:", checkins); // Log the retrieved check-ins
+    const checkins = await Checkins.findOne({ "6527ce88-96a8-49e8-ac47-da7eee8e668d" );
+    
+    console.log("Retrieved checkins:", checkins);  // Log the retrieved check-ins
 
     if (checkins.length > 0) {
       res.status(200).json({ success: true, data: checkins });
