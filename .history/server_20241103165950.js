@@ -1895,49 +1895,50 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 }));
 
 
-app.get("/get_checkin_by_event/:eventId", asyncHandler(async (req, res) => {
-  const { eventId } = req.params; // Retrieve eventId directly from params
-
-  console.log("Received eventId:", eventId); // Log the received eventId for debugging
+app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
+  const eventId = req.params.event_id;
+  
+  console.log("Received eventId:", eventId);
 
   try {
-    // Fetch a single check-in matching the provided eventId
-    const checkin = await Checkins.findOne({ eventId });
+    const checkin = await Checkins.findOne({ eventId: eventId });
+    
+    console.log("Retrieved checkins:", checkin);  // Log the retrieved check-ins
+    res.json(checkin);
 
-    console.log("Retrieved checkin:", checkin); // Log the retrieved check-in
-
-    if (checkin) {
-      res.status(200).json({ success: true, data: checkin });
-    } else {
-      res.status(404).json({ success: false, message: "No check-in found for this event" });
-    }
+    // if (checkins.length > 0) {
+    //   res.status(200).json({ success: true, data: checkins });
+    // } else {
+    //   res.status(404).json({ success: false, message: "No check-ins found for this event" });
+    // }
   } catch (error) {
-    console.error("Error retrieving check-in:", error);
-    res.status(500).json({ success: false, message: "Error retrieving check-in", error });
+    console.error("Error retrieving check-ins:", error);
+    res.status(500).json({ message: "Error retrieving check-ins", error });
   }
 }));
-
 
 
 // Checkins.findOne({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
 
 
-// async function findCheckin() {
+async function findCheckin() {
 
-//   try {
-//     // Attempt to find the document by eventId
-//     const checkin = await Checkins.findOne({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
+  try {
+  
 
-//     console.log("Checkin found:", checkin);
-//   } catch (error) {
-//     console.error("Error finding checkin:", error);
-//   } finally {
-//     await client.close();
-//   }
-// }
+    // Attempt to find the document by eventId
+    const checkin = await Checjins.findOne({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
 
-// // Call the async function
-// findCheckin();
+    console.log("Checkin found:", checkin);
+  } catch (error) {
+    console.error("Error finding checkin:", error);
+  } finally {
+    await client.close();
+  }
+}
+
+// Call the async function
+findCheckin();
 
 // POST /api/users/:userId/messageCount
 app.post('/messageCount', async (req, res) => {
