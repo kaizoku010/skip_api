@@ -1848,7 +1848,6 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
  
 
   const attendeeObject = attendeeId;
-  
   const checkinData = {
     eventId:eventId,
     checkinId: uuidv4(), // Generate a unique check-in ID
