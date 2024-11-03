@@ -1883,7 +1883,7 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 
     if (existingCheckin) {
       // If a check-in exists, send a response indicating it's a duplicate
-      res.status(200).json({ duplicate: true, attendeeEmail: existingCheckin.userEmail });
+      res.status(200).json({ duplicate: true, userEmail: existingCheckin.userEmail });
     } else {
       // If no check-in exists, allow the check-in process to proceed
       res.status(200).json({ duplicate: false });
