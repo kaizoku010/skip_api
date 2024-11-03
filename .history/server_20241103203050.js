@@ -724,7 +724,6 @@ app.post(
       userName,
       phoneNumber,
       email,
-      gender,
       ageRange,
       jobIndustry,
       userimage,
@@ -762,7 +761,6 @@ app.post(
         userImage: userimage,
         job: jobIndustry,
         age: ageRange,
-        gender:gender,
         ticketCreatedAt: new Date(), // Record the creation date
       };
 
@@ -1874,8 +1872,8 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
   }
 }));
 
-app.post("/save_checkin2", asyncHandler(async (req, res) =>
-   {
+
+app.post("/save_checkin2", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail, eventId } = req.body;
   // Fetch the event and check if it exists
   const event = await Event.findOne({ eventId: eventId });

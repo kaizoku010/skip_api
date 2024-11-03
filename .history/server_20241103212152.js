@@ -762,7 +762,6 @@ app.post(
         userImage: userimage,
         job: jobIndustry,
         age: ageRange,
-        gender:gender,
         ticketCreatedAt: new Date(), // Record the creation date
       };
 

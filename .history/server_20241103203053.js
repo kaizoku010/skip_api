@@ -724,7 +724,6 @@ app.post(
       userName,
       phoneNumber,
       email,
-      gender,
       ageRange,
       jobIndustry,
       userimage,
@@ -762,7 +761,6 @@ app.post(
         userImage: userimage,
         job: jobIndustry,
         age: ageRange,
-        gender:gender,
         ticketCreatedAt: new Date(), // Record the creation date
       };
 
@@ -1873,6 +1871,7 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Error saving check-in", error });
   }
 }));
+
 
 app.post("/save_checkin2", asyncHandler(async (req, res) =>
    {
