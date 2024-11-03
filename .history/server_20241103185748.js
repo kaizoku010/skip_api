@@ -1871,7 +1871,6 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Error saving check-in", error });
   }
 }));
-
 app.post("/save_checkin2", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail, eventId } = req.body;
 

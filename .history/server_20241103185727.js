@@ -1874,18 +1874,14 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
 
 app.post("/save_checkin2", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail, eventId } = req.body;
-
-  // Fetch the event and check if it exists
+  
+  // Check if Event model is properly imported and if event is found
   const event = await Event.findOne({ eventId: eventId });
+  console.log("event found:")
   if (!event) {
     return res.status(404).json({ message: "Event not found" });
   }
-
-  // Ensure checkins array exists
-  if (!event.checkins) {
-    event.checkins = [];
-  }
-
+  
   // Check if the user is already an attendee for this event
   const alreadyCheckedIn = event.checkins.find(
     (attendee) => attendee.userEmail === userEmail
@@ -1896,7 +1892,7 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
   }
 
   try {
-    // Save check-in data
+    // Save check-in to the database
     const checkinData = {
       checkinId: uuidv4(),
       attendeeId: attendeeId,
@@ -1904,15 +1900,15 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
       timestamp: new Date(),
     };
 
-    // Update the event with the new check-in data
     await Event.updateOne(
       { eventId: eventId },
       { $push: { checkins: checkinData } }
     );
 
+    // Respond with success and check-in data
     res.status(201).json(checkinData);
 
-    // Optional notification
+    // Send a notification (if needed)
     sendCheckinNotification(userEmail, "Sk!p Check-in Complete", 
       `Hello ${userName}, Your check-in status has been updated. Check-in ID: ${checkinData.checkinId}`);
   } catch (error) {
