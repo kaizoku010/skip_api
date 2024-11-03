@@ -1876,8 +1876,10 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
 app.post("/save_checkin2", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail, eventId } = req.body;
 
+  // Use your MongoDB database and collection
+  const db = client.db("yourDatabaseName");
   // Fetch the event and check if it exists
-  const event = await Event.findOne({ eventId: eventId });
+  const event = await eventsCollection.findOne({ eventId: eventId });
   if (!event) {
     return res.status(404).json({ message: "Event not found" });
   }
@@ -1904,7 +1906,7 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
     };
 
     // Update the event with the new check-in data
-    await Event.updateOne(
+    await eventsCollection.updateOne(
       { eventId: eventId },
       { $push: { checkins: checkinData } }
     );

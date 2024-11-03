@@ -1877,7 +1877,7 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail, eventId } = req.body;
 
   // Fetch the event and check if it exists
-  const event = await Event.findOne({ eventId: eventId });
+  const event = await eventsCollection.findOne({ eventId: eventId });
   if (!event) {
     return res.status(404).json({ message: "Event not found" });
   }
