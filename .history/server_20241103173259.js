@@ -1919,23 +1919,6 @@ app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
 }));
 
 
-app.get("/get_all_checkins", asyncHandler(async (req, res) => {
-  try {
-    // Fetch all check-ins from the database
-    const checkins = await Checkins.find().toArray(); // This retrieves all documents
-
-    console.log("Retrieved checkins:", checkins); // Log the retrieved check-ins
-
-    if (checkins.length > 0) {
-      res.status(200).json({ success: true, data: checkins });
-    } else {
-      res.status(404).json({ success: false, message: "No check-ins found" });
-    }
-  } catch (error) {
-    console.error("Error retrieving check-ins:", error);
-    res.status(500).json({ success: false, message: "Error retrieving check-ins", error });
-  }
-}));
 
 
 

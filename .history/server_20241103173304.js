@@ -1922,7 +1922,7 @@ app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
 app.get("/get_all_checkins", asyncHandler(async (req, res) => {
   try {
     // Fetch all check-ins from the database
-    const checkins = await Checkins.find().toArray(); // This retrieves all documents
+    const checkins = await Checkins.find(); // This retrieves all documents
 
     console.log("Retrieved checkins:", checkins); // Log the retrieved check-ins
 
