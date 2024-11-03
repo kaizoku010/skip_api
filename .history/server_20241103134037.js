@@ -1895,22 +1895,6 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 }));
 
 
-app.get("/get_checkins_by_event", asyncHandler(async (req, res) => {
-  const { eventId } = req.query;
-
-  try {
-    // Find all check-ins with the specified eventId
-    const checkins = await Checkins.find({ eventId:eventId });
-
-    if (checkins.length > 0) {
-      res.status(200).json({ success: true, data: checkins });
-    } else {
-      res.status(404).json({ success: false, message: "No check-ins found for this event" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving check-ins", error });
-  }
-}));
 
 
 

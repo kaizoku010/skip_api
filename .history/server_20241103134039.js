@@ -1900,7 +1900,7 @@ app.get("/get_checkins_by_event", asyncHandler(async (req, res) => {
 
   try {
     // Find all check-ins with the specified eventId
-    const checkins = await Checkins.find({ eventId:eventId });
+    const checkins = await Checkins.find({ eventId });
 
     if (checkins.length > 0) {
       res.status(200).json({ success: true, data: checkins });
