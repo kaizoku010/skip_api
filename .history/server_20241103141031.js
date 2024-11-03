@@ -1895,8 +1895,8 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 }));
 
 
-app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
-  const { eventId } = req.params;
+app.get("/get_checkins_by_event/event", asyncHandler(async (req, res) => {
+  const { eventId } = req.query;
   
   // Debugging: Log the eventId received from query params
   console.log("Received eventId:", eventId);
