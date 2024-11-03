@@ -1894,16 +1894,17 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
   }
 }));
 
+Check-Ins for Event 6527ce88-96a8-49e8-ac47-da7eee8e668d
 
 app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
   const { eventId } = req.params;
   
+  // Debugging: Log the eventId received from query params
   console.log("Received eventId:", eventId);
 
   try {
-    const checkins = await Checkins.findOne({ eventId: eventId });
-    
-    console.log("Retrieved checkins:", checkins);  // Log the retrieved check-ins
+    // Ensure eventId is treated as a string
+    const checkins = await Checkins.find({ eventId: String(eventId) });
 
     if (checkins.length > 0) {
       res.status(200).json({ success: true, data: checkins });
@@ -1916,8 +1917,6 @@ app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
   }
 }));
 
-
-// Checkins.findOne({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
 
 
 // POST /api/users/:userId/messageCount

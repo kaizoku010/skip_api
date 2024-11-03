@@ -1901,7 +1901,7 @@ app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
   console.log("Received eventId:", eventId);
 
   try {
-    const checkins = await Checkins.findOne({ eventId: eventId });
+    const checkins = await Checkins.find({ eventId: String(eventId) });
     
     console.log("Retrieved checkins:", checkins);  // Log the retrieved check-ins
 
@@ -1917,7 +1917,7 @@ app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
 }));
 
 
-// Checkins.findOne({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
+Checkins.find({ eventId: "6527ce88-96a8-49e8-ac47-da7eee8e668d" });
 
 
 // POST /api/users/:userId/messageCount
