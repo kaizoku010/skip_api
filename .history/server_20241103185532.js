@@ -1877,7 +1877,7 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
   
   // Check if Event model is properly imported and if event is found
   const event = await Event.findOne({ eventId: eventId });
-  console.log("event found: ", event)
+  console.log("event found")
   if (!event) {
     return res.status(404).json({ message: "Event not found" });
   }
