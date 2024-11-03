@@ -1875,6 +1875,15 @@ app.post("/save_checkin", asyncHandler(async (req, res) => {
 app.post("/save_checkin2", asyncHandler(async (req, res) => {
   const { attendeeId, userName, userEmail, eventId } = req.body;
  
+
+
+  const checkinData = {
+    eventId:eventId,
+    checkinId: uuidv4(), // Generate a unique check-in ID
+    attendeeId:attendeeId,
+    attendeeEmail: userEmail,
+    timestamp: new Date(),
+  };
   const event = await Event.findOne({ eventId: eventId });
 
   if (!event) {
@@ -1882,30 +1891,14 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
   }
 
   // Check if the user is already an attendee for this event
-  const alreadyCheckedIn = event.checkins.find(
-    (attendee) => attendee.userEmail === userEmail
+  const alreadyCheckedIn = event.attendees.find(
+    (attendee) => attendee.userEmail === email
   );
-
-  if (alreadyCheckedIn) {
-    return res
-      .status(409)
-      .json({ message: "User is already checkedin up for this event" });
-  }
-
 
   try {
     // Save check-in to the database
-    const checkinData = {
-      checkinId: uuidv4(), // Generate a unique check-in ID
-      attendeeId:attendeeId,
-      attendeeEmail: userEmail,
-      timestamp: new Date(),
-    };
-
-    await Event.updateOne(
-      { eventId: eventId },
-      { $push: { checkins: checkinData } }
-    );
+    await Checkins.insertOne(checkinData);
+    
     // Respond with success and check-in data
     res.status(201).json(checkinData);
 

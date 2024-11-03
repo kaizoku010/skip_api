@@ -1883,10 +1883,10 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
 
   // Check if the user is already an attendee for this event
   const alreadyCheckedIn = event.checkins.find(
-    (attendee) => attendee.userEmail === userEmail
+    (attendee) => attendee.userEmail === email
   );
 
-  if (alreadyCheckedIn) {
+  if (alreadyCheckedInalreadyCheckedIn) {
     return res
       .status(409)
       .json({ message: "User is already checkedin up for this event" });
