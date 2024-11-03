@@ -1888,7 +1888,21 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
 
   // Check if the user is already an attendee for this event
   const alreadyCheckedIn = event.checkins.find(
-    (attendee) => attendee.attendeeEmail === userEmail
+    (attendee) => attendee.
+
+    checkins
+    Array (1)
+    
+    0
+    Object
+    checkinId
+    "13eb0ca2-9ed5-4fb8-8af3-bb80bdf503f9"
+    attendeeId
+    "88791281-c73c-4f8f-99eb-1c8c9274398a"
+    attendeeEmail
+    "dixon@protonmail.com"
+    timestamp
+    2024-11-03T16:03:02.760+00:00 === userEmail
   );
 
   if (alreadyCheckedIn) {
