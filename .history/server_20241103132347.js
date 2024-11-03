@@ -1879,7 +1879,7 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 
   try {
     // Search for an existing check-in with the same attendee ID
-    const existingCheckin = await Checkins.findOne({ userEmail:userEmail });
+    const existingCheckin = await Checkins.findOne({ :userEmail });
 
     if (existingCheckin) {
       // If a check-in exists, send a response indicating it's a duplicate
