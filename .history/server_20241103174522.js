@@ -1895,28 +1895,28 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 }));
 
 
-app.get("/get_checkin_by_event/:eventId", asyncHandler(async (req, res) => {
-  const { eventId } = req.params; // Retrieve eventId from params
-
-  console.log("Received eventId:", eventId); // Log for debugging
+app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
+  const { eventId } = req.params; // Retrieve eventId directly from params
+  
+  console.log("Received eventId:", eventId); // Log the received eventId for debugging
 
   try {
-    // Fetch a single check-in matching the provided eventId
-    const checkin = await checkinsCollection.findOne({ eventId }); // Using findOne with the native driver
+    // Fetch check-ins from the database
+    const checkins = await Checkins.find({ eventId });
 
-    console.log("Retrieved checkin:", checkin); // Log the retrieved check-in
+    console.log("Retrieved checkins:", checkins); // Log the retrieved check-ins
 
-    if (checkin) {
-      res.status(200).json({ success: true, data: checkin });
+    if (checkins.length > 0) {
+      res.status(200).json({ success: true, data: checkins });
     } else {
-      res.status(404).json({ success: false, message: "No check-in found for this event" });
+      console.log("No check-ins found for this event."); // Log for clarity
+      res.status(404).json({ success: false, message: "No check-ins found for this event" });
     }
   } catch (error) {
-    console.error("Error retrieving check-in:", error);
-    res.status(500).json({ success: false, message: "Error retrieving check-in", error });
+    console.error("Error retrieving check-ins:", error);
+    res.status(500).json({ message: "Error retrieving check-ins", error });
   }
 }));
-
 
 app.get("/get_all_checkins", asyncHandler(async (req, res) => {
   try {
