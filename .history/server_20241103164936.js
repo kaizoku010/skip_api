@@ -1901,10 +1901,10 @@ app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
   console.log("Received eventId:", eventId);
 
   try {
-    const checkin = await Checkins.findOne({ eventId: eventId });
+    const checkins = await Checkins.findOne({ eventId: eventId });
     
-    console.log("Retrieved checkins:", checkin);  // Log the retrieved check-ins
-    res.json(checkin);
+    console.log("Retrieved checkins:", checkins);  // Log the retrieved check-ins
+    res.json(checkins);
 
     // if (checkins.length > 0) {
     //   res.status(200).json({ success: true, data: checkins });

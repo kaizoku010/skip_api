@@ -1896,21 +1896,20 @@ app.post("/check_duplicate", asyncHandler(async (req, res) => {
 
 
 app.get("/get_checkins_by_event/:eventId", asyncHandler(async (req, res) => {
-  const eventId = req.params.event_id;
+  const { eventId } = req.params;
   
   console.log("Received eventId:", eventId);
 
   try {
-    const checkin = await Checkins.findOne({ eventId: eventId });
+    const checkins = await Checkins.findOne({ eventId: eventId });
     
-    console.log("Retrieved checkins:", checkin);  // Log the retrieved check-ins
-    res.json(checkin);
+    console.log("Retrieved checkins:", checkins);  // Log the retrieved check-ins
 
-    // if (checkins.length > 0) {
-    //   res.status(200).json({ success: true, data: checkins });
-    // } else {
-    //   res.status(404).json({ success: false, message: "No check-ins found for this event" });
-    // }
+    if (checkins.length > 0) {
+      res.status(200).json({ success: true, data: checkins });
+    } else {
+      res.status(404).json({ success: false, message: "No check-ins found for this event" });
+    }
   } catch (error) {
     console.error("Error retrieving check-ins:", error);
     res.status(500).json({ message: "Error retrieving check-ins", error });
