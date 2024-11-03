@@ -1920,7 +1920,7 @@ app.get("/get_checkin_by_event/:eventId", asyncHandler(async (req, res) => {
 
 app.get("/get_all_checkins", asyncHandler(async (req, res) => {
   try {
-    const checkins = await Checkins.find().toArray(); // Using the native driver
+    const checkins = await Chc.find().toArray(); // Using the native driver
     res.status(200).json(checkins); // Send the check-ins array as a response
   } catch (error) {
     console.error("Error retrieving check-ins:", error);
