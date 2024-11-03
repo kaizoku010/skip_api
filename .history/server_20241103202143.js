@@ -1909,7 +1909,7 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
       { $push: { checkins: checkinData } }
     );
 
-    console.log(`user checked at${new Date()}`)
+    console.log(`user checked at`)
 
     res.status(201).json(checkinData);
 

@@ -1909,8 +1909,6 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
       { $push: { checkins: checkinData } }
     );
 
-    console.log(`user checked at${new Date()}`)
-
     res.status(201).json(checkinData);
 
     // Optional notification
@@ -1921,7 +1919,7 @@ app.post("/save_checkin2", asyncHandler(async (req, res) => {
     );
     c
   } catch (error) {
-    console.error("error saving checkin",error)
+    console.error(error)
     res.status(500).json({ message: "Error saving check-in", error });
   }
 }));
