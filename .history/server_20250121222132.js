@@ -737,19 +737,9 @@ app.post(
 
     // Find the event
     const event = await Event.findOne({ eventId: event_id });
-
+console
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
-    }
-
-
-    // Ensure attendees field is initialized
-    if (!Array.isArray(event.attendees)) {
-      event.attendees = []; // Initialize attendees array if undefined
-      await Event.updateOne(
-        { eventId: event_id },
-        { $set: { attendees: event.attendees } }
-      );
     }
 
     // Check if the user is already an attendee for this event
