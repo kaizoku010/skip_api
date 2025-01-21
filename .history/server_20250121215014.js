@@ -737,10 +737,11 @@ app.post(
 
     // Find the event
     const event = await Event.findOne({ eventId: event_id });
-console.log("Event found: ",event);
+console
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
+
     // Check if the user is already an attendee for this event
     const existingAttendee = event.attendees.find(
       (attendee) => attendee.userEmail === email
