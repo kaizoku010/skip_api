@@ -719,7 +719,7 @@ app.post(
   "/create_attendee/:event_id",
   asyncHandler(async (req, res) => {
     const { event_id } = req.params; // Extract event_id from URL
-    console.log("Request event: ",event_id); // Log body content
+    con("Request Body: ", req.body); // Log body content
     const {
       user_id,
       userName,
